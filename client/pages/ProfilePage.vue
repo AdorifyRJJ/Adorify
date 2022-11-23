@@ -1,5 +1,8 @@
 <template>
-    <div>ProfilePage</div>
+    <div>
+        ProfilePage
+        <router-link to="/login"> Log Out </router-link>
+    </div>
 </template>
 
 <script>
