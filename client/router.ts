@@ -3,7 +3,6 @@ import VueRouter from 'vue-router';
 import FreetsPage from './components/Freet/FreetsPage.vue';
 import AccountPage from './components/Account/AccountPage.vue';
 import LoginPage from './components/Login/LoginPage.vue';
-import CallbackPage from './components/Callback/CallbackPage.vue'
 import NotFound from './NotFound.vue';
 
 Vue.use(VueRouter);
@@ -12,7 +11,6 @@ const routes = [
   { path: '/', name: 'Home', component: FreetsPage },
   { path: '/account', name: 'Account', component: AccountPage },
   { path: '/login', name: 'Login', component: LoginPage },
-  { path: '/callback', name: 'CallbackPage', component: CallbackPage },
   { path: '*', name: 'Not Found', component: NotFound }
 ];
 
