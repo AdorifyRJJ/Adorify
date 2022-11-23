@@ -10,7 +10,7 @@ dotenv.config({});
 
 // May need to edit this to do more things with playback, tracklist, etc.
 // https://developer.spotify.com/documentation/general/guides/authorization/scopes/
-const scopes = ['user-read-private', 'user-read-email'];
+const scopes = ['user-read-private', 'user-read-email', 'user-modify-playback-state'];
 
 const spotifyApi = new SpotifyWebApi({
     clientId: process.env.ID,
