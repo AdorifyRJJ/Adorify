@@ -35,7 +35,7 @@ router.get('/getToken', async function (req: Request, res: Response) {
             token: data.body['access_token'],
         })
     } catch (e: any) {
-        res.status(404).json({
+        res.status(e.body.error.status).json({
             message: e.body.error
         });
     }
@@ -50,7 +50,7 @@ router.get('/getMe', async function (req: Request, res: Response) {
             obj: data,
         });
     } catch (e: any) {
-        res.status(404).json({
+        res.status(e.body.error.status).json({
             message: e.body.error
         })
     }
@@ -60,14 +60,13 @@ router.get('/getMe', async function (req: Request, res: Response) {
 router.get('/transfer', async function (req: Request, res: Response) {
     try {
         const deviceArr = [req.query.deviceId as string];
-        console.log(deviceArr)
         const transfer = await spotifyApi.transferMyPlayback(deviceArr);
         res.status(200).json({
             message: 'Here is the object.',
             transfer: transfer,
         });
     } catch (e: any) {
-        res.status(404).json({
+        res.status(e.body.error.status).json({
             message: e.body.error
         })
     }
@@ -76,15 +75,13 @@ router.get('/transfer', async function (req: Request, res: Response) {
 
 router.get('/play', async function (req: Request, res: Response) {
     try {
-        const deviceArr = [req.query.deviceId as string];
-        console.log(deviceArr)
         const playData = await spotifyApi.play({ device_id: req.query.deviceId as string });
         res.status(200).json({
             message: 'Here is the object.',
             playData: playData,
         });
     } catch (e: any) {
-        res.status(404).json({
+        res.status(e.body.error.status).json({
             message: e.body.error
         })
     }
@@ -93,15 +90,13 @@ router.get('/play', async function (req: Request, res: Response) {
 
 router.get('/pause', async function (req: Request, res: Response) {
     try {
-        const deviceArr = [req.query.deviceId as string];
-        console.log(deviceArr)
         const playData = await spotifyApi.pause({ device_id: req.query.deviceId as string });
         res.status(200).json({
             message: 'Here is the object.',
             playData: playData,
         });
     } catch (e: any) {
-        res.status(404).json({
+        res.status(e.body.error.status).json({
             message: e.body.error
         })
     }

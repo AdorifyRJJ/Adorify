@@ -7,7 +7,7 @@
             <div>=</div>
             <div>Adorify</div>
         </div>
-        <button @click="login">Log In with Spotify</button>
+        <button @click="login">Login with Spotify</button>
         <div>Spotify Premium account required</div>
     </div>
 </template>

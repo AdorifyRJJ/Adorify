@@ -1,8 +1,24 @@
 <template>
   <main>
     <h1>HomePage</h1>
-    <button @click="playMusic">Play Music</button>
-    <button @click="pauseMusic">Pause Music</button>
+    <div>
+      <button @click="playMusic">Play Music</button>
+      <button @click="pauseMusic">Pause Music</button>
+    </div>
+    <div>
+      <p v-if="!player_device_id">
+        Device is not ready, so music playback will not work. Please log in. (Click "Profile" -> "Logout" -> "Login")
+      </p>
+      <p v-else>Device ready!</p>
+    </div>
+    <div>
+      <p v-if="!playing">
+        Not playing music.
+      </p>
+      <p v-else>
+        Playing music! Turn it up!
+      </p>
+    </div>
   </main>
 </template>
 
@@ -13,6 +29,7 @@ export default {
     return {
       player: undefined,
       player_device_id: undefined,
+      playing: false,
     };
   },
   async beforeCreate() {
@@ -24,7 +41,6 @@ export default {
       window.history.pushState({}, document.title, "/");
       const myData = await fetch("/api/spotify/getMe");
       const ans = await myData.json();
-      console.log(ans);
 
       const script = document.createElement("script");
       script.src = "https://sdk.scdn.co/spotify-player.js";
@@ -40,7 +56,7 @@ export default {
           },
           volume: 0.5,
         });
-        console.log(player);
+
         this.player = player;
 
         player.addListener("ready", async ({ device_id }) => {
@@ -49,7 +65,7 @@ export default {
             `/api/spotify/transfer?deviceId=${device_id}`
           );
           const playbackRes = await playback.json();
-          console.log(playbackRes);
+
           this.player_device_id = device_id;
         });
 
@@ -76,23 +92,23 @@ export default {
   },
   methods: {
     async playMusic() {
-      console.log("toggle music");
       if (this.player_device_id) {
         const playback = await fetch(
           `/api/spotify/play?deviceId=${this.player_device_id}`
         );
-        const playbackRes = await playback.json();
-        console.log(playbackRes);
+        if (playback.ok){
+          this.playing = true;
+        }
       }
     },
     async pauseMusic() {
-      console.log("toggle music");
       if (this.player_device_id) {
         const playback = await fetch(
           `/api/spotify/pause?deviceId=${this.player_device_id}`
         );
-        const playbackRes = await playback.json();
-        console.log(playbackRes);
+        if (playback.ok){
+          this.playing = false;
+        }
       }
     },
   },
