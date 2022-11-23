@@ -44,9 +44,30 @@ router.get('/getToken', async function (req: Request, res: Response) {
 
 // Untested
 // Given a refresh token (stored in User Schema) -> Refresh access token and return to frontend for the music player
-router.get('/getTokenFromRefresh', async function (req: Request, res: Response) {
+router.get('/getTokenFromSession', async function (req: Request, res: Response) {
     try {
         spotifyApi.setRefreshToken(req.query.refresh_token as string);
+        const data = await spotifyApi.refreshAccessToken();
+        spotifyApi.setAccessToken(data.body['access_token']);
+        if (data.body['refresh_token']){
+            spotifyApi.setRefreshToken(data.body['refresh_token']);
+            // MODIFY USER DATABASE WITH NEW REFRESH TOKEN
+        }
+        res.status(200).json({
+            token: data.body['access_token'],
+        })
+    } catch (e: any) {
+        res.status(e.body.error.status).json({
+            message: e.body.error
+        });
+    }
+    res.end();
+});
+
+// Untested
+// Refresh token after an hour. Call this api route in store, use setInterval, etc.
+router.get('/refreshToken', async function (req: Request, res: Response) {
+    try {
         const data = await spotifyApi.refreshAccessToken();
         spotifyApi.setAccessToken(data.body['access_token']);
         if (data.body['refresh_token']){
