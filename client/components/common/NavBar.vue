@@ -14,7 +14,6 @@
             <router-link to="/playlists"> playlists </router-link>
             <router-link to="/leaderboard"> leaderboard </router-link>
             <router-link to="/profile"> profile </router-link>
-            <button @click="login">Login</button>
         </div>
         <section class="alerts">
             <article
@@ -31,13 +30,6 @@
 <script>
 export default {
     name: "NavBar",
-    methods: {
-        async login() {
-            const data = await fetch("/api/spotify/login");
-            const rURL = await data.text();
-            window.location.href = rURL;
-        },
-    },
 };
 </script>
 
