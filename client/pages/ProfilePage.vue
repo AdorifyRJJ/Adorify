@@ -1,7 +1,7 @@
 <template>
     <div>
         ProfilePage
-        <router-link to="/login"> Log Out </router-link>
+        <router-link to="/login"><button>Log Out</button></router-link>
     </div>
 </template>
 
