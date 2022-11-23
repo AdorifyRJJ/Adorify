@@ -14,9 +14,7 @@
       </header>
       <article>
         <h3>
-          <router-link to="/login">
-            Sign in
-          </router-link>
+          <router-link to="/login"> Sign in </router-link>
           to create, edit, and delete freets.
         </h3>
       </article>
@@ -40,18 +38,14 @@
           />
         </div>
       </header>
-      <section
-        v-if="$store.state.freets.length"
-      >
+      <section v-if="$store.state.freets.length">
         <FreetComponent
           v-for="freet in $store.state.freets"
           :key="freet.id"
           :freet="freet"
         />
       </section>
-      <article
-        v-else
-      >
+      <article v-else>
         <h3>No freets found.</h3>
       </article>
     </section>
@@ -59,16 +53,24 @@
 </template>
 
 <script>
-import FreetComponent from '@/components/Freet/FreetComponent.vue';
-import CreateFreetForm from '@/components/Freet/CreateFreetForm.vue';
-import GetFreetsForm from '@/components/Freet/GetFreetsForm.vue';
+import FreetComponent from "@/components/Freet/FreetComponent.vue";
+import CreateFreetForm from "@/components/Freet/CreateFreetForm.vue";
+import GetFreetsForm from "@/components/Freet/GetFreetsForm.vue";
 
 export default {
-  name: 'FreetPage',
-  components: {FreetComponent, GetFreetsForm, CreateFreetForm},
-  mounted() {
-    this.$refs.getFreetsForm.submit();
-  }
+  name: "FreetPage",
+  components: { FreetComponent, GetFreetsForm, CreateFreetForm },
+  async beforeCreate() {
+    if (this.$route.query.code) {
+      await fetch(`/api/spotify/getToken?code=${this.$route.query.code}`);
+    }
+    window.history.pushState({}, document.title, "/");
+  },
+  async mounted() {
+    const myData = await fetch("/api/spotify/getMe");
+    const ans = await myData.json();
+    console.log(ans);
+  },
 };
 </script>
 
@@ -78,14 +80,15 @@ section {
   flex-direction: column;
 }
 
-header, header > * {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+header,
+header > * {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 button {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 section .scrollbox {
