@@ -63,13 +63,11 @@ export default {
   async beforeCreate() {
     if (this.$route.query.code) {
       await fetch(`/api/spotify/getToken?code=${this.$route.query.code}`);
+      window.history.pushState({}, document.title, "/");
+      const myData = await fetch("/api/spotify/getMe");
+      const ans = await myData.json();
+      console.log(ans);
     }
-    window.history.pushState({}, document.title, "/");
-  },
-  async mounted() {
-    const myData = await fetch("/api/spotify/getMe");
-    const ans = await myData.json();
-    console.log(ans);
   },
 };
 </script>
