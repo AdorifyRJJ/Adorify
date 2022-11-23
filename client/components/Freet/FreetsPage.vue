@@ -66,8 +66,16 @@ import GetFreetsForm from '@/components/Freet/GetFreetsForm.vue';
 export default {
   name: 'FreetPage',
   components: {FreetComponent, GetFreetsForm, CreateFreetForm},
-  mounted() {
-    this.$refs.getFreetsForm.submit();
+  async created() {
+    console.log(this.$route)
+    if (this.$route.query.code) {
+      console.log("cbpage");
+      await fetch(`/api/spotify/getToken?code=${this.$route.query.code}`);
+      console.log("cbpage2");
+    }
+    const myData = await fetch('/api/spotify/getMe');
+    const ans = await myData.json();
+    console.log(ans)
   }
 };
 </script>

@@ -32,12 +32,9 @@ export default {
   name: "NavBar",
   methods: {
     async login() {
-      console.log("login hit");
-      const response = await fetch("/api/spotify/login");
-      console.log(response.rURI);
-      //console.log(data);
-      //this.$router.push(data.url);
-      //window.location.href = data.url;
+      const data = await fetch("/api/spotify/login");
+      const rURL = await data.text();
+      window.location.href = rURL;
     },
   },
 };

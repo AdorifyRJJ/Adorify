@@ -9,39 +9,43 @@ const router = express.Router();
 // https://developer.spotify.com/documentation/general/guides/authorization/scopes/
 const scopes = ['user-read-private', 'user-read-email'];
 
-// Move id to .env file? When I did this it doesn't seem to initialize the SpotifyWebApi object correctly; the field becomes undefined.
 const spotifyApi = new SpotifyWebApi({
     clientId: '472aa14c539543c6ad5575e706e88ab7',
-    redirectUri: 'http://localhost:8080/callback',
+    clientSecret: '11c619f5e98341eab55e1327ddb1cc37',
+    redirectUri: `http://localhost:8080`,
 });
 
 router.get('/login', async function (req: Request, res: Response) {
     const state = util.generateRandomString(16);
     const rURL = spotifyApi.createAuthorizeURL(scopes, state);
-    res.status(200).send({rURI: rURL});
-    console.log(res)
-    res.end();
-    /*
-    const redirect_uri = 'http://localhost:8080/callback';
+    res.set('Content-Type', 'text/html');
+    res.status(200).send(rURL + '&show_dialog=true');
+});
 
-    
-    const scope = 'user-read-private user-read-email';
+router.get('/getToken', async function (req: Request, res: Response) {
+    console.log('getting token')
+    try {
+        const data = await spotifyApi.authorizationCodeGrant(req.query.code as string);
+        spotifyApi.setAccessToken(data.body['access_token']);
+        spotifyApi.setRefreshToken(data.body['refresh_token']);
+    } catch (e: any) {
+        console.log('backend get token', e.body.error)
+    }
+});
 
-    const params = new URLSearchParams();
-    params.append('response_type', 'code');
-    params.append('client_id', client_id);
-    params.append('scope', scope);
-    params.append('redirect_uri', redirect_uri);
-    params.append('state', state);
+router.get('/getMe', async function (req: Request, res: Response) {
 
-    const spotify_uri = 'https://accounts.spotify.com/authorize?' + params.toString();
+    try {
+        const data = await spotifyApi.getMe();
+        res.status(200).json({
+            message: 'Here is the object.',
+            obj: data,
+        });
+    } catch (e: any) {
+        console.log('backend get me', e.body.error)
+    }
 
-    console.log(spotify_uri)
-    res.writeHead(200, {
-        Location: spotify_uri
-    });
-    res.end();
-    */
+
 });
 
 export { router as spotifyRouter };
