@@ -39,8 +39,10 @@ export default {
       );
       const tokenjson = await token.json();
       window.history.pushState({}, document.title, "/");
+
       const myData = await fetch("/api/spotify/getMe");
-      const ans = await myData.json();
+      const myDataJson = await myData.json();
+      this.$store.commit('setUsername', myDataJson.data.body.id);
 
       const script = document.createElement("script");
       script.src = "https://sdk.scdn.co/spotify-player.js";
