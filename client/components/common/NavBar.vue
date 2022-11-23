@@ -3,6 +3,29 @@
 <!-- This navbar takes advantage of both flex and grid layouts for positioning elements; feel free to redesign as you see fit! -->
 
 <template>
+    <nav>
+        <div>
+            <router-link to="/" class="left">
+                <img src="../../public/headphones.svg" />
+                <h1 class="title">Adorify</h1>
+            </router-link>
+        </div>
+        <div class="right">
+            <router-link to="/playlists"> playlists </router-link>
+            <router-link to="/leaderboard"> leaderboard </router-link>
+            <router-link to="/profile"> profile </router-link>
+        </div>
+        <section class="alerts">
+            <article
+                v-for="(status, alert, index) in $store.state.alerts"
+                :key="index"
+                :class="status"
+            >
+                <p>{{ alert }}</p>
+            </article>
+        </section>
+    </nav>
+    <!-- 
   <nav>
     <div class="left">
       <img src="../../public/logo.svg">
@@ -36,7 +59,7 @@
         <p>{{ alert }}</p>
       </article>
     </section>
-  </nav>
+  </nav> -->
 </template>
 
 <style scoped>
@@ -59,8 +82,8 @@ img {
 }
 
 .left {
-	display: flex;
-	align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .right {

@@ -1,16 +1,25 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import FreetsPage from './components/Freet/FreetsPage.vue';
-import AccountPage from './components/Account/AccountPage.vue';
-import LoginPage from './components/Login/LoginPage.vue';
+// import FreetsPage from './components/Freet/FreetsPage.vue';
+// import AccountPage from './components/Account/AccountPage.vue';
+// import LoginPage from './components/Login/LoginPage.vue';
+// import NotFound from './NotFound.vue';
+
+import HomePage from './pages/HomePage.vue'
+import LoginPage from './pages/LoginPage.vue'
+import ProfilePage from './pages/ProfilePage.vue'
+import LeaderboardPage from './pages/LeaderboardPage.vue'
+import PlaylistsPage from './pages/PlaylistsPage.vue'
 import NotFound from './NotFound.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
-  {path: '/', name: 'Home', component: FreetsPage},
-  {path: '/account', name: 'Account', component: AccountPage},
+  {path: '/', name: 'Home', component: HomePage},
   {path: '/login', name: 'Login', component: LoginPage},
+  {path: '/profile', name: 'Profile', component: ProfilePage},
+  {path: '/leaderboard', name: 'Leaderboard', component: LeaderboardPage},
+  {path: '/playlists', name: 'Playlists', component: PlaylistsPage},
   {path: '*', name: 'Not Found', component: NotFound}
 ];
 
