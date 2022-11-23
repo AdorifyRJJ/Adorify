@@ -45,10 +45,7 @@ router.get('/getToken', async function (req: Request, res: Response) {
 router.get('/getMe', async function (req: Request, res: Response) {
     try {
         const data = await spotifyApi.getMe();
-        res.status(200).json({
-            message: 'Here is the object.',
-            obj: data,
-        });
+        res.status(200).json({data});
     } catch (e: any) {
         res.status(e.body.error.status).json({
             message: e.body.error
