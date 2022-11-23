@@ -10,7 +10,7 @@ dotenv.config({});
 
 // May need to edit this to do more things with playback, tracklist, etc.
 // https://developer.spotify.com/documentation/general/guides/authorization/scopes/
-const scopes = ['user-read-private', 'user-read-email', 'user-modify-playback-state'];
+const scopes = ['user-read-private', 'user-read-email', 'user-modify-playback-state', 'streaming'];
 
 const spotifyApi = new SpotifyWebApi({
     clientId: process.env.ID,
@@ -31,6 +31,9 @@ router.get('/getToken', async function (req: Request, res: Response) {
         const data = await spotifyApi.authorizationCodeGrant(req.query.code as string);
         spotifyApi.setAccessToken(data.body['access_token']);
         spotifyApi.setRefreshToken(data.body['refresh_token']);
+        res.status(200).json({
+            token: data.body['access_token'],
+        })
     } catch (e: any) {
         res.status(404).json({
             message: e.body.error
@@ -45,6 +48,57 @@ router.get('/getMe', async function (req: Request, res: Response) {
         res.status(200).json({
             message: 'Here is the object.',
             obj: data,
+        });
+    } catch (e: any) {
+        res.status(404).json({
+            message: e.body.error
+        })
+    }
+    res.end();
+});
+
+router.get('/transfer', async function (req: Request, res: Response) {
+    try {
+        const deviceArr = [req.query.deviceId as string];
+        console.log(deviceArr)
+        const transfer = await spotifyApi.transferMyPlayback(deviceArr);
+        res.status(200).json({
+            message: 'Here is the object.',
+            transfer: transfer,
+        });
+    } catch (e: any) {
+        res.status(404).json({
+            message: e.body.error
+        })
+    }
+    res.end();
+});
+
+router.get('/play', async function (req: Request, res: Response) {
+    try {
+        const deviceArr = [req.query.deviceId as string];
+        console.log(deviceArr)
+        const playData = await spotifyApi.play({ device_id: req.query.deviceId as string });
+        res.status(200).json({
+            message: 'Here is the object.',
+            playData: playData,
+        });
+    } catch (e: any) {
+        res.status(404).json({
+            message: e.body.error
+        })
+    }
+    res.end();
+});
+
+router.get('/pause', async function (req: Request, res: Response) {
+    try {
+        const deviceArr = [req.query.deviceId as string];
+        console.log(deviceArr)
+        const playData = await spotifyApi.pause({ device_id: req.query.deviceId as string });
+        res.status(200).json({
+            message: 'Here is the object.',
+            playData: playData,
         });
     } catch (e: any) {
         res.status(404).json({
