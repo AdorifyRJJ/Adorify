@@ -1,4 +1,4 @@
-import type {HydratedDocument} from 'mongoose';
+import type {HydratedDocument, Types} from 'mongoose';
 import moment from 'moment';
 import type {User} from './model';
 
@@ -6,7 +6,7 @@ import type {User} from './model';
 type UserResponse = {
   _id: string;
   username: string;
-  dateJoined: string;
+  likedPlaylists: Types.ObjectId[];
 };
 
 /**
@@ -31,11 +31,10 @@ const constructUserResponse = (user: HydratedDocument<User>): UserResponse => {
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
-  delete userCopy.password;
+
   return {
     ...userCopy,
     _id: userCopy._id.toString(),
-    dateJoined: formatDate(user.dateJoined)
   };
 };
 
