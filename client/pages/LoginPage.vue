@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div>
+        <div style="border: solid">
             <div>Pomodoro</div>
             <div>+</div>
             <div>Spotify</div>
