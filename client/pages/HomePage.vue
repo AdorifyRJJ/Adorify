@@ -1,6 +1,6 @@
 <template>
     <main>
-        <h1>HomePage</h1>
+        <h1>Home Page</h1>
         <div>
             <button @click="playMusic">Play Music</button>
             <button @click="pauseMusic">Pause Music</button>
@@ -36,11 +36,8 @@
                 </div>
             </div>
             <!-- fetch likedPlaylists -->
-            <div>[Carousel component]</div>
-            <div>
-                states: {{ focusTime }}, {{ breakTime }}, {{ intervals }},
-                {{ selectedPlaylistId }}
-            </div>
+            <div>Carousel: {{ this.myLikedPlaylists }}</div>
+
             <!-- start focus session and play selected playlist -->
             <button @click="startSession">[Play button]</button>
         </div>
@@ -61,12 +58,14 @@
 </template>
 
 <script>
+import { myLikedPlaylists } from "../dummyData.js";
 export default {
     name: "HomePage",
     data() {
         return {
             player: undefined,
             player_device_id: undefined,
+            myLikedPlaylists: myLikedPlaylists,
             playing: false,
             focusTime: 25,
             breakTime: 5,

@@ -1,5 +1,5 @@
 <template>
-    <div>UserItem: {{ this.rank }} {{ this.user }}</div>
+    <div>{{ this.rank }} {{ this.user }}</div>
 </template>
 
 <script>
