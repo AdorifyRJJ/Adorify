@@ -232,19 +232,6 @@ export default {
                     console.log("Device ID has gone offline", device_id);
                 });
 
-                player.addListener("player_state_changed", (state) => {
-                    if (!state) {
-                        return;
-                    }
-
-                    setTrack(state.track_window.current_track);
-                    setPaused(state.paused);
-
-                    player.getCurrentState().then((state) => {
-                        !state ? setActive(false) : setActive(true);
-                    });
-                });
-
                 player.connect();
             };
         }
