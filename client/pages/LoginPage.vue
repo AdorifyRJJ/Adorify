@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div>
+        <h1>Login Page</h1>
+        <div style="border: solid">
             <div>Pomodoro</div>
             <div>+</div>
             <div>Spotify</div>
