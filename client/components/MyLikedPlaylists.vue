@@ -17,7 +17,7 @@ export default {
     name: "MyLikedPlaylists",
     computed: {
         myLikedPlaylists() {
-            return $store.state.myLikedPlaylists;
+            return this.$store.state.myLikedPlaylists;
         },
     },
 };

@@ -65,9 +65,9 @@ const store = new Vuex.Store({
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
     },
-    updateMyLikedPlaylists(state, myLikedPlaylists) {
-      state.myLikedPlaylists = myLikedPlaylists;
-    }
+    // updateMyLikedPlaylists(state, myLikedPlaylists) {
+    //   state.myLikedPlaylists = myLikedPlaylists;
+    // }
   },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]
