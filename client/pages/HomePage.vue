@@ -73,8 +73,8 @@ export default {
             player_device_id: undefined,
             myLikedPlaylists: myLikedPlaylists,
             playing: false,
-            focusTime: 1 / 12,
-            breakTime: 1 / 30,
+            focusTime: 25,
+            breakTime: 5,
             intervals: 2,
             selectedPlaylistId: "sd23c98efc293",
             sessionStarted: false,
@@ -91,11 +91,11 @@ export default {
         },
         getMin() {
             const min = Math.floor(this.timestamp / 60);
-            return (min < 10) ? `0${min}` : `${min}`
+            return min < 10 ? `0${min}` : `${min}`;
         },
         getSec() {
             const sec = this.timestamp % 60;
-            return (sec < 10 ) ? `0${sec}` : `${sec}`
+            return sec < 10 ? `0${sec}` : `${sec}`;
         },
     },
     methods: {
@@ -120,16 +120,21 @@ export default {
             }
         },
         clearTimer() {
-            if (this.timerId) clearInterval(this.timerId);
+            if (this.timerId) {
+                clearInterval(this.timerId);
+                // this.timerId = null;
+            }
         },
         startTimer() {
             this.timerActive = true;
-            this.timestamp = this.timestamp ?? (this.focusing ? this.focusTime * 60 : this.breakTime * 60);
+            this.timestamp =
+                this.timestamp ??
+                (this.focusing ? this.focusTime * 60 : this.breakTime * 60);
             this.timerId = setInterval(() => {
                 if (this.timerActive) {
                     this.timestamp--;
                     if (this.timestamp <= 0) {
-                        this.clearTimer()
+                        this.clearTimer();
                         this.timestamp = null;
                         if (this.currInterval >= this.intervals) {
                             this.endSession();
@@ -146,7 +151,7 @@ export default {
         },
         pauseTimer() {
             this.timerActive = false;
-            this.clearTimer()
+            this.clearTimer();
         },
         startSession() {
             this.focusing = true;
@@ -158,10 +163,7 @@ export default {
         },
         endSession() {
             this.pauseTimer();
-            this.timerActive = false;
             this.timestamp = null;
-            this.clearTimer()
-            this.timerId = null;
             this.focusing = false;
             this.currInterval = 1;
             this.sessionStarted = false;
@@ -181,11 +183,7 @@ export default {
             if (this.timerActive) {
                 this.pauseTimer();
             } else {
-                // if (this.focusing) {
                 this.startTimer();
-                // } else {
-                //     this.startBreakTimer();
-                // }
             }
         },
     },
