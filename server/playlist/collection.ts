@@ -24,6 +24,10 @@ class PlaylistCollection {
     return PlaylistModel.findOne({spotifyId: spotifyId});
   }
 
+  static async deleteAllByOwner(owner: string): Promise<void> {
+    await PlaylistModel.deleteMany({owner: owner});
+  }
+
   static async findMostLikes(): Promise<Array<HydratedDocument<Playlist>>> {
     return PlaylistModel.find({isPublic: true}).sort({numLikes: -1}).limit(20);
   }

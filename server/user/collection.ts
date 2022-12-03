@@ -1,4 +1,5 @@
 import type {HydratedDocument, Types} from 'mongoose';
+import PlaylistModel from '../playlist/model';
 import PlaylistCollection from '../playlist/collection';
 import type {User} from './model';
 import UserModel from './model';
@@ -33,9 +34,10 @@ class UserCollection {
   //   return user;
   // }
 
-  static async inLikedPlaylists(username: string, playlist: Types.ObjectId | string): Promise<boolean> {
+  static async inLikedPlaylists(username: string, spotifyId: string): Promise<boolean> {
     const user = await UserModel.findOne({username: username});
-    return user.likedPlaylists.indexOf(playlist as Types.ObjectId) !== -1;
+    const playlist = await PlaylistCollection.findOneBySpotifyId(spotifyId);
+    return playlist ? user.likedPlaylists.indexOf(playlist._id) !== -1 : false;
   }
 
   static async toggleLikedPlaylists(username: string, playlist: Types.ObjectId | string): Promise<boolean> {
@@ -55,9 +57,7 @@ class UserCollection {
 
   static async deleteOne(username: string): Promise<boolean> {
     const user = await UserModel.deleteOne({username: username});
-
-    // for playlist of likedplaylists: if owner, delete
-
+    await PlaylistCollection.deleteAllByOwner(username);
     return user !== null;
   }
 }

@@ -2,22 +2,27 @@ import type {Request, Response} from 'express';
 import express from 'express';
 import PlaylistCollection from './collection';
 import * as userValidator from '../user/middleware';
+import * as util from './util';
 import { spotifyApi } from '../spotify/router';
 import UserCollection from '../user/collection';
 
 const router = express.Router();
 
-// GET /api/playlists/mine
+// GET /api/playlists/mine?offset=
 router.get(
   '/mine',
   [
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
-    const myPlaylists = await spotifyApi.getUserPlaylists(req.session.username)
+    const myPlaylists = await spotifyApi.getUserPlaylists(req.session.username, {offset: parseInt(req.query.offset as string)});
+    
+    res.status(200).json({
+      message: 'Retrieved succesfully.',
+      playlists: await Promise.all(myPlaylists.body.items.map(p => util.constructMinePlaylistResponse(req.session.username, p))),
+      offset: myPlaylists.body.offset,
+    });
   }
-
-  // return shallow mine response
 )
 
 // GET /api/playlists/info/:spotifyId
@@ -33,7 +38,27 @@ router.get(
     if (playlist)
       await PlaylistCollection.updateIsPublic(playlist._id, playlistInfo.body.public);
 
-    // return deep response
+    res.status(200).json({
+      message: 'Retrieved succesfully.',
+      playlistInfo: await util.constructSinglePlaylistResponse(req.session.username, playlist._id, playlistInfo.body),
+      offset: playlistInfo.body.tracks.offset,
+    });
+  }
+)
+
+// GET /api/playlists/info/:spotifyId/tracks?offset=
+router.get(
+  '/info/:spotifyId?/tracks',
+  [
+    userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response) => {
+    const tracks = await spotifyApi.getPlaylistTracks(req.params.spotifyId, {offset: parseInt(req.query.offset as string)})
+    res.status(200).json({
+      message: 'Retrieved succesfully.',
+      tracks: await util.constructPlaylistTrackResponse(req.session.username, playlist._id, tracks.body),
+      offset: tracks.body.offset,
+    });
   }
 )
 
@@ -102,5 +127,6 @@ router.get(
     });
   }
 )
+
 
 export {router as playlistRouter};

@@ -1,5 +1,6 @@
 import type {Types} from 'mongoose';
 import {Schema, model} from 'mongoose';
+import { Playlist } from '../playlist/model';
 
 export type User = {
   _id: Types.ObjectId;
@@ -10,7 +11,7 @@ export type User = {
 export type PopulatedUser = {
   _id: Types.ObjectId;
   username: string;
-  likedPlaylists: Array<any>; // to fix
+  likedPlaylists: Array<Playlist>;
 }
 
 const UserSchema = new Schema({
