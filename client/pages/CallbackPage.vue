@@ -11,7 +11,14 @@ export default {
     if (this.$route.query.code) {
       await fetch(`/api/spotify/initializeAuth?code=${this.$route.query.code}`);
     }
-    await fetch("/api/users/session", method: 'POST', body: JSON.stringify({username: this.$store.state.username}));
+    await fetch(
+        "/api/users/session", {
+          method: 'POST', 
+          headers: {'Content-Type': 'application/json'},
+          credentials: 'same-origin', 
+          body: JSON.stringify({username: this.$store.state.username})
+        }
+      );
     this.$router.push('/');
   },
 };
