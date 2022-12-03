@@ -47,23 +47,36 @@ export default {
         addPlaylist(playlistName) {
             if (!this.myLikedPlaylists.includes(playlistName)) {
                 this.myLikedPlaylists.push(playlistName);
-                this.playlists.map((playlist) => {
-                    if (playlist.playlistName === playlistName) {
-                        playlist.liked = true;
-                    }
-                });
+
+                const objIdx = this.playlists.findIndex(
+                    (obj) => obj.playlistName === playlistName
+                );
+                this.playlists[objIdx].liked = true;
+
+                // this.playlists.map((playlist) => {
+                //     if (playlist.playlistName === playlistName) {
+                //         playlist.liked = true;
+                //     }
+                // });
             }
         },
         removePlaylist(playlistName) {
             if (this.myLikedPlaylists.includes(playlistName)) {
-                this.myLikedPlaylists = this.myLikedPlaylists.filter(
-                    (playlist) => playlist !== playlistName
+                const idx = this.myLikedPlaylists.indexOf(playlistName);
+                if (idx > -1) {
+                    this.myLikedPlaylists.splice(idx, 1);
+                }
+
+                const objIdx = this.playlists.findIndex(
+                    (obj) => obj.playlistName === playlistName
                 );
-                this.playlists.map((playlist) => {
-                    if (playlist.playlistName === playlistName) {
-                        playlist.liked = false;
-                    }
-                });
+                this.playlists[objIdx].liked = false;
+
+                // this.playlists.map((playlist) => {
+                //     if (playlist.playlistName === playlistName) {
+                //         playlist.liked = false;
+                //     }
+                // });
             }
         },
     },
