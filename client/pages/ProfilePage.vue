@@ -1,6 +1,7 @@
 <template>
     <div>
         <h1>Profile Page</h1>
+        <!-- api call DELETE /api/users/session -->
         <router-link to="/login">
             <button>Log Out</button>
         </router-link>
@@ -20,8 +21,8 @@
         </div>
 
         <h3>Most Played</h3>
-        <div :key="i" v-for="(playlist, i) in this.myMostPlayedPlaylists">
-            {{ playlist }}
+        <div :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
+            {{ playlist.playlistName }}
         </div>
 
         <h3>Productivity</h3>
@@ -30,7 +31,6 @@
 </template>
 
 <script>
-import { myMostPlayedPlaylists } from "../dummyData.js";
 export default {
     name: "ProfilePage",
     data() {
@@ -38,10 +38,10 @@ export default {
             display_name: null,
             image_url: null,
             stats: "graph1 uwu",
-            myMostPlayedPlaylists: myMostPlayedPlaylists,
         };
     },
     methods: {
+        // api call GET /api/adorifySession/stats
         getThisWeek() {
             this.stats = "graph1 uwu";
         },
