@@ -88,19 +88,11 @@ export default {
         },
         getMin() {
             const min = Math.floor(this.timestamp / 60);
-            if (min < 10) {
-                return `0${min}`;
-            } else {
-                return `${min}`;
-            }
+            return min < 10 ? `0${min}` : `${min}`;
         },
         getSec() {
             const sec = this.timestamp % 60;
-            if (sec < 10) {
-                return `0${sec}`;
-            } else {
-                return `${sec}`;
-            }
+            return sec < 10 ? `0${sec}` : `${sec}`;
         },
     },
     methods: {

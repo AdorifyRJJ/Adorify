@@ -1,9 +1,11 @@
 <template>
     <div>
         <h3>Liked</h3>
-        <p>isjf{{ myLikedPlaylists }}</p>
-        <div v-if="myLikedPlaylists">
-            <div :key="playlist.id" v-for="playlist in myLikedPlaylists">
+        <div v-if="$store.state.myLikedPlaylists.length">
+            <div
+                :key="playlist.id"
+                v-for="playlist in $store.state.myLikedPlaylists"
+            >
                 {{ playlist.playlistName }}
             </div>
         </div>
@@ -12,13 +14,12 @@
 </template>
 
 <script>
-// import { myLikedPlaylists } from "../dummyData.js";
+import { myLikedPlaylists } from "../dummyData.js";
 export default {
     name: "MyLikedPlaylists",
-    computed: {
-        myLikedPlaylists() {
-            return this.$store.state.myLikedPlaylists;
-        },
+    mounted() {
+        //api call
+        this.$store.commit("setMyLikedPlaylists", myLikedPlaylists);
     },
 };
 </script>

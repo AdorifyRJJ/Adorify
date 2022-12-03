@@ -1,15 +1,10 @@
 <template>
     <div>
         Card: {{ this.playlist }}
-        <button
-            v-if="this.playlist.liked"
-            @click="$emit('unlikePlaylist', playlist.playlistName)"
-        >
+        <button v-if="this.playlist.liked" @click="removePlaylist">
             Click to unlike
         </button>
-        <button v-else @click="$emit('likePlaylist', playlist.playlistName)">
-            Click to like
-        </button>
+        <button v-else @click="addPlaylist">Click to like</button>
     </div>
 </template>
 
@@ -17,6 +12,16 @@
 export default {
     name: "PlaylistCard",
     props: ["playlist"],
+    methods: {
+        addPlaylist() {
+            // api call
+            this.$store.commit("addMyLikedPlaylists", this.playlist);
+        },
+        removePlaylist() {
+            // api call
+            this.$store.commit("removeMyLikedPlaylists", this.playlist);
+        },
+    },
 };
 </script>
 
