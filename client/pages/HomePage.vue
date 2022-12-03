@@ -17,99 +17,94 @@
       <p v-else>Playing music! Turn it up!</p>
     </div>
 
-        <!-- fetch username -->
-        <div>[username]</div>
+    <!-- fetch username -->
+    <div>[username]</div>
 
-        <div v-if="!sessionStarted">
-            <div>Start a focus session</div>
-            <div>
-                <div>
-                    Focus Time
-                    <input v-model="focusTime" placeholder="25" /> min
-                </div>
-                <div>
-                    Break Time <input v-model="breakTime" placeholder="5" /> min
-                </div>
-                <div>
-                    Intervals
-                    <input v-model="intervals" placeholder="4" /> times
-                </div>
-            </div>
-            <!-- fetch likedPlaylists -->
-            <div>Carousel: {{ this.myLikedPlaylists }}</div>
-
-            <!-- start focus session and play selected playlist -->
-            <button @click="startSession">[Play button]</button>
+    <div v-if="!sessionStarted">
+      <div>Start a focus session</div>
+      <div>
+        <div>
+          Focus Time
+          <input v-model="focusTime" placeholder="25" /> min
         </div>
-        <div v-else>
-            <!-- !TODO: user refreshes page-->
-            <div>You're doing great!</div>
-            <!-- <CountDownTimer :time="time" /> -->
-            <div>
-                <h2>{{ this.getTime }}</h2>
-                {{ this.currInterval }} {{ this.timerId }}
-            </div>
-            <div>[Progress thingy]</div>
-            <button @click="endSession">End Session</button>
-            <div>[song info]</div>
-            <div>
-                <button @click="playPrev">[prev]</button>
-                <button @click="togglePlay">[pause/play]</button>
-                <button @click="playNext">[next]</button>
-            </div>
+        <div>Break Time <input v-model="breakTime" placeholder="5" /> min</div>
+        <div>
+          Intervals
+          <input v-model="intervals" placeholder="4" /> times
         </div>
-    </main>
+      </div>
+      <!-- fetch likedPlaylists -->
+      <div>Carousel: {{ this.myLikedPlaylists }}</div>
 
+      <!-- start focus session and play selected playlist -->
+      <button @click="startSession">[Play button]</button>
+    </div>
+    <div v-else>
+      <!-- !TODO: user refreshes page-->
+      <div>You're doing great!</div>
+      <!-- <CountDownTimer :time="time" /> -->
+      <div>
+        <h2>{{ this.getTime }}</h2>
+        {{ this.currInterval }} {{ this.timerId }}
+      </div>
+      <div>[Progress thingy]</div>
+      <button @click="endSession">End Session</button>
+      <div>[song info]</div>
+      <div>
+        <button @click="playPrev">[prev]</button>
+        <button @click="togglePlay">[pause/play]</button>
+        <button @click="playNext">[next]</button>
+      </div>
+    </div>
+  </main>
 </template>
 
 <script>
 import { myLikedPlaylists } from "../dummyData.js";
 import CountDownTimer from "../components/CountDownTimer.vue";
 export default {
-
-    components: { CountDownTimer },
-    name: "HomePage",
-    data() {
-        return {
-            player: undefined,
-            player_device_id: undefined,
-            myLikedPlaylists: myLikedPlaylists,
-            playing: false,
-            focusTime: 25,
-            breakTime: 5,
-            intervals: 2,
-            selectedPlaylistId: "sd23c98efc293",
-            sessionStarted: false,
-            focusing: false,
-            currInterval: 1,
-            timerActive: false,
-            timestamp: null,
-            timerId: null,
-        };
+  components: { CountDownTimer },
+  name: "HomePage",
+  data() {
+    return {
+      player: undefined,
+      player_device_id: undefined,
+      myLikedPlaylists: myLikedPlaylists,
+      playing: false,
+      focusTime: 25,
+      breakTime: 5,
+      intervals: 2,
+      selectedPlaylistId: "sd23c98efc293",
+      sessionStarted: false,
+      focusing: false,
+      currInterval: 1,
+      timerActive: false,
+      timestamp: null,
+      timerId: null,
+    };
+  },
+  computed: {
+    getTime() {
+      return this.getMin + ":" + this.getSec;
     },
-    computed: {
-        getTime() {
-            return this.getMin + ":" + this.getSec;
-        },
-        getMin() {
-            const min = Math.floor(this.timestamp / 60);
-            if (min < 10) {
-                return `0${min}`;
-            } else {
-                return `${min}`;
-            }
-        },
-        getSec() {
-            const sec = this.timestamp % 60;
-            if (sec < 10) {
-                return `0${sec}`;
-            } else {
-                return `${sec}`;
-            }
-        },
-
+    getMin() {
+      const min = Math.floor(this.timestamp / 60);
+      if (min < 10) {
+        return `0${min}`;
+      } else {
+        return `${min}`;
+      }
+    },
+    getSec() {
+      const sec = this.timestamp % 60;
+      if (sec < 10) {
+        return `0${sec}`;
+      } else {
+        return `${sec}`;
+      }
     },
   },
+
   methods: {
     async playMusic() {
       if (this.player_device_id) {
@@ -131,37 +126,36 @@ export default {
         }
       }
     },
-        clearTimer() {
-            if (this.timerId) {
-                clearInterval(this.timerId);
-                // this.timerId = null;
+    clearTimer() {
+      if (this.timerId) {
+        clearInterval(this.timerId);
+        // this.timerId = null;
+      }
+    },
+    startTimer() {
+      this.timerActive = true;
+      this.timestamp =
+        this.timestamp ??
+        (this.focusing ? this.focusTime * 60 : this.breakTime * 60);
+      this.timerId = setInterval(() => {
+        if (this.timerActive) {
+          this.timestamp--;
+          if (this.timestamp <= 0) {
+            this.clearTimer();
+            this.timestamp = null;
+            if (this.currInterval >= this.intervals) {
+              this.endSession();
+              return;
             }
-        },
-        startTimer() {
-            this.timerActive = true;
-            this.timestamp =
-                this.timestamp ??
-                (this.focusing ? this.focusTime * 60 : this.breakTime * 60);
-            this.timerId = setInterval(() => {
-                if (this.timerActive) {
-                    this.timestamp--;
-                    if (this.timestamp <= 0) {
-                        this.clearTimer();
-                        this.timestamp = null;
-                        if (this.currInterval >= this.intervals) {
-                            this.endSession();
-                            return;
-                        }
-                        if (!this.focusing) {
-                            this.currInterval++;
-                        }
-                        this.focusing = !this.focusing;
-                        this.startTimer();
-                    }
-                }
-            }, 1000);
-        },
-
+            if (!this.focusing) {
+              this.currInterval++;
+            }
+            this.focusing = !this.focusing;
+            this.startTimer();
+          }
+        }
+      }, 1000);
+    },
 
     pauseTimer() {
       this.timerActive = false;
