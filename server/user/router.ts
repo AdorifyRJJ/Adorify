@@ -55,7 +55,10 @@ router.get(
     
     for (const p of populatedUser.likedPlaylists) {
       const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
-      playlistInfos.push(playlistInfo.body);
+      if (playlistInfo.statusCode === 200)
+        playlistInfos.push(playlistInfo.body);
+      else
+        console.log('Failed to retrieve', playlistInfo.body);
     }
     res.status(200).json({
       message: 'Retrieved successfully.',

@@ -23,6 +23,8 @@ router.get(
     spotifyApi.setAccessToken(req.session.accessToken);
 
     const myPlaylists = await spotifyApi.getUserPlaylists(req.session.username, {offset: parseInt(req.query.offset as string)});
+    if (myPlaylists.statusCode !== 200)
+      res.status(myPlaylists.statusCode).json(myPlaylists.body);
     
     res.status(200).json({
       message: 'Retrieved succesfully.',
@@ -53,6 +55,8 @@ router.get(
     spotifyApi.setAccessToken(req.session.accessToken);
 
     const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId);
+    if (playlistInfo.statusCode !== 200)
+      res.status(playlistInfo.statusCode).json(playlistInfo.body);
 
     const playlist = await PlaylistCollection.findOneBySpotifyId(req.params.spotifyId);
     if (playlist)
@@ -81,6 +85,9 @@ router.get(
     spotifyApi.setAccessToken(req.session.accessToken);
 
     const tracks = await spotifyApi.getPlaylistTracks(req.params.spotifyId, {offset: parseInt(req.query.offset as string)})
+    if (tracks.statusCode !== 200)
+      res.status(tracks.statusCode).json(tracks.body);
+
     res.status(200).json({
       message: 'Retrieved succesfully.',
       tracks: tracks.body,
@@ -105,6 +112,9 @@ router.put(
       spotifyApi.setAccessToken(req.session.accessToken);
 
       const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId, {fields: 'owner.id, public'});
+      if (playlistInfo.statusCode !== 200)
+        res.status(playlistInfo.statusCode).json(playlistInfo.body);
+
       await PlaylistCollection.addOne(req.params.spotifyId, playlistInfo.body.owner.id, playlistInfo.body.public !== null ? playlistInfo.body.public : false);
     }
 
@@ -135,7 +145,10 @@ router.get(
     
     for (const p of playlists) {
       const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
-      playlistInfos.push(playlistInfo.body);
+      if (playlistInfo.statusCode === 200)
+        playlistInfos.push(playlistInfo.body);
+      else
+        console.log('Failed to retrieve', playlistInfo.body);
     }
     res.status(200).json({
       message: 'Retrieved successfully.',
@@ -160,10 +173,13 @@ router.get(
 
     const playlists = await PlaylistCollection.findMostUsed();
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
-    
+
     for (const p of playlists) {
       const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
-      playlistInfos.push(playlistInfo.body);
+      if (playlistInfo.statusCode === 200)
+        playlistInfos.push(playlistInfo.body);
+      else
+        console.log('Failed to retrieve', playlistInfo.body);
     }
     res.status(200).json({
       message: 'Retrieved successfully.',
@@ -191,7 +207,10 @@ router.get(
 
     for (const p of playlists) {
       const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
-      playlistInfos.push(playlistInfo.body);
+      if (playlistInfo.statusCode === 200)
+        playlistInfos.push(playlistInfo.body);
+      else
+        console.log('Failed to retrieve', playlistInfo.body);
     }
     res.status(200).json({
       message: 'Retrieved successfully.',

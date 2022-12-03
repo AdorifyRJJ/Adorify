@@ -28,7 +28,34 @@ const isUserLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
+const validRefreshToken = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.session.refreshToken){
+    res.status(404).json({
+        message: 'Refresh token not found.',
+    })
+    res.end();
+    return;
+  }
+
+  next();
+}
+
+
+const validAccessToken = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.session.accessToken){
+    res.status(404).json({
+        message: 'Access token not found.',
+    })
+    res.end();
+    return;
+  }
+
+  next();
+}
+
 export {
   isCurrentSessionUserExists,
   isUserLoggedIn,
+  validRefreshToken,
+  validAccessToken,
 };
