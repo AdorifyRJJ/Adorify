@@ -22,8 +22,6 @@ const myLikedPlaylists = [
     },
 ];
 
-const myMostPlayedPlaylists = ["wjsn2", "wjsn4", "twice2"];
-
 const leaderboardByWeek = [
     { username: "jerrya", focusTime: "21hr 54min" },
     { username: "billybob123", focusTime: "20hr 28min" },
@@ -111,7 +109,6 @@ const publicPlaylists = [
 ];
 export {
     myLikedPlaylists,
-    myMostPlayedPlaylists,
     leaderboardByWeek,
     leaderboardByMonth,
     leaderboardByAllTime,

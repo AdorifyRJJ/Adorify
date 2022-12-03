@@ -19,6 +19,11 @@ const store = new Vuex.Store({
     publicPlaylists: [],
 
   },
+  getters: {
+    getPlaylistById: (state) => (spotifyId) => {
+      return state.mySpotifyPlaylists.find((playlist) => playlist.id === spotifyId) ?? state.publicPlaylists.find((playlist) => playlist.id === spotifyId);
+    }
+  },
   mutations: {
     alert(state, payload) {
       /**
@@ -64,11 +69,13 @@ const store = new Vuex.Store({
       );
       if (objIdx <= -1) {
         state.myLikedPlaylists.push(playlist)
-        // find in mySpotifyPlaylists
+        if (playlist.username === 'jerrya') {
+                  // find in mySpotifyPlaylists
         const objIdx2 = state.mySpotifyPlaylists.findIndex(
             (obj) => obj.id === playlist.id
         );
         state.mySpotifyPlaylists[objIdx2].liked = true;
+        }
         // find in publicPlaylists
         const objIdx3 = state.publicPlaylists.findIndex(
           (obj) => obj.id === playlist.id
@@ -82,11 +89,13 @@ const store = new Vuex.Store({
       );
       if (objIdx > -1) {
         state.myLikedPlaylists.splice(objIdx, 1);
-        // find in mySpotifyPlaylists
+        if (playlist.username === 'jerrya') {
+                  // find in mySpotifyPlaylists
         const objIdx2 = state.mySpotifyPlaylists.findIndex(
           (obj) => obj.id === playlist.id
         );
         state.mySpotifyPlaylists[objIdx2].liked = false;
+        }
         // find in publicPlaylists
         const objIdx3 = state.publicPlaylists.findIndex(
           (obj) => obj.id === playlist.id
@@ -103,7 +112,9 @@ const store = new Vuex.Store({
     setPublicPlaylists(state, playlists) {
       state.publicPlaylists = playlists
     },
+    
   },
+
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]
 });

@@ -26,9 +26,14 @@ export default {
     },
     methods: {
         getMyPlaylists() {
+            // api call GET /api/playlists/mine?offset=
             this.playlists = mySpotifyPlaylists;
         },
         getPublicPlaylists() {
+            // api calls
+            // GET /api/playlists/mostLikes?offset=
+            // GET /api/playlists/mostUsed?offset=
+            // GET /api/playlists/mostProductive?offset=
             this.playlists = publicPlaylists;
         },
     },

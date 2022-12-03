@@ -21,6 +21,7 @@ export default {
             const data = await fetch("/api/spotify/login");
             const rURL = await data.text();
             window.location.href = rURL;
+            // api call POST /api/users/session
         },
     },
 };

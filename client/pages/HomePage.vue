@@ -35,8 +35,7 @@
                     <input v-model="intervals" placeholder="4" /> times
                 </div>
             </div>
-            <!-- fetch likedPlaylists -->
-            <div>Carousel: {{ this.myLikedPlaylists }}</div>
+            <div>Carousel: {{ this.$store.state.myLikedPlaylists }}</div>
 
             <!-- start focus session and play selected playlist -->
             <button @click="startSession">[Play button]</button>
@@ -61,14 +60,12 @@
 </template>
 
 <script>
-// import { myLikedPlaylists } from "../dummyData.js";
 export default {
     name: "HomePage",
     data() {
         return {
             player: undefined,
             player_device_id: undefined,
-            // myLikedPlaylists: myLikedPlaylists,
             playing: false,
             focusTime: 25,
             breakTime: 5,
@@ -151,6 +148,7 @@ export default {
             this.clearTimer();
         },
         startSession() {
+            // api call POST /api/adorifySession
             this.focusing = true;
             this.sessionStarted = true;
             console.log("session started");
@@ -159,6 +157,7 @@ export default {
             // start playlist
         },
         endSession() {
+            // api call PUT /api/adorifySession/:asID
             this.pauseTimer();
             this.timestamp = null;
             this.focusing = false;
@@ -167,7 +166,6 @@ export default {
             console.log("session ended");
             // end timer
             // end playlist
-            // api call
         },
         playPrev() {
             console.log("play prev song");

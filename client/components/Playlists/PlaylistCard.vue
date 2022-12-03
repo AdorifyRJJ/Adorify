@@ -1,25 +1,37 @@
 <template>
     <div>
-        Card: {{ this.playlist }}
-        <button v-if="this.playlist.liked" @click="removePlaylist">
-            Click to unlike
-        </button>
-        <button v-else @click="addPlaylist">Click to like</button>
+        <div @click="openPlaylist">
+            <!-- <router-link
+            style="text-decoration: none"
+            :to="{
+                name: 'PlaylistInfoPage',
+                params: {
+                    spotifyId: this.playlist.id,
+                },
+            }"
+        > -->
+            <div>Card: {{ this.playlist }}</div>
+            <!-- </router-link> -->
+        </div>
+        <LikeButton :playlist="playlist" />
     </div>
 </template>
 
 <script>
+import LikeButton from "../common/LikeButton.vue";
 export default {
+    components: { LikeButton },
     name: "PlaylistCard",
     props: ["playlist"],
     methods: {
-        addPlaylist() {
-            // api call
-            this.$store.commit("addMyLikedPlaylists", this.playlist);
-        },
-        removePlaylist() {
-            // api call
-            this.$store.commit("removeMyLikedPlaylists", this.playlist);
+        // programmatic navigation
+        openPlaylist() {
+            this.$router.push({
+                name: "PlaylistInfoPage",
+                params: {
+                    spotifyId: this.playlist.id,
+                },
+            });
         },
     },
 };

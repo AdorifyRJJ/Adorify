@@ -11,6 +11,7 @@ import ProfilePage from './pages/ProfilePage.vue'
 import LeaderboardPage from './pages/LeaderboardPage.vue'
 import PlaylistsPage from './pages/PlaylistsPage.vue'
 import NotFound from './NotFound.vue';
+import PlaylistInfoPage from './pages/PlaylistInfoPage.vue';
 
 Vue.use(VueRouter);
 
@@ -20,6 +21,7 @@ const routes = [
   {path: '/profile', name: 'Profile', component: ProfilePage},
   {path: '/leaderboard', name: 'Leaderboard', component: LeaderboardPage},
   {path: '/playlists', name: 'Playlists', component: PlaylistsPage},
+  {path: '/playlists/info/:spotifyId', name: 'PlaylistInfoPage', component: PlaylistInfoPage},
   {path: '*', name: 'Not Found', component: NotFound}
 ];
 
