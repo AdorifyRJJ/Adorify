@@ -181,7 +181,7 @@ router.get(
 );
 
 router.get(
-    '/getMyCurrentPlayingTrack',
+    '/getCurrentTrack',
     [
         userValidator.isUserLoggedIn,
         userValidator.validAccessToken,

@@ -41,6 +41,7 @@ router.get(
   '/',
   [
     userValidator.isUserLoggedIn,
+    userValidator.validAccessToken,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({

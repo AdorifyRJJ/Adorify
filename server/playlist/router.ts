@@ -13,6 +13,7 @@ router.get(
   '/mine',
   [
     userValidator.isUserLoggedIn,
+    userValidator.validAccessToken,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({
@@ -45,6 +46,7 @@ router.get(
   '/info/:spotifyId?',
   [
     userValidator.isUserLoggedIn,
+    userValidator.validAccessToken,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({
@@ -75,6 +77,7 @@ router.get(
   '/info/:spotifyId?/tracks',
   [
     userValidator.isUserLoggedIn,
+    userValidator.validAccessToken,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({
@@ -100,6 +103,7 @@ router.put(
   '/:spotifyId?',
   [
     userValidator.isUserLoggedIn,
+    userValidator.validAccessToken,
   ],
   async (req: Request, res: Response) => {
     const playlist = await PlaylistCollection.findOneBySpotifyId(req.params.spotifyId);
@@ -131,6 +135,7 @@ router.get(
   '/mostLiked',
   [
     userValidator.isUserLoggedIn,
+    userValidator.validAccessToken,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({
@@ -162,6 +167,7 @@ router.get(
   '/mostUsed',
   [
     userValidator.isUserLoggedIn,
+    userValidator.validAccessToken,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({
@@ -193,6 +199,7 @@ router.get(
   '/mostProductive',
   [
     userValidator.isUserLoggedIn,
+    userValidator.validAccessToken,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({

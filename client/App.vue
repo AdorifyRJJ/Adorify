@@ -19,6 +19,7 @@ export default {
       const myDataJson = await myData.json();
       this.$store.commit("setUsername", myDataJson.data.body.id);
       this.$store.commit("scheduleRefresh");
+      await fetch("/api/users/session", method: 'POST', body: {username: myDataJson.data.body.id});
     }
   },
 };

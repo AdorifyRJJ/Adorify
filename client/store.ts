@@ -23,7 +23,7 @@ const store = new Vuex.Store({
 
   },
   getters: {
-    getPlaylistById: (state) => (spotifyId) => {
+    getPlaylistById: (state) => (spotifyId: string) => {
       return state.mySpotifyPlaylists.find((playlist) => playlist.id === spotifyId) ?? state.publicPlaylists.find((playlist) => playlist.id === spotifyId);
     }
   },
