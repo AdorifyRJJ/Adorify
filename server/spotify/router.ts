@@ -46,7 +46,7 @@ router.get('/initializeAuth', async function (req: Request, res: Response) {
         spotifyApi.setAccessToken(data.body['access_token']);
         spotifyApi.setRefreshToken(data.body['refresh_token']);
         res.status(200).json({
-            token: data.body['access_token'],
+            message: 'Success!'
         })
     } catch (e: any) {
         res.status(e.body.error.status).json({

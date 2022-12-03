@@ -53,12 +53,12 @@ export default {
         },
     },
     async beforeCreate() {
-        if (this.$store.state.username) {
-            const me = await fetch(`/api/spotify/getMe`);
+        const me = await fetch(`/api/spotify/getMe`);
+        if (me.ok) {
             const meJson = await me.json();
             this.display_name = meJson.data.body.display_name;
             this.image_url = meJson.data.body.images[0].url;
-            console.log(this.image_url);
+            this.$store.commit("setUsername", meJson.data.body.id);
         }
     },
 };
