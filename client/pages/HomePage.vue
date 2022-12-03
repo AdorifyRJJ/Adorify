@@ -207,6 +207,7 @@ export default {
     if (myData.ok) {
       const myDataJson = await myData.json();
       this.$store.commit("setUsername", myDataJson.data.body.id);
+      this.$store.commit("scheduleRefresh");
 
       const script = document.createElement("script");
       script.src = "https://sdk.scdn.co/spotify-player.js";

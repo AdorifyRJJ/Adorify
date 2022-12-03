@@ -4,6 +4,8 @@ import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex);
 
+const BUFFER_TIME = 30;
+
 /**
  * Storage for data that needs to be accessed from various compoentns.
  */
@@ -12,7 +14,8 @@ const store = new Vuex.Store({
     filter: null, // Username to filter shown freets by (null = show all)
     freets: [], // All freets created in the app
     username: null, // Username of the logged in user
-    alerts: {} // global success/error messages encountered during submissions to non-visible forms
+    alerts: {}, // global success/error messages encountered during submissions to non-visible forms
+    refreshTimeout: null,
   },
   mutations: {
     alert(state, payload) {
@@ -52,6 +55,26 @@ const store = new Vuex.Store({
       const url = state.filter ? `/api/users/${state.filter}/freets` : '/api/freets';
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
+    },
+    async scheduleRefresh(state) {
+      if (state.username) {
+        const expiryTime = (await (await fetch('/api/spotify/getExpiryTime')).json()).expiryTime;
+        // Everything is in seconds
+        const timeFromNow = expiryTime - (new Date().getTime() / 1000) - BUFFER_TIME;        
+        // Convert to MS for setTimeout
+        const timeFromNowMS = timeFromNow * 1000;
+        if (state.refreshTimeout) clearTimeout(state.refreshTimeout);
+        if (timeFromNowMS < 0) {
+          await fetch('/api/spotify/refreshAccessToken')
+        } else {
+          state.refreshTimeout = setTimeout(async () => {
+            await fetch('/api/spotify/refreshAccessToken');
+            store.commit("scheduleRefresh");
+          }, timeFromNowMS)
+        }
+
+      }
+
     }
   },
   // Store data across page refreshes, only discard on browser close

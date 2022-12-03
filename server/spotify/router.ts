@@ -26,6 +26,38 @@ router.get('/login', async function (req: Request, res: Response) {
     res.end();
 });
 
+router.get('/refreshAccessToken', async function (req: Request, res: Response) {
+    try {
+        const data = await spotifyApi.refreshAccessToken();
+        spotifyApi.setAccessToken(data.body['access_token']);
+        if (data.body['refresh_token']) spotifyApi.setRefreshToken(data.body['refresh_token']);
+        const tokenExpirationEpoch =
+            new Date().getTime() / 1000 + data.body['expires_in'];
+        req.session.expiryTime = tokenExpirationEpoch;
+        res.status(200).json({
+            message: 'Success!',
+        })
+    } catch (e: any) {
+        res.status(e.body.error.status).json({
+            message: e.body.error
+        });
+    }
+    res.end();
+});
+
+router.get('/getExpiryTime', async function (req: Request, res: Response) {
+    if (req.session.expiryTime) {
+        res.status(200).json({
+            expiryTime: req.session.expiryTime
+        });
+    } else {
+        res.status(404).json({
+            message: 'expiry time not found'
+        })
+    }
+    res.end();
+});
+
 router.get('/getAccessToken', async function (req: Request, res: Response) {
     const accessToken = spotifyApi.getAccessToken();
     if (accessToken) {
@@ -45,8 +77,11 @@ router.get('/initializeAuth', async function (req: Request, res: Response) {
         const data = await spotifyApi.authorizationCodeGrant(req.query.code as string);
         spotifyApi.setAccessToken(data.body['access_token']);
         spotifyApi.setRefreshToken(data.body['refresh_token']);
+        const tokenExpirationEpoch =
+            new Date().getTime() / 1000 + data.body['expires_in'];
+        req.session.expiryTime = tokenExpirationEpoch;
         res.status(200).json({
-            message: 'Success!'
+            message: 'Success!',
         })
     } catch (e: any) {
         res.status(e.body.error.status).json({
