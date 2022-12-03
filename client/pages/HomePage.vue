@@ -203,12 +203,7 @@ export default {
     },
   },
   async beforeCreate() {
-    const myData = await fetch("/api/spotify/getMe");
-    if (myData.ok) {
-      const myDataJson = await myData.json();
-      this.$store.commit("setUsername", myDataJson.data.body.id);
-      this.$store.commit("scheduleRefresh");
-
+    if (this.$store.state.username) {
       const script = document.createElement("script");
       script.src = "https://sdk.scdn.co/spotify-player.js";
       script.async = true;
