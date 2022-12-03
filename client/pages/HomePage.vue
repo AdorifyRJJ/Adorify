@@ -46,7 +46,7 @@
             <div>You're doing great!</div>
             <!-- <CountDownTimer :time="time" /> -->
             <div>
-                <div>{{ this.getTime }}</div>
+                <h2>{{ this.getTime }}</h2>
                 {{ this.currInterval }} {{ this.timerId }}
             </div>
             <div>[Progress thingy]</div>
@@ -91,11 +91,19 @@ export default {
         },
         getMin() {
             const min = Math.floor(this.timestamp / 60);
-            return min < 10 ? `0${min}` : `${min}`;
+            if (min < 10) {
+                return `0${min}`;
+            } else {
+                return `${min}`;
+            }
         },
         getSec() {
             const sec = this.timestamp % 60;
-            return sec < 10 ? `0${sec}` : `${sec}`;
+            if (sec < 10) {
+                return `0${sec}`;
+            } else {
+                return `${sec}`;
+            }
         },
     },
     methods: {
