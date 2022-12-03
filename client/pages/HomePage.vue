@@ -45,7 +45,6 @@
             <div>You're doing great!</div>
             <div>
                 <h2>{{ this.getTime }}</h2>
-                {{ this.currInterval }} {{ this.timerId }}
             </div>
             <div>[Progress thingy]</div>
             <button @click="endSession">End Session</button>
