@@ -33,6 +33,7 @@ export default {
         };
     },
     methods: {
+        // api call GET /api/adorifySession/leaderboard
         getThisWeek() {
             this.leaderboard = leaderboardByWeek;
         },
