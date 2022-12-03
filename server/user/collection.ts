@@ -1,94 +1,67 @@
 import type {HydratedDocument, Types} from 'mongoose';
-import type {User} from './model';
+import PlaylistModel from '../playlist/model';
+import PlaylistCollection from '../playlist/collection';
+import type {PopulatedUser, User} from './model';
 import UserModel from './model';
 
-/**
- * This file contains a class with functionality to interact with users stored
- * in MongoDB, including adding, finding, updating, and deleting. Feel free to add
- * additional operations in this file.
- *
- * Note: HydratedDocument<User> is the output of the UserModel() constructor,
- * and contains all the information in User. https://mongoosejs.com/docs/typescript.html
- */
 class UserCollection {
-  /**
-   * Add a new user
-   *
-   * @param {string} username - The username of the user
-   * @param {string} password - The password of the user
-   * @return {Promise<HydratedDocument<User>>} - The newly created user
-   */
-  static async addOne(username: string, password: string): Promise<HydratedDocument<User>> {
-    const dateJoined = new Date();
-
-    const user = new UserModel({username, password, dateJoined});
-    await user.save(); // Saves user to MongoDB
-    return user;
-  }
-
-  /**
-   * Find a user by userId.
-   *
-   * @param {string} userId - The userId of the user to find
-   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
-   */
-  static async findOneByUserId(userId: Types.ObjectId | string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({_id: userId});
-  }
-
-  /**
-   * Find a user by username (case insensitive).
-   *
-   * @param {string} username - The username of the user to find
-   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
-   */
-  static async findOneByUsername(username: string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({username: new RegExp(`^${username.trim()}$`, 'i')});
-  }
-
-  /**
-   * Find a user by username (case insensitive).
-   *
-   * @param {string} username - The username of the user to find
-   * @param {string} password - The password of the user to find
-   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
-   */
-  static async findOneByUsernameAndPassword(username: string, password: string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({
-      username: new RegExp(`^${username.trim()}$`, 'i'),
-      password
+  static async addOne(username: string): Promise<HydratedDocument<User>> {
+    const user = new UserModel({
+      username: username,
+      likedPlaylistIds: [],
     });
-  }
-
-  /**
-   * Update user's information
-   *
-   * @param {string} userId - The userId of the user to update
-   * @param {Object} userDetails - An object with the user's updated credentials
-   * @return {Promise<HydratedDocument<User>>} - The updated user
-   */
-  static async updateOne(userId: Types.ObjectId | string, userDetails: {password?: string; username?: string}): Promise<HydratedDocument<User>> {
-    const user = await UserModel.findOne({_id: userId});
-    if (userDetails.password) {
-      user.password = userDetails.password;
-    }
-
-    if (userDetails.username) {
-      user.username = userDetails.username;
-    }
-
     await user.save();
     return user;
   }
 
-  /**
-   * Delete a user from the collection.
-   *
-   * @param {string} userId - The userId of user to delete
-   * @return {Promise<Boolean>} - true if the user has been deleted, false otherwise
-   */
-  static async deleteOne(userId: Types.ObjectId | string): Promise<boolean> {
-    const user = await UserModel.deleteOne({_id: userId});
+  static async findOneByUsername(username: string): Promise<HydratedDocument<User>> {
+    return UserModel.findOne({username: username});
+  }
+
+  static async findOneByUsernameAndPopulate(username: string): Promise<HydratedDocument<PopulatedUser>> {
+    return await UserModel.findOne({username: username}).populate('likedPlaylists');
+  }
+
+  // static async addToLikedPlaylists(username: string, playlist: Types.ObjectId | String): Promise<HydratedDocument<User>> {
+  //   const user = await UserModel.findOne({username: username});
+  //   user.likedPlaylists.push(playlist as Types.ObjectId);
+
+  //   await user.save();
+  //   return user;
+  // }
+
+  // static async deleteFromLikedPlaylists(username: string, playlist: Types.ObjectId | String): Promise<HydratedDocument<User>> {
+  //   const user = await UserModel.findOne({username: username});
+  //   user.likedPlaylists.push(playlist as Types.ObjectId);
+
+  //   await user.save();
+  //   return user;
+  // }
+
+  static async inLikedPlaylists(username: string, spotifyId: string): Promise<boolean> {
+    const user = await UserModel.findOne({username: username});
+    const playlist = await PlaylistCollection.findOneBySpotifyId(spotifyId);
+    return playlist ? user.likedPlaylistIds.indexOf(spotifyId) !== -1 : false;
+  }
+
+  static async toggleLikedPlaylists(username: string, spotifyId: string): Promise<boolean> {
+    const user = await UserModel.findOne({username: username});
+    const idx = user.likedPlaylistIds.indexOf(spotifyId);
+    if (idx === -1) {
+      user.likedPlaylistIds.push(spotifyId);
+      await PlaylistCollection.addLike(spotifyId);
+    }
+    else {
+      user.likedPlaylistIds.splice(idx, 1);
+      await PlaylistCollection.removeLike(spotifyId);
+    }
+    await user.save();
+    return idx === -1;
+  }
+
+  static async deleteOne(username: string): Promise<boolean> {
+    const user = await UserModel.deleteOne({username: username});
+    await PlaylistCollection.deleteAllByOwner(username);
     return user !== null;
   }
 }
