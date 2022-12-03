@@ -46,7 +46,7 @@
             <div>You're doing great!</div>
             <!-- <CountDownTimer :time="time" /> -->
             <div>
-                <div>{{ this.getTime }}</div>
+                <h2>{{ this.getTime }}</h2>
                 {{ this.currInterval }} {{ this.timerId }}
             </div>
             <div>[Progress thingy]</div>
