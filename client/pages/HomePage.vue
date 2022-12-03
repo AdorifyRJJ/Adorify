@@ -33,8 +33,7 @@
           <input v-model="intervals" placeholder="4" /> times
         </div>
       </div>
-      <!-- fetch likedPlaylists -->
-      <div>Carousel: {{ this.myLikedPlaylists }}</div>
+      <div>Carousel: {{ this.$store.state.myLikedPlaylists }}</div>
 
       <!-- start focus session and play selected playlist -->
       <button @click="startSession">[Play button]</button>
@@ -42,10 +41,8 @@
     <div v-else>
       <!-- !TODO: user refreshes page-->
       <div>You're doing great!</div>
-      <!-- <CountDownTimer :time="time" /> -->
       <div>
         <h2>{{ this.getTime }}</h2>
-        {{ this.currInterval }} {{ this.timerId }}
       </div>
       <div>[Progress thingy]</div>
       <button @click="endSession">End Session</button>
@@ -60,16 +57,12 @@
 </template>
 
 <script>
-import { myLikedPlaylists } from "../dummyData.js";
-import CountDownTimer from "../components/CountDownTimer.vue";
 export default {
-  components: { CountDownTimer },
   name: "HomePage",
   data() {
     return {
       player: undefined,
       player_device_id: undefined,
-      myLikedPlaylists: myLikedPlaylists,
       playing: false,
       focusTime: 25,
       breakTime: 5,
@@ -89,22 +82,13 @@ export default {
     },
     getMin() {
       const min = Math.floor(this.timestamp / 60);
-      if (min < 10) {
-        return `0${min}`;
-      } else {
-        return `${min}`;
-      }
+      return min < 10 ? `0${min}` : `${min}`;
     },
     getSec() {
       const sec = this.timestamp % 60;
-      if (sec < 10) {
-        return `0${sec}`;
-      } else {
-        return `${sec}`;
-      }
+      return sec < 10 ? `0${sec}` : `${sec}`;
     },
   },
-
   methods: {
     async playMusic() {
       if (this.player_device_id) {
@@ -156,12 +140,12 @@ export default {
         }
       }, 1000);
     },
-
     pauseTimer() {
       this.timerActive = false;
       this.clearTimer();
     },
     startSession() {
+      // api call POST /api/adorifySession
       this.focusing = true;
       this.sessionStarted = true;
       console.log("session started");
@@ -170,18 +154,15 @@ export default {
       // start playlist
     },
     endSession() {
+      // api call PUT /api/adorifySession/:asID
       this.pauseTimer();
-      this.timerActive = false;
       this.timestamp = null;
-      this.clearTimer();
-      this.timerId = null;
       this.focusing = false;
       this.currInterval = 1;
       this.sessionStarted = false;
       console.log("session ended");
       // end timer
       // end playlist
-      // api call
     },
     playPrev() {
       console.log("play prev song");
@@ -194,21 +175,12 @@ export default {
       if (this.timerActive) {
         this.pauseTimer();
       } else {
-        // if (this.focusing) {
         this.startTimer();
-        // } else {
-        //     this.startBreakTimer();
-        // }
       }
     },
   },
   async beforeCreate() {
-    const myData = await fetch("/api/spotify/getMe");
-    if (myData.ok) {
-      const myDataJson = await myData.json();
-      this.$store.commit("setUsername", myDataJson.data.body.id);
-      this.$store.commit("scheduleRefresh");
-
+    if (this.$store.state.username) {
       const script = document.createElement("script");
       script.src = "https://sdk.scdn.co/spotify-player.js";
       script.async = true;

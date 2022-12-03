@@ -16,6 +16,16 @@ const store = new Vuex.Store({
     username: null, // Username of the logged in user
     alerts: {}, // global success/error messages encountered during submissions to non-visible forms
     refreshTimeout: null,
+
+    myLikedPlaylists: [],
+    mySpotifyPlaylists: [],
+    publicPlaylists: [],
+
+  },
+  getters: {
+    getPlaylistById: (state) => (spotifyId) => {
+      return state.mySpotifyPlaylists.find((playlist) => playlist.id === spotifyId) ?? state.publicPlaylists.find((playlist) => playlist.id === spotifyId);
+    }
   },
   mutations: {
     alert(state, payload) {
@@ -75,8 +85,59 @@ const store = new Vuex.Store({
 
       }
 
-    }
+    },
+    addMyLikedPlaylists(state, playlist) {
+      const objIdx = state.myLikedPlaylists.findIndex(
+          (obj) => obj.id === playlist.id
+      );
+      if (objIdx <= -1) {
+        state.myLikedPlaylists.push(playlist)
+        if (playlist.username === 'jerrya') {
+                  // find in mySpotifyPlaylists
+        const objIdx2 = state.mySpotifyPlaylists.findIndex(
+            (obj) => obj.id === playlist.id
+        );
+        state.mySpotifyPlaylists[objIdx2].liked = true;
+        }
+        // find in publicPlaylists
+        const objIdx3 = state.publicPlaylists.findIndex(
+          (obj) => obj.id === playlist.id
+        );
+        state.publicPlaylists[objIdx3].liked = true;
+      }
+    },
+    removeMyLikedPlaylists(state, playlist) {
+      const objIdx = state.myLikedPlaylists.findIndex(
+          (obj) => obj.id === playlist.id
+      );
+      if (objIdx > -1) {
+        state.myLikedPlaylists.splice(objIdx, 1);
+        if (playlist.username === 'jerrya') {
+                  // find in mySpotifyPlaylists
+        const objIdx2 = state.mySpotifyPlaylists.findIndex(
+          (obj) => obj.id === playlist.id
+        );
+        state.mySpotifyPlaylists[objIdx2].liked = false;
+        }
+        // find in publicPlaylists
+        const objIdx3 = state.publicPlaylists.findIndex(
+          (obj) => obj.id === playlist.id
+        );
+        state.publicPlaylists[objIdx3].liked = false;
+      }
+    },
+    setMyLikedPlaylists(state, playlists) {
+      state.myLikedPlaylists = playlists
+    },
+    setMySpotifyPlaylists(state, playlists) {
+      state.mySpotifyPlaylists = playlists
+    },
+    setPublicPlaylists(state, playlists) {
+      state.publicPlaylists = playlists
+    },
+    
   },
+
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]
 });

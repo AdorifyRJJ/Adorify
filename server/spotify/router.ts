@@ -23,8 +23,14 @@ router.get(
     '/login', 
     [],
     async function (req: Request, res: Response) {
+        const loginSpotifyApi = new SpotifyWebApi({
+            clientId: process.env.ID,
+            clientSecret: process.env.SECRET,
+            redirectUri: process.env.REDIRECT,
+        });
+
         const state = util.generateRandomString(16);
-        const rURL = spotifyApi.createAuthorizeURL(scopes, state);
+        const rURL = loginSpotifyApi.createAuthorizeURL(scopes, state);
         res.set('Content-Type', 'text/html');
         res.status(200).send(rURL + '&show_dialog=true');
         res.end();
