@@ -19,6 +19,7 @@ router.get(
     
     res.status(200).json({
       message: 'Retrieved succesfully.',
+      ...myPlaylists.body,
       items: await Promise.all(myPlaylists.body.items.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
       // href: myPlaylists.body.href,
       // limit: myPlaylists.body.limit,
@@ -26,7 +27,6 @@ router.get(
       // previous: myPlaylists.body.previous,
       // total: myPlaylists.body.total,
       // offset: myPlaylists.body.offset,
-      ...myPlaylists.body,
     });
   }
 )
@@ -42,7 +42,7 @@ router.get(
 
     const playlist = await PlaylistCollection.findOneBySpotifyId(req.params.spotifyId);
     if (playlist)
-      await PlaylistCollection.updateIsPublic(req.params.spotifyId, playlistInfo.body.public);
+      await PlaylistCollection.updateIsPublic(req.params.spotifyId, playlistInfo.body.public !== null ? playlistInfo.body.public : false);
 
     res.status(200).json({
       message: 'Retrieved succesfully.',
@@ -77,7 +77,7 @@ router.put(
     const playlist = await PlaylistCollection.findOneBySpotifyId(req.params.spotifyId);
     if (!playlist) {
       const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId, {fields: 'owner.id, public'});
-      await PlaylistCollection.addOne(req.params.spotifyId, playlistInfo.body.owner.id, playlistInfo.body.public);
+      await PlaylistCollection.addOne(req.params.spotifyId, playlistInfo.body.owner.id, playlistInfo.body.public !== null ? playlistInfo.body.public : false);
     }
 
     const isLiked = await UserCollection.toggleLikedPlaylists(req.session.username, req.params.spotifyId);
