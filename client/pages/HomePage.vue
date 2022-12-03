@@ -44,7 +44,6 @@
         <div v-else>
             <!-- !TODO: user refreshes page-->
             <div>You're doing great!</div>
-            <!-- <CountDownTimer :time="time" /> -->
             <div>
                 <h2>{{ this.getTime }}</h2>
                 {{ this.currInterval }} {{ this.timerId }}
@@ -62,16 +61,14 @@
 </template>
 
 <script>
-import { myLikedPlaylists } from "../dummyData.js";
-import CountDownTimer from "../components/CountDownTimer.vue";
+// import { myLikedPlaylists } from "../dummyData.js";
 export default {
-    components: { CountDownTimer },
     name: "HomePage",
     data() {
         return {
             player: undefined,
             player_device_id: undefined,
-            myLikedPlaylists: myLikedPlaylists,
+            // myLikedPlaylists: myLikedPlaylists,
             playing: false,
             focusTime: 25,
             breakTime: 5,

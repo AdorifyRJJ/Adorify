@@ -1,14 +1,11 @@
 <template>
     <div>
         <h1>Playlists Page</h1>
-        <h3>Liked</h3>
-        <div :key="i" v-for="(playlist, i) in myLikedPlaylists">
-            {{ playlist }}
-        </div>
+        <MyLikedPlaylists />
         <h3>Find playlists</h3>
         <div>
-            <button @click="getMyPlaylists">Spotify Library</button>
-            <button @click="getPublicPlaylists">Public Playlists</button>
+            <button @click="getMyPlaylists">My Spotify Library</button>
+            <button @click="getPublicPlaylists">Public Library</button>
         </div>
         <PlaylistCard
             :key="'uwu' + j"
@@ -21,19 +18,15 @@
 </template>
 
 <script>
-import {
-    myLikedPlaylists,
-    mySpotifyPlaylists,
-    publicPlaylists,
-} from "../dummyData.js";
+import { mySpotifyPlaylists, publicPlaylists } from "../dummyData.js";
+import MyLikedPlaylists from "../components/MyLikedPlaylists.vue";
 import PlaylistCard from "../components/Playlists/PlaylistCard.vue";
 
 export default {
-    components: { PlaylistCard },
+    components: { MyLikedPlaylists, PlaylistCard },
     name: "PlaylistsPage",
     data() {
         return {
-            myLikedPlaylists: myLikedPlaylists,
             playlists: publicPlaylists,
         };
     },

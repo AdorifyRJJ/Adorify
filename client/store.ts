@@ -12,7 +12,19 @@ const store = new Vuex.Store({
     filter: null, // Username to filter shown freets by (null = show all)
     freets: [], // All freets created in the app
     username: null, // Username of the logged in user
-    alerts: {} // global success/error messages encountered during submissions to non-visible forms
+    alerts: {}, // global success/error messages encountered during submissions to non-visible forms
+
+    myLikedPlaylists: [
+      // {playlistName: "Instrumental Study", id: '1'},
+      // {playlistName: "Classical", id: '2'},
+      // {playlistName: "Lo-fi Hip Hop", id: '3'},
+      // {playlistName: "Study Playlist #1", id: '4'},
+      // {playlistName: "Ballad", id: '5'},
+      // {playlistName: "wjsn2", id: '6'},
+      // {playlistName: "wjsn4", id: '7'},
+      // {playlistName: "twice2", id: '8'},
+      // {playlistName: "joey", id: '9'},
+  ],
   },
   mutations: {
     alert(state, payload) {
@@ -52,6 +64,9 @@ const store = new Vuex.Store({
       const url = state.filter ? `/api/users/${state.filter}/freets` : '/api/freets';
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
+    },
+    updateMyLikedPlaylists(state, myLikedPlaylists) {
+      state.myLikedPlaylists = myLikedPlaylists;
     }
   },
   // Store data across page refreshes, only discard on browser close
