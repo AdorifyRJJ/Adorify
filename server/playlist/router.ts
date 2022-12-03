@@ -19,8 +19,14 @@ router.get(
     
     res.status(200).json({
       message: 'Retrieved succesfully.',
-      playlists: await Promise.all(myPlaylists.body.items.map(p => util.constructMinePlaylistResponse(req.session.username, p))),
-      offset: myPlaylists.body.offset,
+      items: await Promise.all(myPlaylists.body.items.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
+      // href: myPlaylists.body.href,
+      // limit: myPlaylists.body.limit,
+      // next: myPlaylists.body.next,
+      // previous: myPlaylists.body.previous,
+      // total: myPlaylists.body.total,
+      // offset: myPlaylists.body.offset,
+      ...myPlaylists.body,
     });
   }
 )
@@ -36,12 +42,12 @@ router.get(
 
     const playlist = await PlaylistCollection.findOneBySpotifyId(req.params.spotifyId);
     if (playlist)
-      await PlaylistCollection.updateIsPublic(playlist._id, playlistInfo.body.public);
+      await PlaylistCollection.updateIsPublic(req.params.spotifyId, playlistInfo.body.public);
 
     res.status(200).json({
       message: 'Retrieved succesfully.',
-      playlistInfo: await util.constructSinglePlaylistResponse(req.session.username, playlist._id, playlistInfo.body),
-      offset: playlistInfo.body.tracks.offset,
+      playlistInfo: playlistInfo.body,
+      isLiked: UserCollection.inLikedPlaylists(req.session.username, req.params.spotifyId),
     });
   }
 )
@@ -56,8 +62,7 @@ router.get(
     const tracks = await spotifyApi.getPlaylistTracks(req.params.spotifyId, {offset: parseInt(req.query.offset as string)})
     res.status(200).json({
       message: 'Retrieved succesfully.',
-      tracks: await util.constructPlaylistTrackResponse(req.session.username, playlist._id, tracks.body),
-      offset: tracks.body.offset,
+      tracks: tracks.body,
     });
   }
 )
@@ -71,11 +76,11 @@ router.put(
   async (req: Request, res: Response) => {
     const playlist = await PlaylistCollection.findOneBySpotifyId(req.params.spotifyId);
     if (!playlist) {
-      const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId);
+      const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId, {fields: 'owner.id, public'});
       await PlaylistCollection.addOne(req.params.spotifyId, playlistInfo.body.owner.id, playlistInfo.body.public);
     }
 
-    const isLiked = await UserCollection.toggleLikedPlaylists(req.session.username, playlist._id);
+    const isLiked = await UserCollection.toggleLikedPlaylists(req.session.username, req.params.spotifyId);
     res.status(200).json({
       message: 'Toggled succesfully.',
       isLiked: isLiked,
@@ -91,9 +96,14 @@ router.get(
   ],
   async (req: Request, res: Response) => {
     const playlists = await PlaylistCollection.findMostLikes();
+    const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+    for (const p of playlists) {
+      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
+      playlistInfos.push(playlistInfo.body);
+    }
     res.status(200).json({
       message: 'Retrieved successfully.',
-      playlists: playlists.map(constructShallowPlaylistResponse),
+      playlists: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
     });
   }
 )
@@ -106,9 +116,14 @@ router.get(
   ],
   async (req: Request, res: Response) => {
     const playlists = await PlaylistCollection.findMostUsed();
+    const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+    for (const p of playlists) {
+      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
+      playlistInfos.push(playlistInfo.body);
+    }
     res.status(200).json({
       message: 'Retrieved successfully.',
-      playlists: playlists.map(constructShallowPlaylistResponse),
+      playlists: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
     });
   }
 )
@@ -121,9 +136,14 @@ router.get(
   ],
   async (req: Request, res: Response) => {
     const playlists = await PlaylistCollection.findMostProductive();
+    const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+    for (const p of playlists) {
+      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
+      playlistInfos.push(playlistInfo.body);
+    }
     res.status(200).json({
       message: 'Retrieved successfully.',
-      playlists: playlists.map(constructShallowPlaylistResponse),
+      playlists: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
     });
   }
 )

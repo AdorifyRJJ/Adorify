@@ -14,6 +14,7 @@ export type Playlist = {
 const PlaylistSchema = new Schema({
   spotifyId: {
     type: String,
+    unique: true,
     required: true
   },
   numLikes: {

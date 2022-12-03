@@ -16,9 +16,9 @@ class PlaylistCollection {
     return playlist;
   }
 
-  static async findOne(id: Types.ObjectId | string): Promise<HydratedDocument<Playlist>> {
-    return PlaylistModel.findOne({_id: id});
-  }
+  // static async findOne(id: Types.ObjectId | string): Promise<HydratedDocument<Playlist>> {
+  //   return PlaylistModel.findOne({_id: id});
+  // }
 
   static async findOneBySpotifyId(spotifyId: string): Promise<HydratedDocument<Playlist>> {
     return PlaylistModel.findOne({spotifyId: spotifyId});
@@ -41,36 +41,36 @@ class PlaylistCollection {
     return PlaylistModel.find({isPublic: true}).sort({numCompleted: -1}).limit(20);
   }
 
-  static async addLike(id: Types.ObjectId | string): Promise<void> {
-    const playlist = await PlaylistModel.findOne({_id: id});
+  static async addLike(spotifyId: string): Promise<void> {
+    const playlist = await PlaylistModel.findOne({spotifyId: spotifyId});
     playlist.numLikes++;
 
     await playlist.save();
   }
 
-  static async removeLike(id: Types.ObjectId | string): Promise<void> {
-    const playlist = await PlaylistModel.findOne({_id: id});
+  static async removeLike(spotifyId: string): Promise<void> {
+    const playlist = await PlaylistModel.findOne({spotifyId: spotifyId});
     playlist.numLikes--;
 
     await playlist.save();
   }
 
-  static async addUsed(id: Types.ObjectId | string): Promise<void> {
-    const playlist = await PlaylistModel.findOne({_id: id});
+  static async addUsed(spotifyId: string): Promise<void> {
+    const playlist = await PlaylistModel.findOne({spotifyId: spotifyId});
     playlist.numUsed++;
 
     await playlist.save();
   }
 
-  static async addCompleted(id: Types.ObjectId | string): Promise<void> {
-    const playlist = await PlaylistModel.findOne({_id: id});
+  static async addCompleted(spotifyId: string): Promise<void> {
+    const playlist = await PlaylistModel.findOne({spotifyId: spotifyId});
     playlist.numCompleted++;
 
     await playlist.save();
   }
 
-  static async updateIsPublic(id: Types.ObjectId | string, isPublic: boolean): Promise<void> {
-    const playlist = await PlaylistModel.findOne({_id: id});
+  static async updateIsPublic(spotifyId: string, isPublic: boolean): Promise<void> {
+    const playlist = await PlaylistModel.findOne({spotifyId: spotifyId});
     playlist.isPublic = isPublic;
 
     await playlist.save();

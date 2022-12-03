@@ -1,14 +1,14 @@
 import type {HydratedDocument, Types} from 'mongoose';
 import PlaylistModel from '../playlist/model';
 import PlaylistCollection from '../playlist/collection';
-import type {User} from './model';
+import type {PopulatedUser, User} from './model';
 import UserModel from './model';
 
 class UserCollection {
   static async addOne(username: string): Promise<HydratedDocument<User>> {
     const user = new UserModel({
       username: username,
-      likedPlaylists: [],
+      likedPlaylistIds: [],
     });
     await user.save();
     return user;
@@ -16,6 +16,10 @@ class UserCollection {
 
   static async findOneByUsername(username: string): Promise<HydratedDocument<User>> {
     return UserModel.findOne({username: username});
+  }
+
+  static async findOneByUsernameAndPopulate(username: string): Promise<HydratedDocument<PopulatedUser>> {
+    return await UserModel.findOne({username: username}).populate('likedPlaylists');
   }
 
   // static async addToLikedPlaylists(username: string, playlist: Types.ObjectId | String): Promise<HydratedDocument<User>> {
@@ -37,19 +41,19 @@ class UserCollection {
   static async inLikedPlaylists(username: string, spotifyId: string): Promise<boolean> {
     const user = await UserModel.findOne({username: username});
     const playlist = await PlaylistCollection.findOneBySpotifyId(spotifyId);
-    return playlist ? user.likedPlaylists.indexOf(playlist._id) !== -1 : false;
+    return playlist ? user.likedPlaylistIds.indexOf(spotifyId) !== -1 : false;
   }
 
-  static async toggleLikedPlaylists(username: string, playlist: Types.ObjectId | string): Promise<boolean> {
+  static async toggleLikedPlaylists(username: string, spotifyId: string): Promise<boolean> {
     const user = await UserModel.findOne({username: username});
-    const idx = user.likedPlaylists.indexOf(playlist as Types.ObjectId);
+    const idx = user.likedPlaylistIds.indexOf(spotifyId);
     if (idx === -1) {
-      user.likedPlaylists.push(playlist as Types.ObjectId);
-      await PlaylistCollection.addLike(playlist);
+      user.likedPlaylistIds.push(spotifyId);
+      await PlaylistCollection.addLike(spotifyId);
     }
     else {
-      user.likedPlaylists.splice(idx, 1);
-      await PlaylistCollection.removeLike(playlist);
+      user.likedPlaylistIds.splice(idx, 1);
+      await PlaylistCollection.removeLike(spotifyId);
     }
     await user.save();
     return idx === -1;

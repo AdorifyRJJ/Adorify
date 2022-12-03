@@ -2,7 +2,8 @@ import type {Request, Response} from 'express';
 import express from 'express';
 import UserCollection from './collection';
 import * as userValidator from '../user/middleware';
-import { PopulatedUser } from './model';
+import { spotifyApi } from '../spotify/router';
+import * as util from '../playlist/util';
 
 const router = express.Router();
 
@@ -42,12 +43,16 @@ router.get(
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
-    const user = await UserCollection.findOneByUsername(req.session.username);
-    const populatedUser = await user.populate('likedPlaylists') as PopulatedUser;
+    const populatedUser = await UserCollection.findOneByUsernameAndPopulate(req.session.username);
+    const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+    for (const p of populatedUser.likedPlaylists) {
+      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
+      playlistInfos.push(playlistInfo.body);
+    }
     res.status(200).json({
-      message: 'Liked playlists retrieved succesfully.',
-      likedPlaylists: populatedUser.likedPlaylists.map(constructShallowPlaylistResponse),
-    })
+      message: 'Retrieved successfully.',
+      playlists: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
+    });
   }
 )
 
