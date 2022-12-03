@@ -219,4 +219,4 @@ router.get('/pause', async function (req: Request, res: Response) {
     res.end();
 });
 
-export { router as spotifyRouter, spotifyApi };
+export { router as spotifyRouter };

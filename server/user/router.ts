@@ -2,8 +2,8 @@ import type {Request, Response} from 'express';
 import express from 'express';
 import UserCollection from './collection';
 import * as userValidator from '../user/middleware';
-import { spotifyApi } from '../spotify/router';
 import * as util from '../playlist/util';
+import SpotifyWebApi from 'spotify-web-api-node';
 
 const router = express.Router();
 
@@ -24,7 +24,7 @@ router.post(
 
 // DELETE /api/users/session
 router.delete(
-  'session',
+  '/session',
   [
     userValidator.isUserLoggedIn,
   ],
@@ -43,8 +43,16 @@ router.get(
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
+    const spotifyApi = new SpotifyWebApi({
+      clientId: process.env.ID,
+      clientSecret: process.env.SECRET,
+      redirectUri: process.env.REDIRECT,
+    });
+    spotifyApi.setAccessToken(req.session.accessToken);
+
     const populatedUser = await UserCollection.findOneByUsernameAndPopulate(req.session.username);
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+    
     for (const p of populatedUser.likedPlaylists) {
       const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
       playlistInfos.push(playlistInfo.body);

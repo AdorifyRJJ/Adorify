@@ -3,8 +3,8 @@ import express from 'express';
 import PlaylistCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as util from './util';
-import { spotifyApi } from '../spotify/router';
 import UserCollection from '../user/collection';
+import SpotifyWebApi from 'spotify-web-api-node';
 
 const router = express.Router();
 
@@ -15,6 +15,13 @@ router.get(
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
+    const spotifyApi = new SpotifyWebApi({
+      clientId: process.env.ID,
+      clientSecret: process.env.SECRET,
+      redirectUri: process.env.REDIRECT,
+    });
+    spotifyApi.setAccessToken(req.session.accessToken);
+
     const myPlaylists = await spotifyApi.getUserPlaylists(req.session.username, {offset: parseInt(req.query.offset as string)});
     
     res.status(200).json({
@@ -38,6 +45,13 @@ router.get(
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
+    const spotifyApi = new SpotifyWebApi({
+      clientId: process.env.ID,
+      clientSecret: process.env.SECRET,
+      redirectUri: process.env.REDIRECT,
+    });
+    spotifyApi.setAccessToken(req.session.accessToken);
+
     const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId);
 
     const playlist = await PlaylistCollection.findOneBySpotifyId(req.params.spotifyId);
@@ -59,6 +73,13 @@ router.get(
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
+    const spotifyApi = new SpotifyWebApi({
+      clientId: process.env.ID,
+      clientSecret: process.env.SECRET,
+      redirectUri: process.env.REDIRECT,
+    });
+    spotifyApi.setAccessToken(req.session.accessToken);
+
     const tracks = await spotifyApi.getPlaylistTracks(req.params.spotifyId, {offset: parseInt(req.query.offset as string)})
     res.status(200).json({
       message: 'Retrieved succesfully.',
@@ -76,6 +97,13 @@ router.put(
   async (req: Request, res: Response) => {
     const playlist = await PlaylistCollection.findOneBySpotifyId(req.params.spotifyId);
     if (!playlist) {
+      const spotifyApi = new SpotifyWebApi({
+        clientId: process.env.ID,
+        clientSecret: process.env.SECRET,
+        redirectUri: process.env.REDIRECT,
+      });
+      spotifyApi.setAccessToken(req.session.accessToken);
+
       const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId, {fields: 'owner.id, public'});
       await PlaylistCollection.addOne(req.params.spotifyId, playlistInfo.body.owner.id, playlistInfo.body.public !== null ? playlistInfo.body.public : false);
     }
@@ -95,8 +123,16 @@ router.get(
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
+    const spotifyApi = new SpotifyWebApi({
+      clientId: process.env.ID,
+      clientSecret: process.env.SECRET,
+      redirectUri: process.env.REDIRECT,
+    });
+    spotifyApi.setAccessToken(req.session.accessToken);
+
     const playlists = await PlaylistCollection.findMostLikes();
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+    
     for (const p of playlists) {
       const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
       playlistInfos.push(playlistInfo.body);
@@ -115,8 +151,16 @@ router.get(
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
+    const spotifyApi = new SpotifyWebApi({
+      clientId: process.env.ID,
+      clientSecret: process.env.SECRET,
+      redirectUri: process.env.REDIRECT,
+    });
+    spotifyApi.setAccessToken(req.session.accessToken);
+
     const playlists = await PlaylistCollection.findMostUsed();
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+    
     for (const p of playlists) {
       const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
       playlistInfos.push(playlistInfo.body);
@@ -135,8 +179,16 @@ router.get(
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
+    const spotifyApi = new SpotifyWebApi({
+      clientId: process.env.ID,
+      clientSecret: process.env.SECRET,
+      redirectUri: process.env.REDIRECT,
+    });
+    spotifyApi.setAccessToken(req.session.accessToken);
+
     const playlists = await PlaylistCollection.findMostProductive();
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+
     for (const p of playlists) {
       const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
       playlistInfos.push(playlistInfo.body);
