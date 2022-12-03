@@ -28,9 +28,22 @@ router.get('/login', async function (req: Request, res: Response) {
 
 router.get('/refreshAccessToken', async function (req: Request, res: Response) {
     try {
-        const data = await spotifyApi.refreshAccessToken();
-        spotifyApi.setAccessToken(data.body['access_token']);
-        if (data.body['refresh_token']) spotifyApi.setRefreshToken(data.body['refresh_token']);
+        if (!req.session.refreshToken){
+            res.status(404).json({
+                message: 'Refresh token not found.',
+            })
+            res.end();
+            return;
+        }
+        const refreshSpotifyApi = new SpotifyWebApi({
+            clientId: process.env.ID,
+            clientSecret: process.env.SECRET,
+            redirectUri: process.env.REDIRECT,
+        });
+        refreshSpotifyApi.setRefreshToken(req.session.refreshToken);
+        const data = await refreshSpotifyApi.refreshAccessToken();
+        req.session.accessToken = data.body['access_token']
+        if (data.body['refresh_token']) req.session.refreshToken = data.body['refresh_token'];
         const tokenExpirationEpoch =
             new Date().getTime() / 1000 + data.body['expires_in'];
         req.session.expiryTime = tokenExpirationEpoch;
@@ -59,10 +72,9 @@ router.get('/getExpiryTime', async function (req: Request, res: Response) {
 });
 
 router.get('/getAccessToken', async function (req: Request, res: Response) {
-    const accessToken = spotifyApi.getAccessToken();
-    if (accessToken) {
+    if (req.session.accessToken) {
         res.status(200).json({
-            token: accessToken,
+            token: req.session.accessToken,
         })
     } else {
         res.status(404).json({
@@ -75,8 +87,8 @@ router.get('/getAccessToken', async function (req: Request, res: Response) {
 router.get('/initializeAuth', async function (req: Request, res: Response) {
     try {
         const data = await spotifyApi.authorizationCodeGrant(req.query.code as string);
-        spotifyApi.setAccessToken(data.body['access_token']);
-        spotifyApi.setRefreshToken(data.body['refresh_token']);
+        req.session.accessToken = data.body['access_token'];
+        req.session.refreshToken = data.body['refresh_token'];
         const tokenExpirationEpoch =
             new Date().getTime() / 1000 + data.body['expires_in'];
         req.session.expiryTime = tokenExpirationEpoch;
@@ -93,7 +105,20 @@ router.get('/initializeAuth', async function (req: Request, res: Response) {
 
 router.get('/getMe', async function (req: Request, res: Response) {
     try {
-        const data = await spotifyApi.getMe();
+        if (!req.session.accessToken){
+            res.status(404).json({
+                message: 'Access token not found.',
+            })
+            res.end();
+            return;
+        }
+        const meSpotifyApi = new SpotifyWebApi({
+            clientId: process.env.ID,
+            clientSecret: process.env.SECRET,
+            redirectUri: process.env.REDIRECT,
+        });
+        meSpotifyApi.setAccessToken(req.session.accessToken);
+        const data = await meSpotifyApi.getMe();
         res.status(200).json({ data });
     } catch (e: any) {
         res.status(e.body.error.status).json({
@@ -105,8 +130,21 @@ router.get('/getMe', async function (req: Request, res: Response) {
 
 router.get('/transfer', async function (req: Request, res: Response) {
     try {
+        if (!req.session.accessToken){
+            res.status(404).json({
+                message: 'Access token not found.',
+            })
+            res.end();
+            return;
+        }
+        const playbackSpotifyApi = new SpotifyWebApi({
+            clientId: process.env.ID,
+            clientSecret: process.env.SECRET,
+            redirectUri: process.env.REDIRECT,
+        });
+        playbackSpotifyApi.setAccessToken(req.session.accessToken);
         const deviceArr = [req.query.deviceId as string];
-        const transfer = await spotifyApi.transferMyPlayback(deviceArr);
+        const transfer = await playbackSpotifyApi.transferMyPlayback(deviceArr);
         res.status(200).json({
             message: 'Here is the object.',
             transfer: transfer,
@@ -121,7 +159,20 @@ router.get('/transfer', async function (req: Request, res: Response) {
 
 router.get('/play', async function (req: Request, res: Response) {
     try {
-        const playData = await spotifyApi.play({ device_id: req.query.deviceId as string });
+        if (!req.session.accessToken){
+            res.status(404).json({
+                message: 'Access token not found.',
+            })
+            res.end();
+            return;
+        }
+        const playbackSpotifyApi = new SpotifyWebApi({
+            clientId: process.env.ID,
+            clientSecret: process.env.SECRET,
+            redirectUri: process.env.REDIRECT,
+        });
+        playbackSpotifyApi.setAccessToken(req.session.accessToken);
+        const playData = await playbackSpotifyApi.play({ device_id: req.query.deviceId as string });
         res.status(200).json({
             message: 'Here is the object.',
             playData: playData,
@@ -136,7 +187,20 @@ router.get('/play', async function (req: Request, res: Response) {
 
 router.get('/pause', async function (req: Request, res: Response) {
     try {
-        const playData = await spotifyApi.pause({ device_id: req.query.deviceId as string });
+        if (!req.session.accessToken){
+            res.status(404).json({
+                message: 'Access token not found.',
+            })
+            res.end();
+            return;
+        }
+        const playbackSpotifyApi = new SpotifyWebApi({
+            clientId: process.env.ID,
+            clientSecret: process.env.SECRET,
+            redirectUri: process.env.REDIRECT,
+        });
+        playbackSpotifyApi.setAccessToken(req.session.accessToken);
+        const playData = await playbackSpotifyApi.pause({ device_id: req.query.deviceId as string });
         res.status(200).json({
             message: 'Here is the object.',
             playData: playData,
