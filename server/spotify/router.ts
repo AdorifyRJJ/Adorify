@@ -26,13 +26,27 @@ router.get('/login', async function (req: Request, res: Response) {
     res.end();
 });
 
-router.get('/getToken', async function (req: Request, res: Response) {
+router.get('/getAccessToken', async function (req: Request, res: Response) {
+    const accessToken = spotifyApi.getAccessToken();
+    if (accessToken) {
+        res.status(200).json({
+            token: accessToken,
+        })
+    } else {
+        res.status(404).json({
+            message: 'access token does not exist'
+        });
+    }
+    res.end();
+});
+
+router.get('/initializeAuth', async function (req: Request, res: Response) {
     try {
         const data = await spotifyApi.authorizationCodeGrant(req.query.code as string);
         spotifyApi.setAccessToken(data.body['access_token']);
         spotifyApi.setRefreshToken(data.body['refresh_token']);
         res.status(200).json({
-            token: data.body['access_token'],
+            message: 'Success!'
         })
     } catch (e: any) {
         res.status(e.body.error.status).json({
@@ -45,7 +59,7 @@ router.get('/getToken', async function (req: Request, res: Response) {
 router.get('/getMe', async function (req: Request, res: Response) {
     try {
         const data = await spotifyApi.getMe();
-        res.status(200).json({data});
+        res.status(200).json({ data });
     } catch (e: any) {
         res.status(e.body.error.status).json({
             message: e.body.error

@@ -1,21 +1,21 @@
 <template>
-    <main>
-        <h1>Home Page</h1>
-        <div>
-            <button @click="playMusic">Play Music</button>
-            <button @click="pauseMusic">Pause Music</button>
-        </div>
-        <div>
-            <p v-if="!player_device_id">
-                Device is not ready, so music playback will not work. Please log
-                in. (Click "Profile" -> "Logout" -> "Login")
-            </p>
-            <p v-else>Device ready!</p>
-        </div>
-        <div>
-            <p v-if="!playing">Not playing music.</p>
-            <p v-else>Playing music! Turn it up!</p>
-        </div>
+  <main>
+    <h1>Home Page</h1>
+    <div>
+      <button @click="playMusic">Play Music</button>
+      <button @click="pauseMusic">Pause Music</button>
+    </div>
+    <div>
+      <p v-if="!player_device_id">
+        Device is not ready, so music playback will not work. Please log in.
+        (Click "Profile" -> "Logout" -> "Login")
+      </p>
+      <p v-else>Device ready!</p>
+    </div>
+    <div>
+      <p v-if="!playing">Not playing music.</p>
+      <p v-else>Playing music! Turn it up!</p>
+    </div>
 
         <!-- fetch username -->
         <div>[username]</div>
@@ -59,12 +59,14 @@
             </div>
         </div>
     </main>
+
 </template>
 
 <script>
 import { myLikedPlaylists } from "../dummyData.js";
 import CountDownTimer from "../components/CountDownTimer.vue";
 export default {
+
     components: { CountDownTimer },
     name: "HomePage",
     data() {
@@ -105,28 +107,30 @@ export default {
                 return `${sec}`;
             }
         },
+
     },
-    methods: {
-        async playMusic() {
-            if (this.player_device_id) {
-                const playback = await fetch(
-                    `/api/spotify/play?deviceId=${this.player_device_id}`
-                );
-                if (playback.ok) {
-                    this.playing = true;
-                }
-            }
-        },
-        async pauseMusic() {
-            if (this.player_device_id) {
-                const playback = await fetch(
-                    `/api/spotify/pause?deviceId=${this.player_device_id}`
-                );
-                if (playback.ok) {
-                    this.playing = false;
-                }
-            }
-        },
+  },
+  methods: {
+    async playMusic() {
+      if (this.player_device_id) {
+        const playback = await fetch(
+          `/api/spotify/play?deviceId=${this.player_device_id}`
+        );
+        if (playback.ok) {
+          this.playing = true;
+        }
+      }
+    },
+    async pauseMusic() {
+      if (this.player_device_id) {
+        const playback = await fetch(
+          `/api/spotify/pause?deviceId=${this.player_device_id}`
+        );
+        if (playback.ok) {
+          this.playing = false;
+        }
+      }
+    },
         clearTimer() {
             if (this.timerId) {
                 clearInterval(this.timerId);
@@ -157,91 +161,96 @@ export default {
                 }
             }, 1000);
         },
-        pauseTimer() {
-            this.timerActive = false;
-            this.clearTimer();
-        },
-        startSession() {
-            this.focusing = true;
-            this.sessionStarted = true;
-            console.log("session started");
 
-            this.startTimer();
-            // start playlist
-        },
-        endSession() {
-            this.pauseTimer();
-            this.timestamp = null;
-            this.focusing = false;
-            this.currInterval = 1;
-            this.sessionStarted = false;
-            console.log("session ended");
-            // end timer
-            // end playlist
-            // api call
-        },
-        playPrev() {
-            console.log("play prev song");
-        },
-        playNext() {
-            console.log("play next song");
-        },
-        togglePlay() {
-            console.log("toggle timer and song");
-            if (this.timerActive) {
-                this.pauseTimer();
-            } else {
-                this.startTimer();
-            }
-        },
+
+    pauseTimer() {
+      this.timerActive = false;
+      this.clearTimer();
     },
-    async beforeCreate() {
-        if (this.$route.query.code) {
-            const token = await fetch(
-                `/api/spotify/getToken?code=${this.$route.query.code}`
+    startSession() {
+      this.focusing = true;
+      this.sessionStarted = true;
+      console.log("session started");
+
+      this.startTimer();
+      // start playlist
+    },
+    endSession() {
+      this.pauseTimer();
+      this.timerActive = false;
+      this.timestamp = null;
+      this.clearTimer();
+      this.timerId = null;
+      this.focusing = false;
+      this.currInterval = 1;
+      this.sessionStarted = false;
+      console.log("session ended");
+      // end timer
+      // end playlist
+      // api call
+    },
+    playPrev() {
+      console.log("play prev song");
+    },
+    playNext() {
+      console.log("play next song");
+    },
+    togglePlay() {
+      console.log("toggle timer and song");
+      if (this.timerActive) {
+        this.pauseTimer();
+      } else {
+        // if (this.focusing) {
+        this.startTimer();
+        // } else {
+        //     this.startBreakTimer();
+        // }
+      }
+    },
+  },
+  async beforeCreate() {
+    const myData = await fetch("/api/spotify/getMe");
+    if (myData.ok) {
+      const myDataJson = await myData.json();
+      this.$store.commit("setUsername", myDataJson.data.body.id);
+
+      const script = document.createElement("script");
+      script.src = "https://sdk.scdn.co/spotify-player.js";
+      script.async = true;
+
+      document.body.appendChild(script);
+
+      window.onSpotifyWebPlaybackSDKReady = async () => {
+        const player = await new window.Spotify.Player({
+          name: "Web Playback SDK",
+          getOAuthToken: async (cb) => {
+            cb(
+              (await (await fetch(`/api/spotify/getAccessToken`)).json()).token
             );
-            const tokenjson = await token.json();
-            window.history.pushState({}, document.title, "/");
+          },
+          volume: 0.5,
+        });
 
-            const myData = await fetch("/api/spotify/getMe");
-            const myDataJson = await myData.json();
-            this.$store.commit("setUsername", myDataJson.data.body.id);
+        this.player = player;
 
-            const script = document.createElement("script");
-            script.src = "https://sdk.scdn.co/spotify-player.js";
-            script.async = true;
+        player.addListener("ready", async ({ device_id }) => {
+          console.log("Ready with Device ID", device_id);
+          const playback = await fetch(
+            `/api/spotify/transfer?deviceId=${device_id}`
+          );
+          const playbackRes = await playback.json();
 
-            document.body.appendChild(script);
+          this.player_device_id = device_id;
+        });
 
-            window.onSpotifyWebPlaybackSDKReady = () => {
-                const player = new window.Spotify.Player({
-                    name: "Web Playback SDK",
-                    getOAuthToken: (cb) => {
-                        cb(tokenjson.token);
-                    },
-                    volume: 0.5,
-                });
+        player.addListener("not_ready", ({ device_id }) => {
+          console.log("Device ID has gone offline", device_id);
+        });
 
-                this.player = player;
-
-                player.addListener("ready", async ({ device_id }) => {
-                    console.log("Ready with Device ID", device_id);
-                    const playback = await fetch(
-                        `/api/spotify/transfer?deviceId=${device_id}`
-                    );
-                    const playbackRes = await playback.json();
-
-                    this.player_device_id = device_id;
-                });
-
-                player.addListener("not_ready", ({ device_id }) => {
-                    console.log("Device ID has gone offline", device_id);
-                });
-
-                player.connect();
-            };
-        }
-    },
+        player.connect();
+      };
+    }
+  },
 };
 </script>
 
