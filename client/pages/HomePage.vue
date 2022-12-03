@@ -180,7 +180,6 @@ export default {
     },
   },
   async beforeCreate() {
-    console.log(this.$store.state.username)
     if (this.$store.state.username) {
       const script = document.createElement("script");
       script.src = "https://sdk.scdn.co/spotify-player.js";
