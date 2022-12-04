@@ -20,6 +20,7 @@ const store = new Vuex.Store({
     myLikedPlaylists: [],
     mySpotifyPlaylists: [],
     publicPlaylists: [],
+    spotifyPlayer: null,
 
   },
   getters: {
@@ -47,6 +48,9 @@ const store = new Vuex.Store({
     setDeviceId(state, deviceId) {
       state.deviceId = deviceId;
     },
+    setSpotifyPlayer(state, player) {
+      state.spotifyPlayer = player;
+    },
     updateFilter(state, filter) {
       /**
        * Update the stored freets filter to the specified one.
@@ -69,11 +73,17 @@ const store = new Vuex.Store({
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
     },
+    deleteRefreshTimeout(state) {
+      if (state.refreshTimeout) { 
+        clearTimeout(state.refreshTimeout);
+        state.refreshTimeout = null;
+      }
+    },
     async scheduleRefresh(state) {
       if (state.username) {
         const expiryTime = (await (await fetch('/api/spotify/getExpiryTime')).json()).expiryTime;
         // Everything is in seconds
-        const timeFromNow = expiryTime - (new Date().getTime() / 1000) - BUFFER_TIME;        
+        const timeFromNow = expiryTime - (new Date().getTime() / 1000) - BUFFER_TIME;
         // Convert to MS for setTimeout
         const timeFromNowMS = timeFromNow * 1000;
         if (state.refreshTimeout) clearTimeout(state.refreshTimeout);
@@ -85,9 +95,7 @@ const store = new Vuex.Store({
             store.commit("scheduleRefresh");
           }, timeFromNowMS)
         }
-
       }
-
     },
     // addMyLikedPlaylists(state, playlist) {
     //   const objIdx = state.myLikedPlaylists.findIndex(
@@ -133,15 +141,15 @@ const store = new Vuex.Store({
       state.myLikedPlaylists = (await fetch(`/api/users`).then(async r => r.json())).playlists;
     },
     setMyLikedPlaylists(state, playlists) {
-      state.myLikedPlaylists = playlists
+      state.myLikedPlaylists = [...playlists]
     },
     setMySpotifyPlaylists(state, playlists) {
-      state.mySpotifyPlaylists = playlists
+      state.mySpotifyPlaylists = [...playlists]
     },
     setPublicPlaylists(state, playlists) {
-      state.publicPlaylists = playlists
+      state.publicPlaylists = [...playlists]
     },
-    
+
   },
 
   // Store data across page refreshes, only discard on browser close

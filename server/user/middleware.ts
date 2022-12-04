@@ -40,6 +40,17 @@ const validRefreshToken = (req: Request, res: Response, next: NextFunction) => {
   next();
 }
 
+const doesExpiryTimeExist = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.session.expiryTime){
+    res.status(404).json({
+        message: 'Expiry time not found.',
+    })
+    res.end();
+    return;
+  }
+
+  next();
+}
 
 const validAccessToken = (req: Request, res: Response, next: NextFunction) => {
   if (!req.session.accessToken){
@@ -53,9 +64,22 @@ const validAccessToken = (req: Request, res: Response, next: NextFunction) => {
   next();
 }
 
+ const isUserLoggedOut = (req: Request, res: Response, next: NextFunction) => {
+  if (req.session.username) {
+    res.status(403).json({
+      error: 'You are already signed in.'
+    });
+    return;
+  }
+
+  next();
+};
+
 export {
   isCurrentSessionUserExists,
   isUserLoggedIn,
   validRefreshToken,
   validAccessToken,
+  isUserLoggedOut,
+  doesExpiryTimeExist,
 };
