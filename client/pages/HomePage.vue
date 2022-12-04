@@ -87,11 +87,11 @@ export default {
       return this.getMin + ":" + this.getSec;
     },
     getMin() {
-      const min = Math.floor(this.timestamp / 60);
+      const min = Math.round(Math.floor(this.timestamp / 60));
       return min < 10 ? `0${min}` : `${min}`;
     },
     getSec() {
-      const sec = this.timestamp % 60;
+      const sec = Math.round(this.timestamp % 60);
       return sec < 10 ? `0${sec}` : `${sec}`;
     },
   },
