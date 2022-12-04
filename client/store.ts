@@ -21,6 +21,7 @@ const store = new Vuex.Store({
     mySpotifyPlaylists: [],
     publicPlaylists: [],
     spotifyPlayer: null,
+    connected: false,
 
   },
   getters: {
@@ -44,6 +45,9 @@ const store = new Vuex.Store({
        * @param username - new username to set
        */
       state.displayName = displayName;
+    },
+    setConnected(state, connected) {
+      state.connected = connected;
     },
     setDeviceId(state, deviceId) {
       state.deviceId = deviceId;

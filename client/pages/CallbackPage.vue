@@ -41,10 +41,12 @@ export default {
             );
             this.$store.commit('setSpotifyPlayer', player);
             this.$store.commit("setDeviceId", device_id);
+            this.$store.commit('setConnected', true);
           });
 
           player.addListener("not_ready", ({ device_id }) => {
             console.log("Device ID has gone offline", device_id);
+            this.$store.commit('setConnected', false);
           });
 
           player.connect();

@@ -6,8 +6,8 @@
       <button @click="pauseMusic">Pause Music</button>
     </div> -->
     <div>
-      <p v-if="!this.$store.state.deviceId">
-        Device is not ready, so music playback will not work. Please log in.
+      <p v-if="!this.$store.state.connected">
+        Device is not ready, so music playback will not work. Either wait for connection or please log in.
         (Click "Profile" -> "Logout" -> "Login")
       </p>
       <p v-else>Device ready!</p>

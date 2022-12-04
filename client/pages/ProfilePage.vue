@@ -6,7 +6,7 @@
             <button>Log Out</button>
         </router-link> -->
     <button @click="logout">Log Out</button>
-    <div v-if="$store.state.username">
+    <div v-if="$store.state.displayName">
       <img :src="image_url" />
       <h2>{{ display_name }}</h2>
       <!-- total session time -->
@@ -68,7 +68,11 @@ export default {
       this.$store.commit("setPublicPlaylists", []);
 
       if (this.$store.state.spotifyPlayer) {
-        this.$store.state.spotifyPlayer.disconnect();
+        try {
+          this.$store.state.spotifyPlayer.disconnect();
+        } catch (e) {
+          console.log(e);
+        }
         this.$store.commit("setSpotifyPlayer", null);
       }
 
@@ -77,20 +81,14 @@ export default {
   },
 
   async beforeCreate() {
-    console.log()
-    if (this.$store.state.username) {
+    console.log(this.$store.state)
+    if (this.$store.state.displayName) {
       const me = await fetch(`/api/spotify/getMe`);
       if (me.ok) {
         const meJson = await me.json();
         this.display_name = meJson.display_name;
         this.image_url = meJson.images[0].url;
       }
-    }
-    if (this.$store.state.spotifyPlayer){
-      this.$store.state.spotifyPlayer.disconnect();
-    }
-    if (this.$store.state.deviceId){
-      this.$store.commit("setDeviceId", null)
     }
   },
 };

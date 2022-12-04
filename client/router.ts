@@ -45,14 +45,24 @@ router.beforeEach((to, from, next) => {
   //   }
   // }
   if (router.app.$store) {
-    if (router.app.$store.state.deviceId && router.app.$store.state.username) {
+    if (router.app.$store.state.deviceId && router.app.$store.state.displayName) {
       if (to.name === 'Home' && router.app.$store.state.spotifyPlayer) {
-        router.app.$store.state.spotifyPlayer.connect();
+        try {
+          router.app.$store.state.spotifyPlayer.connect();
+        } catch (e) {
+          console.log(e)
+        }
       }
       if (from.name === 'Home' && router.app.$store.state.spotifyPlayer) {
-        router.app.$store.state.spotifyPlayer.disconnect();
+        try {
+          router.app.$store.state.spotifyPlayer.disconnect();
+          router.app.$store.commit('setConnected', false);
+        } catch (e) {
+          console.log(e)
+        }
       }
     }
+
   }
 
   next();
