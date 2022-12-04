@@ -180,6 +180,7 @@ export default {
     },
   },
   async beforeCreate() {
+    console.log('homepage')
     if (this.$store.state.username) {
       
     }
