@@ -55,12 +55,25 @@ router.beforeEach((to, from, next) => {
       }
       if (from.name === 'Home' && router.app.$store.state.spotifyPlayer) {
         try {
-          router.app.$store.state.spotifyPlayer.disconnect();
-          router.app.$store.commit('setConnected', false);
+          router.app.$store.commit('forceDisconnect');
         } catch (e) {
           console.log(e)
         }
       }
+    }
+    if (router.app.$store.state.displayName && to.name === 'Login') {
+      next({ name: 'Profile' });
+      return;
+    }
+    if (!router.app.$store.state.displayName &&
+      (to.name === 'Home' ||
+        to.name === 'Profile' ||
+        to.name === 'Leaderboard' ||
+        to.name === 'Playlists' ||
+        to.name === 'PlaylistInfoPage'
+      )) {
+      next({ name: 'Login' });
+      return;
     }
 
   }

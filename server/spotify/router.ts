@@ -374,4 +374,32 @@ router.post(
     }
 )
 
+// router.post(
+//     '/skipQueue',
+//     [
+//         userValidator.isUserLoggedIn,
+//         userValidator.validAccessToken,
+//     ],
+//     async function (req: Request, res: Response) {
+//         try {
+//             const playbackSpotifyApi = new SpotifyWebApi({
+//                 clientId: process.env.ID,
+//                 clientSecret: process.env.SECRET,
+//                 redirectUri: process.env.REDIRECT,
+//             });
+//             playbackSpotifyApi.setAccessToken(req.session.accessToken);
+//             for (let i=0; i<10; i++)
+//                 await playbackSpotifyApi.skipToNext({ device_id: req.query.deviceId as string });
+//             res.status(200).json({
+//                 message: 'Added to queue.',
+//             });
+//         } catch (e: any) {
+//             res.status(e.body.error.status).json({
+//                 message: e.body.error
+//             })
+//         }
+//         res.end();
+//     }
+// )
+
 export { router as spotifyRouter };

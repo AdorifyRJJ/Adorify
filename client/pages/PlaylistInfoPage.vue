@@ -58,6 +58,15 @@ export default {
         //     this.playlist.playlistName + "_4",
         // ];
     },
+
+    async beforeCreate() {
+        if (!this.$store.state.displayName) {
+            this.$router.push({ name: "Login" });
+        }
+        if (this.$store.state.connected) {
+            this.$store.commit("forceDisconnect");
+        }
+    },
 };
 </script>
 

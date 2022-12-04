@@ -14,13 +14,16 @@ export default {
   name: "App",
   components: { NavBar },
   async beforeCreate() {
+    //this.$store.commit('setSpotifyPlayer', null)
+    //this.$store.commit('setDeviceId', null)
+    //this.$store.commit('setConnected', false)
     const myData = await fetch("/api/spotify/getMe");
     if (myData.ok) {
       const myDataJson = await myData.json();
       this.$store.commit("setDisplayName", myDataJson.display_name);
 
       const script = document.createElement("script");
-      
+
       script.src = "https://sdk.scdn.co/spotify-player.js";
       script.async = true;
       document.body.appendChild(script);
@@ -39,17 +42,15 @@ export default {
         player.addListener("ready", async ({ device_id }) => {
           console.log("Ready with Device ID", device_id);
           await fetch(`/api/spotify/transfer?deviceId=${device_id}`);
-          await fetch(
-            `/api/spotify/pause?deviceId=${device_id}`
-          );
-          this.$store.commit('setSpotifyPlayer', player);
+          await fetch(`/api/spotify/pause?deviceId=${device_id}`);
+          this.$store.commit("setSpotifyPlayer", player);
           this.$store.commit("setDeviceId", device_id);
-          this.$store.commit('setConnected', true);
+          this.$store.commit("setConnected", true);
         });
 
         player.addListener("not_ready", ({ device_id }) => {
           console.log("Device ID has gone offline", device_id);
-          this.$store.commit('setConnected', false);
+          this.$store.commit("setConnected", false);
         });
 
         player.connect();

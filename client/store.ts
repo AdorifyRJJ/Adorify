@@ -55,6 +55,10 @@ const store = new Vuex.Store({
     setSpotifyPlayer(state, player) {
       state.spotifyPlayer = player;
     },
+    forceDisconnect(state){
+      if (state.spotifyPlayer) state.spotifyPlayer.disconnect();
+      state.connected = false;
+    },
     updateFilter(state, filter) {
       /**
        * Update the stored freets filter to the specified one.
