@@ -20,10 +20,11 @@ export default {
       this.$store.commit("setUsername", myDataJson.id);
 
       const script = document.createElement("script");
+      
       script.src = "https://sdk.scdn.co/spotify-player.js";
       script.async = true;
       document.body.appendChild(script);
-      
+
       window.onSpotifyWebPlaybackSDKReady = async () => {
         const player = await new window.Spotify.Player({
           name: "Web Playback SDK",
@@ -35,16 +36,14 @@ export default {
           volume: 0.5,
         });
 
-        this.player = player;
-
         player.addListener("ready", async ({ device_id }) => {
           console.log("Ready with Device ID", device_id);
-          const playback = await fetch(
-            `/api/spotify/transfer?deviceId=${device_id}`
+          await fetch(`/api/spotify/transfer?deviceId=${device_id}`);
+          await fetch(
+            `/api/spotify/pause?deviceId=${device_id}`
           );
-          const playbackRes = await playback.json();
-
-          this.$store.commit('setDeviceId', device_id);
+          this.$store.commit('setSpotifyPlayer', player);
+          this.$store.commit("setDeviceId", device_id);
         });
 
         player.addListener("not_ready", ({ device_id }) => {
