@@ -4,6 +4,7 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import * as util from './util';
 import dotenv from 'dotenv';
 import * as userValidator from '../user/middleware';
+import UserCollection from '../user/collection';
 
 const router = express.Router();
 
@@ -36,6 +37,19 @@ router.get(
         res.end();
     }
 );
+
+router.get(
+    '/logout', 
+    [],
+    async function (req: Request, res: Response) {
+        req.session.username = undefined;
+        req.session.refreshToken = undefined;
+        req.session.accessToken = undefined;
+        res.status(200).json({
+            message: 'You have logged out successfully.'
+        });
+    }
+)
 
 router.get(
     '/refreshAccessToken', 
@@ -114,9 +128,20 @@ router.get(
             const tokenExpirationEpoch =
                 new Date().getTime() / 1000 + data.body['expires_in'];
             req.session.expiryTime = tokenExpirationEpoch;
-            res.status(200).json({
-                message: 'Success!',
-            })
+
+            const meSpotifyApi = new SpotifyWebApi({
+                clientId: process.env.ID,
+                clientSecret: process.env.SECRET,
+                redirectUri: process.env.REDIRECT,
+            });
+            meSpotifyApi.setAccessToken(req.session.accessToken);
+            const me = await meSpotifyApi.getMe();
+
+            const user = await UserCollection.findOneByUsername(me.body.id);
+            if (!user)
+                await UserCollection.addOne(me.body.id);
+            req.session.username = me.body.id;
+            res.status(200).json(me.body);
         } catch (e: any) {
             res.status(e.body.error.status).json({
                 message: e.body.error
@@ -140,8 +165,9 @@ router.get(
                 redirectUri: process.env.REDIRECT,
             });
             meSpotifyApi.setAccessToken(req.session.accessToken);
-            const data = await meSpotifyApi.getMe();
-            res.status(200).json({ data });
+
+            const me = await meSpotifyApi.getMe();
+            res.status(200).json(me.body);
         } catch (e: any) {
             res.status(e.body.error.status).json({
                 message: e.body.error

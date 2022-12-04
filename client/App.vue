@@ -13,20 +13,53 @@ import NavBar from "@/components/common/NavBar.vue";
 export default {
   name: "App",
   components: { NavBar },
-  async beforeCreate() {
+  async mounted() {
     const myData = await fetch("/api/spotify/getMe");
     if (myData.ok) {
       const myDataJson = await myData.json();
-      this.$store.commit("setUsername", myDataJson.data.body.id);
-      this.$store.commit("scheduleRefresh");
-      await fetch(
-        "/api/users/session", {
-          method: 'POST', 
-          headers: {'Content-Type': 'application/json'},
-          credentials: 'same-origin', 
-          body: JSON.stringify({username: myDataJson.data.body.id})
-        }
-      );
+      this.$store.commit("setUsername", myDataJson.id);
+
+      // const scripts = document.getElementsByTagName("script");
+      // for (let i = 0; i < scripts.length; i++)
+      //   scripts[i].remove();
+      // const iframes = document.getElementsByTagName("iframe");
+      // for (let i = 0; i < iframes.length; i++)
+      //   iframes[i].remove();
+        
+      const script = document.createElement("script");
+      script.src = "https://sdk.scdn.co/spotify-player.js";
+      script.async = true;
+      document.body.appendChild(script);
+      
+      window.onSpotifyWebPlaybackSDKReady = async () => {
+        const player = await new window.Spotify.Player({
+          name: "Web Playback SDK",
+          getOAuthToken: async (cb) => {
+            cb(
+              (await (await fetch(`/api/spotify/getAccessToken`)).json()).token
+            );
+          },
+          volume: 0.5,
+        });
+
+        this.player = player;
+
+        player.addListener("ready", async ({ device_id }) => {
+          console.log("Ready with Device ID", device_id);
+          const playback = await fetch(
+            `/api/spotify/transfer?deviceId=${device_id}`
+          );
+          const playbackRes = await playback.json();
+
+          this.$store.commit('setDeviceId', device_id);
+        });
+
+        player.addListener("not_ready", ({ device_id }) => {
+          console.log("Device ID has gone offline", device_id);
+        });
+
+        player.connect();
+      };
     }
   },
 };

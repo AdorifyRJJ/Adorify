@@ -8,33 +8,33 @@ import SpotifyWebApi from 'spotify-web-api-node';
 const router = express.Router();
 
 // POST /api/users/session
-router.post(
-  '/session',
-  [],
-  async (req: Request, res: Response) => {
-    const user = await UserCollection.findOneByUsername(req.body.username);
-    if (!user)
-      await UserCollection.addOne(req.body.username);
-    req.session.username = req.body.username;
-    res.status(200).json({
-      message: 'You have logged in successfully.'
-    });
-  }
-)
+// router.post(
+//   '/session',
+//   [],
+//   async (req: Request, res: Response) => {
+//     const user = await UserCollection.findOneByUsername(req.body.username);
+//     if (!user)
+//       await UserCollection.addOne(req.body.username);
+//     req.session.username = req.body.username;
+//     res.status(200).json({
+//       message: 'You have logged in successfully.'
+//     });
+//   }
+// )
 
-// DELETE /api/users/session
-router.delete(
-  '/session',
-  [
-    userValidator.isUserLoggedIn,
-  ],
-  (req: Request, res: Response) => {
-    req.session.username = undefined;
-    res.status(200).json({
-      message: 'You have logged out successfully.'
-    });
-  }
-)
+// // DELETE /api/users/session
+// router.delete(
+//   '/session',
+//   [
+//     userValidator.isUserLoggedIn,
+//   ],
+//   (req: Request, res: Response) => {
+//     req.session.username = undefined;
+//     res.status(200).json({
+//       message: 'You have logged out successfully.'
+//     });
+//   }
+// )
 
 // GET /api/users
 router.get(

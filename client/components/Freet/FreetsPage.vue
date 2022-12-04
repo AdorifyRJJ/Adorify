@@ -1,4 +1,4 @@
-<!-- Default page that also displays freets -->
+<!-- Default page that also displays freets
 
 <template>
   <main>
@@ -173,4 +173,4 @@ section .scrollbox {
   padding: 3%;
   overflow-y: scroll;
 }
-</style>
+</style> -->

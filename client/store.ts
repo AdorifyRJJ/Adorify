@@ -16,7 +16,7 @@ const store = new Vuex.Store({
     username: null, // Username of the logged in user
     alerts: {}, // global success/error messages encountered during submissions to non-visible forms
     refreshTimeout: null,
-
+    deviceId: null,
     myLikedPlaylists: [],
     mySpotifyPlaylists: [],
     publicPlaylists: [],
@@ -43,6 +43,9 @@ const store = new Vuex.Store({
        * @param username - new username to set
        */
       state.username = username;
+    },
+    setDeviceId(state, deviceId) {
+      state.deviceId = deviceId;
     },
     updateFilter(state, filter) {
       /**
