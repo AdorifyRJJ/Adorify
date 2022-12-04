@@ -30,7 +30,7 @@ export default {
         },
     },
     async mounted() {
-        this.$store.commit("refreshLikedPlaylists");
+        // this.$store.commit("refreshLikedPlaylists");
     },
 };
 </script>
