@@ -12,7 +12,7 @@ dotenv.config({});
 
 // May need to edit this to do more things with playback, tracklist, etc.
 // https://developer.spotify.com/documentation/general/guides/authorization/scopes/
-const scopes = ['user-read-private', 'user-read-email', 'user-modify-playback-state', 'streaming'];
+const scopes = ['user-read-private', 'user-read-email', 'user-read-playback-state', 'user-modify-playback-state', 'streaming'];
 
 const spotifyApi = new SpotifyWebApi({
     clientId: process.env.ID,
@@ -253,10 +253,9 @@ router.get(
                 redirectUri: process.env.REDIRECT,
             });
             playbackSpotifyApi.setAccessToken(req.session.accessToken);
-            const playData = await playbackSpotifyApi.play({ device_id: req.query.deviceId as string });
+            await playbackSpotifyApi.play({ device_id: req.query.deviceId as string });
             res.status(200).json({
-                message: 'Here is the object.',
-                playData: playData,
+                message: 'Playing.',
             });
         } catch (e: any) {
             res.status(e.body.error.status).json({
@@ -281,10 +280,9 @@ router.get(
                 redirectUri: process.env.REDIRECT,
             });
             playbackSpotifyApi.setAccessToken(req.session.accessToken);
-            const playData = await playbackSpotifyApi.pause({ device_id: req.query.deviceId as string });
+            await playbackSpotifyApi.pause({ device_id: req.query.deviceId as string });
             res.status(200).json({
-                message: 'Here is the object.',
-                playData: playData,
+                message: 'Paused.',
             });
         } catch (e: any) {
             res.status(e.body.error.status).json({
@@ -294,5 +292,86 @@ router.get(
         res.end();
     }
 );
+
+router.post(
+    '/next',
+    [
+        userValidator.isUserLoggedIn,
+        userValidator.validAccessToken,
+    ],
+    async function (req: Request, res: Response) {
+        try {
+            const playbackSpotifyApi = new SpotifyWebApi({
+                clientId: process.env.ID,
+                clientSecret: process.env.SECRET,
+                redirectUri: process.env.REDIRECT,
+            });
+            playbackSpotifyApi.setAccessToken(req.session.accessToken);
+            await playbackSpotifyApi.skipToNext({ device_id: req.query.deviceId as string });
+            res.status(200).json({
+                message: 'Skipped to next.',
+            });
+        } catch (e: any) {
+            res.status(e.body.error.status).json({
+                message: e.body.error
+            })
+        }
+        res.end();
+    }
+)
+
+router.post(
+    '/previous',
+    [
+        userValidator.isUserLoggedIn,
+        userValidator.validAccessToken,
+    ],
+    async function (req: Request, res: Response) {
+        try {
+            const playbackSpotifyApi = new SpotifyWebApi({
+                clientId: process.env.ID,
+                clientSecret: process.env.SECRET,
+                redirectUri: process.env.REDIRECT,
+            });
+            playbackSpotifyApi.setAccessToken(req.session.accessToken);
+            await playbackSpotifyApi.skipToPrevious({ device_id: req.query.deviceId as string });
+            res.status(200).json({
+                message: 'Skipped to previous.',
+            });
+        } catch (e: any) {
+            res.status(e.body.error.status).json({
+                message: e.body.error
+            })
+        }
+        res.end();
+    }
+)
+
+router.post(
+    '/addToQueue/:spotifyId?',
+    [
+        userValidator.isUserLoggedIn,
+        userValidator.validAccessToken,
+    ],
+    async function (req: Request, res: Response) {
+        try {
+            const playbackSpotifyApi = new SpotifyWebApi({
+                clientId: process.env.ID,
+                clientSecret: process.env.SECRET,
+                redirectUri: process.env.REDIRECT,
+            });
+            playbackSpotifyApi.setAccessToken(req.session.accessToken);
+            await playbackSpotifyApi.addToQueue(req.params.spotifyId);
+            res.status(200).json({
+                message: 'Added to queue.',
+            });
+        } catch (e: any) {
+            res.status(e.body.error.status).json({
+                message: e.body.error
+            })
+        }
+        res.end();
+    }
+)
 
 export { router as spotifyRouter };

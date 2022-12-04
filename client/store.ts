@@ -13,7 +13,7 @@ const store = new Vuex.Store({
   state: {
     filter: null, // Username to filter shown freets by (null = show all)
     freets: [], // All freets created in the app
-    username: null, // Username of the logged in user
+    displayName: null, // Username of the logged in user
     alerts: {}, // global success/error messages encountered during submissions to non-visible forms
     refreshTimeout: null,
     deviceId: null,
@@ -38,12 +38,12 @@ const store = new Vuex.Store({
         Vue.delete(state.alerts, payload.message);
       }, 3000);
     },
-    setUsername(state, username) {
+    setDisplayName(state, displayName) {
       /**
        * Update the stored username to the specified one.
        * @param username - new username to set
        */
-      state.username = username;
+      state.displayName = displayName;
     },
     setDeviceId(state, deviceId) {
       state.deviceId = deviceId;
@@ -97,45 +97,48 @@ const store = new Vuex.Store({
         }
       }
     },
-    addMyLikedPlaylists(state, playlist) {
-      const objIdx = state.myLikedPlaylists.findIndex(
-        (obj) => obj.id === playlist.id
-      );
-      if (objIdx <= -1) {
-        state.myLikedPlaylists.push(playlist)
-        if (playlist.username === 'jerrya') {
-          // find in mySpotifyPlaylists
-          const objIdx2 = state.mySpotifyPlaylists.findIndex(
-            (obj) => obj.id === playlist.id
-          );
-          state.mySpotifyPlaylists[objIdx2].liked = true;
-        }
-        // find in publicPlaylists
-        const objIdx3 = state.publicPlaylists.findIndex(
-          (obj) => obj.id === playlist.id
-        );
-        state.publicPlaylists[objIdx3].liked = true;
-      }
-    },
-    removeMyLikedPlaylists(state, playlist) {
-      const objIdx = state.myLikedPlaylists.findIndex(
-        (obj) => obj.id === playlist.id
-      );
-      if (objIdx > -1) {
-        state.myLikedPlaylists.splice(objIdx, 1);
-        if (playlist.username === 'jerrya') {
-          // find in mySpotifyPlaylists
-          const objIdx2 = state.mySpotifyPlaylists.findIndex(
-            (obj) => obj.id === playlist.id
-          );
-          state.mySpotifyPlaylists[objIdx2].liked = false;
-        }
-        // find in publicPlaylists
-        const objIdx3 = state.publicPlaylists.findIndex(
-          (obj) => obj.id === playlist.id
-        );
-        state.publicPlaylists[objIdx3].liked = false;
-      }
+    // addMyLikedPlaylists(state, playlist) {
+    //   const objIdx = state.myLikedPlaylists.findIndex(
+    //       (obj) => obj.id === playlist.id
+    //   );
+    //   if (objIdx <= -1) {
+    //     state.myLikedPlaylists.push(playlist)
+    //     if (playlist.username === 'jerrya') {
+    //               // find in mySpotifyPlaylists
+    //     const objIdx2 = state.mySpotifyPlaylists.findIndex(
+    //         (obj) => obj.id === playlist.id
+    //     );
+    //     state.mySpotifyPlaylists[objIdx2].liked = true;
+    //     }
+    //     // find in publicPlaylists
+    //     const objIdx3 = state.publicPlaylists.findIndex(
+    //       (obj) => obj.id === playlist.id
+    //     );
+    //     state.publicPlaylists[objIdx3].liked = true;
+    //   }
+    // },
+    // removeMyLikedPlaylists(state, playlist) {
+    //   const objIdx = state.myLikedPlaylists.findIndex(
+    //       (obj) => obj.id === playlist.id
+    //   );
+    //   if (objIdx > -1) {
+    //     state.myLikedPlaylists.splice(objIdx, 1);
+    //     if (playlist.username === 'jerrya') {
+    //               // find in mySpotifyPlaylists
+    //     const objIdx2 = state.mySpotifyPlaylists.findIndex(
+    //       (obj) => obj.id === playlist.id
+    //     );
+    //     state.mySpotifyPlaylists[objIdx2].liked = false;
+    //     }
+    //     // find in publicPlaylists
+    //     const objIdx3 = state.publicPlaylists.findIndex(
+    //       (obj) => obj.id === playlist.id
+    //     );
+    //     state.publicPlaylists[objIdx3].liked = false;
+    //   }
+    // },
+    async refreshLikedPlaylists(state) {
+      state.myLikedPlaylists = (await fetch(`/api/users`).then(async r => r.json())).playlists;
     },
     setMyLikedPlaylists(state, playlists) {
       state.myLikedPlaylists = [...playlists]
