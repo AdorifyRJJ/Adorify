@@ -5,7 +5,7 @@
     <!-- <router-link to="/login">
             <button>Log Out</button>
         </router-link> -->
-
+    <AdorifyCar/>
     <AdorifyButton :clickHandler="logout" content="Log Out" />
     <div v-if="$store.state.displayName">
       <img :src="image_url" />
@@ -34,10 +34,11 @@
 
 <script>
 import AdorifyButton from "../components/common/AdorifyButton.vue";
+import AdorifyCar from "../components/common/AdorifyCar.vue";
 
 export default {
   name: "ProfilePage",
-  components: { AdorifyButton },
+  components: { AdorifyButton, AdorifyCar },
   data() {
     return {
       display_name: null,
