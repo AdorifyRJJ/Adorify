@@ -74,7 +74,7 @@ export default {
             console.log("my spotify playlists", this.currPlaylists);
         },
         async getPublicPlaylists() {
-            await this.getMostLiked(0);
+            await this.getMostLiked();
         },
         // api call GET public playlists by likes
         async getMostLiked() {
