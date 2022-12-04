@@ -275,6 +275,7 @@ export default {
   async beforeCreate() {
     if (this.$store.state.displayName) {
       this.$store.commit("refreshLikedPlaylists");
+      this.$store.commit("scheduleRefresh");
     } else {
       this.$router.push({ name: "Login" });
     }

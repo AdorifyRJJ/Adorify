@@ -16,7 +16,6 @@
             <div>id: {{ spotifyId }}</div>
             <!-- </router-link> -->
         </div>
-        <LikeButton :spotifyId="spotifyId" :isLiked="isLiked" />
     </div>
 </template>
 
