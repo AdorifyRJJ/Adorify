@@ -33,7 +33,12 @@
           <input v-model="intervals" placeholder="4" /> times
         </div>
       </div>
-      <div>Carousel: {{ this.$store.state.myLikedPlaylists }}</div>
+      <HomePlaylistCard
+          :key="i"
+          v-for="(playlist, i) in this.$store.state.myLikedPlaylists"
+          :playlist="playlist"
+          @select="toggleSelected"
+      ></HomePlaylistCard>
 
       <!-- start focus session and play selected playlist -->
       <button @click="startSession">[Play button]</button>
@@ -58,7 +63,10 @@
 </template>
 
 <script>
+import HomePlaylistCard from "../components/Playlists/HomePlaylistCard.vue";
+
 export default {
+  components: { HomePlaylistCard },
   name: "HomePage",
   data() {
     return {
@@ -218,6 +226,9 @@ export default {
       } else {
         await this.startTimer();
       }
+    },
+    toggleSelected(spotifyId) {
+      this.selectedPlaylistId = spotifyId;
     },
     async getCurrTrack() {
       this.clearTrackTimer();
