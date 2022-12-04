@@ -1,9 +1,9 @@
 <template>
-    <div>
-        <h1>Playlists Page</h1>
-        <MyLikedPlaylists />
-        <ExplorePlaylists />
-    </div>
+  <div>
+    <h1>Playlists Page</h1>
+    <MyLikedPlaylists />
+    <ExplorePlaylists />
+  </div>
 </template>
 
 <script>
@@ -11,8 +11,16 @@ import MyLikedPlaylists from "../components/MyLikedPlaylists.vue";
 import ExplorePlaylists from "../components/ExplorePlaylists.vue";
 
 export default {
-    components: { MyLikedPlaylists, ExplorePlaylists },
-    name: "PlaylistsPage",
+  components: { MyLikedPlaylists, ExplorePlaylists },
+  name: "PlaylistsPage",
+  async beforeCreate() {
+    if (!this.$store.state.displayName) {
+      this.$router.push({ name: "Login" });
+    }
+    if (this.$store.state.connected) {
+      this.$store.commit("forceDisconnect");
+    }
+  },
 };
 </script>
 
