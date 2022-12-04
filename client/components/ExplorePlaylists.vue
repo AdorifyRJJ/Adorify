@@ -56,21 +56,22 @@ export default {
         async prevPage() {
             const newOffset = this.offset - this.limit;
             const url = `/api/playlists/${this.currPlaylistsName}?offset=${newOffset}`;
-            const res = await fetch(url).then((r) => r.json());
+            const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
         },
         async nextPage() {
             const newOffset = this.offset + this.limit;
             const url = `/api/playlists/${this.currPlaylistsName}?offset=${newOffset}`;
-            const res = await fetch(url).then((r) => r.json());
+            const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
         },
         // api call GET my spotify playlists
         async getMyPlaylists() {
             const url = `/api/playlists/mine?offset=0`;
-            const res = await fetch(url).then((r) => r.json());
+            const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
             this.currPlaylistsName = "mine";
+            console.log("my spotify playlists", this.currPlaylists);
         },
         async getPublicPlaylists() {
             await this.getMostLiked(0);
@@ -78,21 +79,21 @@ export default {
         // api call GET public playlists by likes
         async getMostLiked() {
             const url = `/api/playlists/mostLiked?offset=0`;
-            const res = await fetch(url).then((r) => r.json());
+            const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
             this.currPlaylistsName = "mostLiked";
         },
         // api call GET public playlists by usage
         async getMostUsed() {
             const url = `/api/playlists/mostUsed?offset=0`;
-            const res = await fetch(url).then((r) => r.json());
+            const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
             this.currPlaylistsName = "mostUsed";
         },
         // api call GET public playlists by productiveness
         async getMostProductive() {
             const url = `/api/playlists/mostProductive?offset=0`;
-            const res = await fetch(url).then((r) => r.json());
+            const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
             this.currPlaylistsName = "mostProductive";
         },

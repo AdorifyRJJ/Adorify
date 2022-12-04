@@ -55,8 +55,7 @@ router.beforeEach((to, from, next) => {
       }
       if (from.name === 'Home' && router.app.$store.state.spotifyPlayer) {
         try {
-          router.app.$store.state.spotifyPlayer.disconnect();
-          router.app.$store.commit('setConnected', false);
+          router.app.$store.commit('forceDisconnect');
         } catch (e) {
           console.log(e)
         }

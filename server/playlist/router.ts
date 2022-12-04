@@ -68,7 +68,7 @@ router.get(
     res.status(200).json({
       message: 'Retrieved succesfully.',
       playlistInfo: playlistInfo.body,
-      isLiked: UserCollection.inLikedPlaylists(req.session.username, req.params.spotifyId),
+      isLiked: await UserCollection.inLikedPlaylists(req.session.username, req.params.spotifyId),
     });
   }
 )
@@ -151,7 +151,7 @@ router.get(
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
     
     for (const p of playlists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
+      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId);
       if (playlistInfo.statusCode === 200)
         playlistInfos.push(playlistInfo.body);
       else
@@ -183,7 +183,7 @@ router.get(
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
 
     for (const p of playlists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
+      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId);
       if (playlistInfo.statusCode === 200)
         playlistInfos.push(playlistInfo.body);
       else
@@ -215,7 +215,7 @@ router.get(
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
 
     for (const p of playlists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
+      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId);
       if (playlistInfo.statusCode === 200)
         playlistInfos.push(playlistInfo.body);
       else

@@ -55,7 +55,7 @@ router.get(
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
     
     for (const p of populatedUser.likedPlaylists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'tracks(!items)'});
+      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId);
       if (playlistInfo.statusCode === 200)
         playlistInfos.push(playlistInfo.body);
       else

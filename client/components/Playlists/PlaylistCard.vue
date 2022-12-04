@@ -12,10 +12,11 @@
         > -->
             <img :src="image" height="100" width="100" />
             <div>playlist name: {{ playlistName }}</div>
-            <div>username: {{ username }}</div>
+            <div>owner: {{ owner }}</div>
+            <div>id: {{ spotifyId }}</div>
             <!-- </router-link> -->
         </div>
-        <LikeButton :playlist="playlist" />
+        <LikeButton :spotifyId="spotifyId" :isLiked="isLiked" />
     </div>
 </template>
 
@@ -32,8 +33,14 @@ export default {
         playlistName() {
             return this.playlist.name;
         },
-        username() {
+        owner() {
             return this.playlist.owner.display_name;
+        },
+        spotifyId() {
+            return this.playlist.id;
+        },
+        isLiked() {
+            return this.playlist.isLiked;
         },
     },
     methods: {

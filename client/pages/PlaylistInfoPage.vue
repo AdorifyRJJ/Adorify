@@ -1,16 +1,17 @@
 <template>
-  <div>
-    <h1>Playlist Info Page</h1>
-    <MyLikedPlaylists />
-    <div>[Playlist info]</div>
-    <LikeButton :playlist="playlist" />
+    <div>
+        <h1>Playlist Info Page</h1>
+        <MyLikedPlaylists />
+        <div>{{ this.image }}</div>
+        <div>{{ this.name }}</div>
+        <div>{{ this.owner }}</div>
+        <!-- <div>{{ this.isLiked }}</div> -->
+        <LikeButton :spotifyId="spotifyId" :isLiked="isLiked" />
 
-    <!-- push or link?? -->
-    <button @click="exit">Back</button>
-    <!-- <router-link to="/playlists"><div>Back</div></router-link> -->
+        <button @click="exit">Back</button>
 
-    <TrackItem :key="i" v-for="(track, i) in this.tracks" :track="track" />
-  </div>
+        <TrackItem :key="i" v-for="(track, i) in this.tracks" :track="track" />
+    </div>
 </template>
 
 <script>
@@ -18,41 +19,54 @@ import MyLikedPlaylists from "../components/MyLikedPlaylists.vue";
 import TrackItem from "../components/Playlists/TrackItem.vue";
 import LikeButton from "../components/common/LikeButton.vue";
 export default {
-  components: { MyLikedPlaylists, TrackItem, LikeButton },
-  name: "PlaylistInfoPage",
-  data() {
-    return {
-      spotifyId: this.$route.params.spotifyId,
-      playlist: null,
-      tracks: [],
-    };
-  },
-  computed: {},
-  methods: {
-    exit() {
-      this.$router.back();
+    components: { MyLikedPlaylists, TrackItem, LikeButton },
+    name: "PlaylistInfoPage",
+    data() {
+        return {
+            spotifyId: this.$route.params.spotifyId,
+            name: null,
+            owner: null,
+            image: null,
+            isLiked: null,
+            playlist: null,
+            tracks: [],
+        };
     },
-  },
-  mounted() {
-    //api calls
-    // GET /api/playlists/info/:spotifyId/tracks?offset=
-    // GET /api/playlists/info/:spotifyId
-    this.playlist = this.$store.getters.getPlaylistById(this.spotifyId);
-    this.tracks = [
-      this.playlist.playlistName + "_1",
-      this.playlist.playlistName + "_2",
-      this.playlist.playlistName + "_3",
-      this.playlist.playlistName + "_4",
-    ];
-  },
-  async beforeCreate() {
-    if (!this.$store.state.displayName) {
-      this.$router.push({ name: "Login" });
-    }
-    if (this.$store.state.connected) {
-      this.$store.commit("forceDisconnect");
-    }
-  },
+    computed: {},
+    methods: {
+        exit() {
+            this.$router.back();
+        },
+    },
+    async mounted() {
+        //api calls
+        // GET /api/playlists/info/:spotifyId/tracks?offset=
+        // GET /api/playlists/info/:spotifyId
+        const url = `/api/playlists/info/${this.spotifyId}`;
+        const res = await fetch(url).then(async (r) => r.json());
+        console.log("playlist info", res);
+        this.image = res.playlistInfo.images[0].url;
+        this.name = res.playlistInfo.name;
+        this.owner = res.playlistInfo.owner.display_name;
+        this.isLiked = res.isLiked;
+
+        // this.playlist = this.$store.getters.getPlaylistById(this.spotifyId);
+        // this.tracks = [
+        //     this.playlist.playlistName + "_1",
+        //     this.playlist.playlistName + "_2",
+        //     this.playlist.playlistName + "_3",
+        //     this.playlist.playlistName + "_4",
+        // ];
+    },
+
+    async beforeCreate() {
+        if (!this.$store.state.displayName) {
+            this.$router.push({ name: "Login" });
+        }
+        if (this.$store.state.connected) {
+            this.$store.commit("forceDisconnect");
+        }
+    },
 };
 </script>
 

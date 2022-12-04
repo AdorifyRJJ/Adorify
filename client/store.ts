@@ -146,7 +146,14 @@ const store = new Vuex.Store({
     //   }
     // },
     async refreshLikedPlaylists(state) {
-      state.myLikedPlaylists = (await fetch(`/api/users`).then(async r => r.json())).playlists;
+      const playlists = (await fetch(`/api/users`).then(async r => r.json())).playlists;
+      console.log('playlists', playlists)
+      state.myLikedPlaylists = playlists.map((playlist) => ({
+        id: playlist.id, 
+        image: playlist.images[0], 
+        name: playlist.name, 
+        owner: playlist.owner.display_name})
+      )
     },
     setMyLikedPlaylists(state, playlists) {
       state.myLikedPlaylists = [...playlists]
