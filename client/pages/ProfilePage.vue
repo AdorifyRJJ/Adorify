@@ -61,7 +61,7 @@ export default {
       await fetch(`/api/spotify/logout`);
 
       this.$store.commit("setDeviceId", undefined);
-      this.$store.commit("setUsername", null);
+      this.$store.commit("setDisplayName", null);
       this.$store.commit("deleteRefreshTimeout");
       this.$store.commit("setMyLikedPlaylists", []);
       this.$store.commit("setMySpotifyPlaylists", []);

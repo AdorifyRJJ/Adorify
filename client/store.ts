@@ -80,7 +80,7 @@ const store = new Vuex.Store({
       }
     },
     async scheduleRefresh(state) {
-      if (state.username) {
+      if (state.displayName) {
         const expiryTime = (await (await fetch('/api/spotify/getExpiryTime')).json()).expiryTime;
         // Everything is in seconds
         const timeFromNow = expiryTime - (new Date().getTime() / 1000) - BUFFER_TIME;

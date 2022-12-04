@@ -80,7 +80,6 @@ export default {
       trackTimerId: null,
       playlistTracks: null,
       playlistIndex: 0,
-      
     };
   },
   computed: {
