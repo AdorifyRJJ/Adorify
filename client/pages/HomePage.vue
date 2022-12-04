@@ -78,6 +78,9 @@ export default {
       currTrackTitle: '',
       currTrackArtist: '',
       trackTimerId: null,
+      playlistTracks: null,
+      playlistIndex: 0,
+      
     };
   },
   computed: {
@@ -141,14 +144,19 @@ export default {
             }
             if (!this.focusing) {
               this.currInterval++;
+              this.playMusic();
+            }
+            else {
+              this.pauseMusic();
             }
             this.focusing = !this.focusing;
             this.startTimer();
           }
         }
       }, 1000);
+      if (this.focusing)
+        await this.playMusic();
       await this.getCurrTrack();
-      await this.playMusic();
     },
     async pauseTimer() {
       this.timerActive = false;
@@ -184,6 +192,7 @@ export default {
       if (this.timerActive) {
         console.log("play prev song");
         await fetch(`/api/spotify/previous`, {method: 'POST'});
+        await new Promise(f => setTimeout(f, 200));
         await this.getCurrTrack();
       }
     },
@@ -191,6 +200,7 @@ export default {
       if (this.timerActive) {
         console.log("play next song");
         await fetch(`/api/spotify/next`, {method: 'POST'});
+        await new Promise(f => setTimeout(f, 200));
         await this.getCurrTrack();
       }
     },
