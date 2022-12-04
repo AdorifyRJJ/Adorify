@@ -159,7 +159,7 @@ router.get(
     }
     res.status(200).json({
       message: 'Retrieved successfully.',
-      playlists: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
+      items: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
     });
   }
 )
@@ -191,7 +191,7 @@ router.get(
     }
     res.status(200).json({
       message: 'Retrieved successfully.',
-      playlists: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
+      items: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
     });
   }
 )
@@ -223,7 +223,7 @@ router.get(
     }
     res.status(200).json({
       message: 'Retrieved successfully.',
-      playlists: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
+      items: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
     });
   }
 )
