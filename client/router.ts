@@ -62,6 +62,20 @@ router.beforeEach((to, from, next) => {
         }
       }
     }
+    if (router.app.$store.state.displayName && to.name === 'Login') {
+      next({ name: 'Profile' });
+      return;
+    }
+    if (!router.app.$store.state.displayName &&
+      (to.name === 'Home' ||
+        to.name === 'Profile' ||
+        to.name === 'Leaderboard' ||
+        to.name === 'Playlists' ||
+        to.name === 'PlaylistInfoPage'
+      )) {
+      next({ name: 'Login' });
+      return;
+    }
 
   }
 

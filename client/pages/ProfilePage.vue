@@ -81,6 +81,9 @@ export default {
   },
 
   async beforeCreate() {
+    if (this.$store.state.connected) {
+      this.$store.commit("forceDisconnect");
+    }
     if (this.$store.state.displayName) {
       const me = await fetch(`/api/spotify/getMe`);
       if (me.ok) {
@@ -88,6 +91,8 @@ export default {
         this.display_name = meJson.display_name;
         this.image_url = meJson.images[0].url;
       }
+    } else {
+      this.$router.push({ name: "Login" });
     }
   },
 };
