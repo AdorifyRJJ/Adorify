@@ -16,6 +16,8 @@
             :playlist="playlist"
         ></PlaylistCard>
         <div>
+            <p>{{ this.limit }}</p>
+            <p>{{ this.offset }}</p>
             <button v-if="currPlaylists.previous" @click="prevPage">
                 prev page
             </button>
@@ -27,7 +29,6 @@
 </template>
 
 <script>
-// import { mySpotifyPlaylists, publicPlaylists } from "../dummyData.js";
 import PlaylistCard from "../components/Playlists/PlaylistCard.vue";
 
 export default {
@@ -37,8 +38,6 @@ export default {
         return {
             currPlaylists: [],
             currPlaylistsName: null,
-            // limit: null,
-            // offset: null,
         };
     },
     computed: {
@@ -65,7 +64,6 @@ export default {
             const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
         },
-        // api call GET my spotify playlists
         async getMyPlaylists() {
             const url = `/api/playlists/mine?offset=0`;
             const res = await fetch(url).then(async (r) => r.json());
@@ -76,21 +74,18 @@ export default {
         async getPublicPlaylists() {
             await this.getMostLiked();
         },
-        // api call GET public playlists by likes
         async getMostLiked() {
             const url = `/api/playlists/mostLiked?offset=0`;
             const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
             this.currPlaylistsName = "mostLiked";
         },
-        // api call GET public playlists by usage
         async getMostUsed() {
             const url = `/api/playlists/mostUsed?offset=0`;
             const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
             this.currPlaylistsName = "mostUsed";
         },
-        // api call GET public playlists by productiveness
         async getMostProductive() {
             const url = `/api/playlists/mostProductive?offset=0`;
             const res = await fetch(url).then(async (r) => r.json());

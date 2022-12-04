@@ -185,7 +185,7 @@ export default {
         // console.log(await fetch(`/api/playlists/info/2E97C5dfeyPyCgTr6ntCpA`).then(async r=> r.json()))
         // await fetch(`/api/spotify/skipQueue`, {method: 'POST'});
         await this.getPlaylistTracks();
-        await fetch(`/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex % this.playlistLimit]}`, {method: 'POST'});
+        await fetch(`/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex]}`, {method: 'POST'});
         await fetch(`/api/spotify/next`, {method: 'POST'});
         // await fetch(`/api/spotify/addToQueue/spotify:playlist:2E97C5dfeyPyCgTr6ntCpA`, {method: 'POST'});
 
@@ -283,6 +283,7 @@ export default {
   async beforeCreate() {
     if (this.$store.state.displayName) {
       // this.$store.commit("refreshLikedPlaylists");
+      this.$store.commit("scheduleRefresh");
     } else {
       this.$router.push({ name: "Login" });
     }

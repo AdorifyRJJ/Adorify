@@ -26,11 +26,6 @@
             {{ playlist.name }}
         </div>
 
-        <!-- <h3>Most Played</h3>
-    <div :key="i" v-for="(playlist, i) in this.myMostPlayedPlaylists">
-      {{ playlist }}
-    </div> -->
-
         <h3>Productivity</h3>
         <div>{{ this.stats }}</div>
     </div>
@@ -64,8 +59,6 @@ export default {
             this.$store.commit("setDisplayName", null);
             this.$store.commit("deleteRefreshTimeout");
             this.$store.commit("setMyLikedPlaylists", []);
-            this.$store.commit("setMySpotifyPlaylists", []);
-            this.$store.commit("setPublicPlaylists", []);
 
             if (this.$store.state.spotifyPlayer) {
                 try {

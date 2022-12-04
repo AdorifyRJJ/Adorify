@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <header>
+    <header v-if="$store.state.displayName">
       <NavBar />
     </header>
     <router-view />
@@ -21,7 +21,7 @@ export default {
     if (myData.ok) {
       const myDataJson = await myData.json();
       this.$store.commit("setDisplayName", myDataJson.display_name);
-
+      this.$store.commit("scheduleRefresh");
       this.$store.commit("refreshLikedPlaylists");
 
       const script = document.createElement("script");
