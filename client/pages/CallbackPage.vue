@@ -12,7 +12,7 @@ export default {
       const myData = await fetch(`/api/spotify/initializeAuth?code=${this.$route.query.code}`);
       if (myData.ok) {
         const myDataJson = await myData.json();
-        this.$store.commit("setUsername", myDataJson.id);
+        this.$store.commit("setDisplayName", myDataJson.display_name);
         this.$store.commit("scheduleRefresh");
 
         const script = document.createElement("script");

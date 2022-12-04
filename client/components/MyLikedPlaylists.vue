@@ -19,7 +19,7 @@ export default {
     name: "MyLikedPlaylists",
     mounted() {
         // api call GET /api/users
-        this.$store.commit("setMyLikedPlaylists", myLikedPlaylists);
+        // this.$store.commit("setMyLikedPlaylists", myLikedPlaylists);
     },
 };
 </script>

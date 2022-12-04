@@ -17,7 +17,7 @@ export default {
     const myData = await fetch("/api/spotify/getMe");
     if (myData.ok) {
       const myDataJson = await myData.json();
-      this.$store.commit("setUsername", myDataJson.id);
+      this.$store.commit("setDisplayName", myDataJson.display_name);
 
       const script = document.createElement("script");
       script.src = "https://sdk.scdn.co/spotify-player.js";

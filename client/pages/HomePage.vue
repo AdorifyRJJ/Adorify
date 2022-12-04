@@ -1,10 +1,10 @@
 <template>
   <main>
     <h1>Home Page</h1>
-    <div>
+    <!-- <div>
       <button @click="playMusic">Play Music</button>
       <button @click="pauseMusic">Pause Music</button>
-    </div>
+    </div> -->
     <div>
       <p v-if="!this.$store.state.deviceId">
         Device is not ready, so music playback will not work. Please log in.
@@ -18,7 +18,7 @@
     </div>
 
     <!-- fetch username -->
-    <div>[username]</div>
+    <div> {{ this.$store.state.displayName }} </div>
 
     <div v-if="!sessionStarted">
       <div>Start a focus session</div>
@@ -44,9 +44,10 @@
       <div>
         <h2>{{ this.getTime }}</h2>
       </div>
-      <div>[Progress thingy]</div>
+      <div> {{ this.currInterval }} / {{ this.intervals }}</div>
       <button @click="endSession">End Session</button>
-      <div>[song info]</div>
+      <div>{{this.currTrackTitle}}</div>
+      <div>{{this.currTrackArtist}}</div>
       <div>
         <button @click="playPrev">[prev]</button>
         <button @click="togglePlay">[pause/play]</button>
@@ -74,6 +75,9 @@ export default {
       timerActive: false,
       timestamp: null,
       timerId: null,
+      currTrackTitle: '',
+      currTrackArtist: '',
+      trackTimerId: null,
     };
   },
   computed: {
@@ -113,10 +117,14 @@ export default {
     clearTimer() {
       if (this.timerId) {
         clearInterval(this.timerId);
-        // this.timerId = null;
       }
     },
-    startTimer() {
+    clearTrackTimer() {
+      if (this.trackTimerId) {
+        clearInterval(this.trackTimerId);
+      }
+    },
+    async startTimer() {
       this.timerActive = true;
       this.timestamp =
         this.timestamp ??
@@ -139,10 +147,14 @@ export default {
           }
         }
       }, 1000);
+      await this.getCurrTrack();
+      await this.playMusic();
     },
-    pauseTimer() {
+    async pauseTimer() {
       this.timerActive = false;
       this.clearTimer();
+      this.clearTrackTimer();
+      await this.pauseMusic();
     },
     startSession() {
       // api call POST /api/adorifySession
@@ -164,11 +176,15 @@ export default {
       // end timer
       // end playlist
     },
-    playPrev() {
+    async playPrev() {
       console.log("play prev song");
+      await fetch(`/api/spotify/previous`, {method: 'POST'});
+      await this.getCurrTrack();
     },
-    playNext() {
+    async playNext() {
       console.log("play next song");
+      await fetch(`/api/spotify/next`, {method: 'POST'});
+      await this.getCurrTrack();
     },
     togglePlay() {
       console.log("toggle timer and song");
@@ -178,12 +194,22 @@ export default {
         this.startTimer();
       }
     },
+    async getCurrTrack() {
+      this.clearTrackTimer();
+      const res = await fetch(`/api/spotify/getCurrentTrack`).then(async r => r.json());
+      this.currTrackTitle = res.track.item.name;
+      this.currTrackArtist = res.track.item.artists.map(a => a.name).join(' ')
+      const timeout = res.track.item.duration_ms - res.track.progress_ms;
+      // const timeout = res.track.item.duration_ms - (new Date().getTime() - res.track.timestamp + res.track.progress_ms) + 1000;
+      console.log(timeout);
+      // console.log(res.track.item.duration_ms, new Date().getTime(), res.track.timestamp, res.track.progress_ms)
+      this.trackTimerId = setTimeout(() => {
+        this.getCurrTrack();
+      }, timeout);
+    },
   },
   async beforeCreate() {
-    console.log('homepage')
-    if (this.$store.state.username) {
-      
-    }
+    this.$store.commit("refreshLikedPlaylists");
   }
 };
 </script>
