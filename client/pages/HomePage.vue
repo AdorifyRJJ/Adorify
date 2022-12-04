@@ -68,7 +68,7 @@ export default {
       focusTime: 25,
       breakTime: 5,
       intervals: 2,
-      selectedPlaylistId: "sd23c98efc293",
+      selectedPlaylistId: "2GFpVSTpzgKEsuWGQIKZu4",
       sessionStarted: false,
       focusing: false,
       currInterval: 1,
@@ -78,8 +78,11 @@ export default {
       currTrackTitle: '',
       currTrackArtist: '',
       trackTimerId: null,
+
       playlistTracks: null,
+      totalPlaylistTracks: 1,
       playlistIndex: 0,
+      playlistLimit: 100,
     };
   },
   computed: {
@@ -167,11 +170,13 @@ export default {
       // api call POST /api/adorifySession
       this.focusing = true;
       this.sessionStarted = true;
+      this.playlistIndex = 0;
       console.log("session started");
-      // console.log(await fetch(`/api/playlists/mine?offset=0`).then(async r => r.json()));
-      console.log(await fetch(`/api/playlists/info/2E97C5dfeyPyCgTr6ntCpA`).then(async r=> r.json()))
-      await fetch(`/api/spotify/skipQueue`, {method: 'POST'});
-      await fetch(`/api/spotify/addToQueue/spotify:track:2g0LdZQce9xlcHb1mBJyuz`, {method: 'POST'});
+      console.log(await fetch(`/api/playlists/mine?offset=0`).then(async r => r.json()));
+      // console.log(await fetch(`/api/playlists/info/2E97C5dfeyPyCgTr6ntCpA`).then(async r=> r.json()))
+      await this.getPlaylistTracks();
+      await fetch(`/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex % this.playlistLimit]}`, {method: 'POST'});
+      await fetch(`/api/spotify/next`, {method: 'POST'});
       // await fetch(`/api/spotify/addToQueue/spotify:playlist:2E97C5dfeyPyCgTr6ntCpA`, {method: 'POST'});
       
       await this.startTimer();
@@ -199,6 +204,7 @@ export default {
     async playNext() {
       if (this.timerActive) {
         console.log("play next song");
+        await this.addNextTrackToQueue();
         await fetch(`/api/spotify/next`, {method: 'POST'});
         await new Promise(f => setTimeout(f, 200));
         await this.getCurrTrack();
@@ -219,12 +225,27 @@ export default {
       this.currTrackArtist = res.track.item.artists.map(a => a.name).join(' ')
       const timeout = res.track.item.duration_ms - res.track.progress_ms;
       // const timeout = res.track.item.duration_ms - (new Date().getTime() - res.track.timestamp + res.track.progress_ms) + 1000;
-      console.log(timeout);
       // console.log(res.track.item.duration_ms, new Date().getTime(), res.track.timestamp, res.track.progress_ms)
       this.trackTimerId = setTimeout(async () => {
         await this.getCurrTrack();
       }, timeout);
     },
+    async addNextTrackToQueue() {
+      console.log(this.playlistIndex+1, this.playlistTracks.length, this.playlistLimit)
+      this.playlistIndex++;
+      if (this.playlistIndex % this.playlistLimit === 0 || this.playlistIndex >= this.totalPlaylistTracks)
+        await this.getPlaylistTracks();
+      await fetch(`/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex % this.playlistLimit]}`, {method: 'POST'});
+    },
+    async getPlaylistTracks() {
+      console.log('getting more tracks')
+      const offset = (this.playlistIndex >= this.totalPlaylistTracks) ? 0 : this.playlistIndex;
+      const res = await fetch(`/api/playlists/info/${this.selectedPlaylistId}/tracks?offset=${offset}`).then(async r => r.json());
+      this.playlistTracks = res.tracks.items.map(r => r.track.id);
+      this.playlistIndex = offset;
+      this.totalPlaylistTracks = res.tracks.total;
+      this.playlistLimit = res.tracks.limit;
+    }
   },
   async beforeCreate() {
     this.$store.commit("refreshLikedPlaylists");
