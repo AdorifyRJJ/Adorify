@@ -161,17 +161,24 @@ export default {
       this.clearTrackTimer();
       await this.pauseMusic();
     },
-   async startSession() {
+    async startSession() {
       // api call POST /api/adorifySession
       this.focusing = true;
       this.sessionStarted = true;
       console.log("session started");
       // console.log(await fetch(`/api/playlists/mine?offset=0`).then(async r => r.json()));
-      console.log(await fetch(`/api/playlists/info/2E97C5dfeyPyCgTr6ntCpA`).then(async r=> r.json()))
-      await fetch(`/api/spotify/skipQueue`, {method: 'POST'});
-      await fetch(`/api/spotify/addToQueue/spotify:track:2g0LdZQce9xlcHb1mBJyuz`, {method: 'POST'});
+      console.log(
+        await fetch(`/api/playlists/info/2E97C5dfeyPyCgTr6ntCpA`).then(
+          async (r) => r.json()
+        )
+      );
+      await fetch(`/api/spotify/skipQueue`, { method: "POST" });
+      await fetch(
+        `/api/spotify/addToQueue/spotify:track:2g0LdZQce9xlcHb1mBJyuz`,
+        { method: "POST" }
+      );
       // await fetch(`/api/spotify/addToQueue/spotify:playlist:2E97C5dfeyPyCgTr6ntCpA`, {method: 'POST'});
-      
+
       await this.startTimer();
       // start playlist
     },
