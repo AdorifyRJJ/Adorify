@@ -1,24 +1,43 @@
 <template>
     <div>
-        <button v-if="this.playlist.isLiked" @click="removePlaylist">
-            Click to unlike
+        <button @click="toggleLike">
+            Click to {{ this.isLiked ? "unlike" : "like" }}
         </button>
-        <button v-else @click="addPlaylist">Click to like</button>
     </div>
 </template>
 
 <script>
 export default {
     name: "LikeButton",
-    props: ["playlist"],
+    props: ["spotifyId", "isLiked"],
+    // computed: {
+    //     like: {
+    //         get() {
+    //             return this.isLiked;
+    //         },
+    //         set(newLike) {
+    //             return newLike;
+    //         },
+    //     },
+    // },
     methods: {
-        addPlaylist() {
+        async toggleLike() {
             // api call PUT /api/playlists/:spotifyId
-            this.$store.commit("addMyLikedPlaylists", this.playlist);
-        },
-        removePlaylist() {
-            // api call PUT /api/playlists/:spotifyId
-            this.$store.commit("removeMyLikedPlaylists", this.playlist);
+            const options = {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "same-origin", // Sends express-session credentials with request
+            };
+            const res = await fetch(
+                `/api/playlists/${this.spotifyId}`,
+                options
+            ).then(async (r) => r.json());
+            console.log("liking", res);
+            this.isLiked = res.isLiked;
+
+            this.$store.commit("refreshLikedPlaylists");
+
+            // this.$store.commit("addMyLikedPlaylists", this.playlist);
         },
     },
 };

@@ -1,12 +1,14 @@
 <template>
     <div>
         <h3>Liked</h3>
+        <!-- <div>{{ this.$store.state.myLikedPlaylists }}</div> -->
         <div v-if="$store.state.myLikedPlaylists.length">
             <div
-                :key="playlist.id"
-                v-for="playlist in $store.state.myLikedPlaylists"
+                @click="openPlaylist(playlist.id)"
+                :key="i"
+                v-for="(playlist, i) in $store.state.myLikedPlaylists"
             >
-                {{ playlist.playlistName }}
+                {{ playlist.name }}
             </div>
         </div>
         <div v-else>Like to add playlists!</div>
@@ -14,15 +16,21 @@
 </template>
 
 <script>
-import { myLikedPlaylists } from "../dummyData.js";
 export default {
     name: "MyLikedPlaylists",
+    methods: {
+        // programmatic navigation
+        openPlaylist(id) {
+            this.$router.push({
+                name: "PlaylistInfoPage",
+                params: {
+                    spotifyId: id,
+                },
+            });
+        },
+    },
     async mounted() {
-        // api call GET /api/users
-        const url = "/api/users";
-        const res = await fetch(url).then((r) => r.json());
-        console.log("my liked playlists", res);
-        this.$store.commit("setMyLikedPlaylists", myLikedPlaylists);
+        this.$store.commit("refreshLikedPlaylists");
     },
 };
 </script>

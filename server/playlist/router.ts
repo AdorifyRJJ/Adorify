@@ -68,7 +68,7 @@ router.get(
     res.status(200).json({
       message: 'Retrieved succesfully.',
       playlistInfo: playlistInfo.body,
-      isLiked: UserCollection.inLikedPlaylists(req.session.username, req.params.spotifyId),
+      isLiked: await UserCollection.inLikedPlaylists(req.session.username, req.params.spotifyId),
     });
   }
 )
