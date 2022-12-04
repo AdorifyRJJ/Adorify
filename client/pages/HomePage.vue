@@ -239,7 +239,7 @@ export default {
       this.currTrackArtist = res.track.item.artists
         .map((a) => a.name)
         .join(" ");
-      const timeout = res.track.item.duration_ms - res.track.progress_ms + 200;
+      const timeout = res.track.item.duration_ms - res.track.progress_ms;
       console.log(timeout);
       // const timeout = res.track.item.duration_ms - (new Date().getTime() - res.track.timestamp + res.track.progress_ms) + 1000;
       // console.log(res.track.item.duration_ms, new Date().getTime(), res.track.timestamp, res.track.progress_ms)
