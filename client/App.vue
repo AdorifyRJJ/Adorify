@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <header>
+    <header v-if="$store.state.displayName">
       <NavBar />
     </header>
     <router-view />
