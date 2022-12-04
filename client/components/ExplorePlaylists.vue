@@ -100,7 +100,7 @@ export default {
     },
     async mounted() {
         // initial api call GET public playlists by likes
-        await this.getMostLiked();
+        await this.getMyPlaylists();
         console.log("public playlists by likes", this.currPlaylists);
 
         // this.$store.commit("setMySpotifyPlaylists", mySpotifyPlaylists);

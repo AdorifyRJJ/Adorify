@@ -5,8 +5,98 @@ import * as userValidator from '../user/middleware';
 import * as util from './util';
 import UserCollection from '../user/collection';
 import SpotifyWebApi from 'spotify-web-api-node';
+import { spotifyApi } from '../spotify/router';
 
 const router = express.Router();
+
+//////////////////////////
+
+// let tokenExpirationEpoch: number;
+// const authorizationCode = 'AQCelEmlus6jfIhTiw9McSNIIxfeyQ7cqVltIB-bCtKXBY0stfBLDdO3xAgE74e4_cvjbaXH_IIbfEri4DohxgXAya5GA8PU5jonuCtv9YJmlmaX0u_hUgUIZb--2EHV9I-sDTEn10WwQCefh65JaGaGM8WvfM7QTTp3ZDKEvfuQoOIP18iQRS5K0ziqRIVpuhzAEa_pqKGcfPaT0-DvZq0t-zF4XsyfE5odCDCbQczWGefCjOCPQ76BlL4HPpUam_x-2459gtkrQxrz1MW3QFd7yHAn53AAOxjG-eAbRhalrKwDrYqfKHse8aA';
+
+// spotifyApi.authorizationCodeGrant(authorizationCode).then(
+//   function(data) {
+//     // Set the access token and refresh token
+//     spotifyApi.setAccessToken(data.body['access_token']);
+//     spotifyApi.setRefreshToken(data.body['refresh_token']);
+
+//     // Save the amount of seconds until the access token expired
+//     tokenExpirationEpoch =
+//       new Date().getTime() / 1000 + data.body['expires_in'];
+//     console.log(
+//       'Retrieved token. It expires in ' +
+//         Math.floor(tokenExpirationEpoch - new Date().getTime() / 1000) +
+//         ' seconds!'
+//     );
+//   },
+//   function(err) {
+//     console.log(
+//       'Something went wrong when retrieving the access token!',
+//       err.message
+//     );
+//   }
+// );
+
+// // Continually print out the time left until the token expires..
+// let numberOfTimesUpdated = 0;
+
+// setInterval(function() {
+//   console.log(
+//     'Time left: ' +
+//       Math.floor(tokenExpirationEpoch - new Date().getTime() / 1000) +
+//       ' seconds left!'
+//   );
+
+//   // OK, we need to refresh the token. Stop printing and refresh.
+//   if (++numberOfTimesUpdated > 5) {
+//     clearInterval(this);
+
+//     // Refresh token and print the new time to expiration.
+//     spotifyApi.refreshAccessToken().then(
+//       function(data) {
+//         tokenExpirationEpoch =
+//           new Date().getTime() / 1000 + data.body['expires_in'];
+//         console.log(
+//           'Refreshed token. It now expires in ' +
+//             Math.floor(tokenExpirationEpoch - new Date().getTime() / 1000) +
+//             ' seconds!'
+//         );
+//       },
+//       function(err) {
+//         console.log('Could not refresh the token!', err.message);
+//       }
+//     );
+//   }
+// }, 1000);
+
+// //////////////////
+
+// const mostResults: Array<any> = [null, null, null];
+
+// //update most liked, used, productive every hour
+// setInterval(async () => {
+//   console.log('refreshing most liked, used, productive');
+//   // spotifyApi.setAccessToken();
+
+//   const filters = [PlaylistCollection.findMostLikes, PlaylistCollection.findMostUsed, PlaylistCollection.findMostProductive];
+
+//   for (let i = 0; i < filters.length; i++) {
+//     const playlists = await filters[i]();
+//     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+
+//     for (const p of playlists) {
+//       const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId,  {fields: 'id, images, name, owner.display_name, public'});
+//       if (playlistInfo.statusCode === 200)
+//         playlistInfos.push(playlistInfo.body);
+//       else
+//         console.log('Failed to retrieve', playlistInfo.body);
+//     }
+
+//     mostResults[i] = playlistInfos;
+//   }
+// }, 10*1000);
+
+
 
 // GET /api/playlists/mine?offset=
 router.get(
@@ -151,7 +241,7 @@ router.get(
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
     
     for (const p of playlists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId);
+      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'id, images, name, owner.display_name, public'});
       if (playlistInfo.statusCode === 200)
         playlistInfos.push(playlistInfo.body);
       else
@@ -183,7 +273,7 @@ router.get(
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
 
     for (const p of playlists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId);
+      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId,  {fields: 'id, images, name, owner.display_name, public'});
       if (playlistInfo.statusCode === 200)
         playlistInfos.push(playlistInfo.body);
       else
@@ -215,7 +305,7 @@ router.get(
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
 
     for (const p of playlists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId);
+      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId,  {fields: 'id, images, name, owner.display_name, public'});
       if (playlistInfo.statusCode === 200)
         playlistInfos.push(playlistInfo.body);
       else

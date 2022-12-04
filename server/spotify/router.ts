@@ -402,4 +402,4 @@ router.post(
     }
 )
 
-export { router as spotifyRouter };
+export { router as spotifyRouter, spotifyApi };

@@ -176,8 +176,7 @@ export default {
     },
     async startSession() {
       // api call POST /api/adorifySession
-      console.log(this.selectedPlaylistId)
-      if (this.selectedPlaylistId) {
+      if (this.selectedPlaylistId && this.$store.state.connected) {
         this.focusing = true;
         this.sessionStarted = true;
         this.playlistIndex = 0;
@@ -217,6 +216,7 @@ export default {
       if (this.timerActive) {
         console.log("play next song");
         await this.addNextTrackToQueue();
+        await new Promise(f => setTimeout(f, 200));
         await fetch(`/api/spotify/next`, {method: 'POST'});
         await new Promise(f => setTimeout(f, 500));
         await this.getCurrTrack();
@@ -252,8 +252,9 @@ export default {
         this.clearTrackTimer();
         this.trackTimerId = setTimeout(async () => {
           await this.addNextTrackToQueue();
+          await new Promise(f => setTimeout(f, 500));
           await this.getCurrTrack();
-        }, timeout);
+        }, timeout - 500);
       }
       else {
         this.clearTrackTimer();
