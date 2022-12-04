@@ -81,7 +81,6 @@ export default {
   },
 
   async beforeCreate() {
-    console.log(this.$store.state)
     if (this.$store.state.displayName) {
       const me = await fetch(`/api/spotify/getMe`);
       if (me.ok) {
