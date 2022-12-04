@@ -1,6 +1,7 @@
 <template>
   <main>
     <h1>Home Page</h1>
+    <v-btn>VUETIFY</v-btn>
     <!-- <div>
       <button @click="playMusic">Play Music</button>
       <button @click="pauseMusic">Pause Music</button>
