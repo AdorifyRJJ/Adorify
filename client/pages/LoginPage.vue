@@ -23,6 +23,11 @@ export default {
             window.location.href = rURL;
         },
     },
+    beforeCreate () {
+        if (this.$store.state.displayName){
+            this.$router.push({name: 'Profile'})
+        }
+    }
 };
 </script>
 

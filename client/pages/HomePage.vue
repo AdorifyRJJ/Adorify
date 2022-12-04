@@ -7,8 +7,8 @@
     </div> -->
     <div>
       <p v-if="!this.$store.state.connected">
-        Device is not ready, so music playback will not work. Either wait for connection or please log in.
-        (Click "Profile" -> "Logout" -> "Login")
+        Device is not ready, so music playback will not work. Either wait for
+        connection or please log in. (Click "Profile" -> "Logout" -> "Login")
       </p>
       <p v-else>Device ready!</p>
     </div>
@@ -18,7 +18,7 @@
     </div>
 
     <!-- fetch username -->
-    <div> {{ this.$store.state.displayName }} </div>
+    <div>{{ this.$store.state.displayName }}</div>
 
     <div v-if="!sessionStarted">
       <div>Start a focus session</div>
@@ -44,10 +44,10 @@
       <div>
         <h2>{{ this.getTime }}</h2>
       </div>
-      <div> {{ this.currInterval }} / {{ this.intervals }}</div>
+      <div>{{ this.currInterval }} / {{ this.intervals }}</div>
       <button @click="endSession">End Session</button>
-      <div>{{this.currTrackTitle}}</div>
-      <div>{{this.currTrackArtist}}</div>
+      <div>{{ this.currTrackTitle }}</div>
+      <div>{{ this.currTrackArtist }}</div>
       <div>
         <button @click="playPrev">[prev]</button>
         <button @click="togglePlay">[pause/play]</button>
@@ -75,8 +75,8 @@ export default {
       timerActive: false,
       timestamp: null,
       timerId: null,
-      currTrackTitle: '',
-      currTrackArtist: '',
+      currTrackTitle: "",
+      currTrackArtist: "",
       trackTimerId: null,
       playlistTracks: null,
       playlistIndex: 0,
@@ -144,8 +144,7 @@ export default {
             if (!this.focusing) {
               this.currInterval++;
               this.playMusic();
-            }
-            else {
+            } else {
               this.pauseMusic();
             }
             this.focusing = !this.focusing;
@@ -153,8 +152,7 @@ export default {
           }
         }
       }, 1000);
-      if (this.focusing)
-        await this.playMusic();
+      if (this.focusing) await this.playMusic();
       await this.getCurrTrack();
     },
     async pauseTimer() {
@@ -163,7 +161,7 @@ export default {
       this.clearTrackTimer();
       await this.pauseMusic();
     },
-    async startSession() {
+   async startSession() {
       // api call POST /api/adorifySession
       this.focusing = true;
       this.sessionStarted = true;
@@ -191,16 +189,16 @@ export default {
     async playPrev() {
       if (this.timerActive) {
         console.log("play prev song");
-        await fetch(`/api/spotify/previous`, {method: 'POST'});
-        await new Promise(f => setTimeout(f, 200));
+        await fetch(`/api/spotify/previous`, { method: "POST" });
+        await new Promise((f) => setTimeout(f, 200));
         await this.getCurrTrack();
       }
     },
     async playNext() {
       if (this.timerActive) {
         console.log("play next song");
-        await fetch(`/api/spotify/next`, {method: 'POST'});
-        await new Promise(f => setTimeout(f, 200));
+        await fetch(`/api/spotify/next`, { method: "POST" });
+        await new Promise((f) => setTimeout(f, 200));
         await this.getCurrTrack();
       }
     },
@@ -214,9 +212,13 @@ export default {
     },
     async getCurrTrack() {
       this.clearTrackTimer();
-      const res = await fetch(`/api/spotify/getCurrentTrack`).then(async r => r.json());
+      const res = await fetch(`/api/spotify/getCurrentTrack`).then(async (r) =>
+        r.json()
+      );
       this.currTrackTitle = res.track.item.name;
-      this.currTrackArtist = res.track.item.artists.map(a => a.name).join(' ')
+      this.currTrackArtist = res.track.item.artists
+        .map((a) => a.name)
+        .join(" ");
       const timeout = res.track.item.duration_ms - res.track.progress_ms;
       // const timeout = res.track.item.duration_ms - (new Date().getTime() - res.track.timestamp + res.track.progress_ms) + 1000;
       console.log(timeout);
@@ -227,8 +229,12 @@ export default {
     },
   },
   async beforeCreate() {
-    this.$store.commit("refreshLikedPlaylists");
-  }
+    if (this.$store.state.displayName) {
+      this.$store.commit("refreshLikedPlaylists");
+    } else {
+      this.$router.push({ name: "Login" });
+    }
+  },
 };
 </script>
 
