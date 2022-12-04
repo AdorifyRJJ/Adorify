@@ -55,7 +55,7 @@ const store = new Vuex.Store({
     setSpotifyPlayer(state, player) {
       state.spotifyPlayer = player;
     },
-    forceDisconnect(state){
+    forceDisconnect(state) {
       if (state.spotifyPlayer) state.spotifyPlayer.disconnect();
       state.connected = false;
     },
@@ -81,12 +81,6 @@ const store = new Vuex.Store({
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
     },
-    deleteRefreshTimeout(state) {
-      if (state.refreshTimeout) { 
-        clearTimeout(state.refreshTimeout);
-        state.refreshTimeout = null;
-      }
-    },
     async scheduleRefresh(state) {
       if (state.displayName) {
         const expiryTime = (await (await fetch('/api/spotify/getExpiryTime')).json()).expiryTime;
@@ -96,7 +90,8 @@ const store = new Vuex.Store({
         const timeFromNowMS = timeFromNow * 1000;
         if (state.refreshTimeout) clearTimeout(state.refreshTimeout);
         if (timeFromNowMS < 0) {
-          await fetch('/api/spotify/refreshAccessToken')
+          await fetch('/api/spotify/refreshAccessToken');
+          store.commit("scheduleRefresh");
         } else {
           state.refreshTimeout = setTimeout(async () => {
             await fetch('/api/spotify/refreshAccessToken');
@@ -149,10 +144,11 @@ const store = new Vuex.Store({
       const playlists = (await fetch(`/api/users`).then(async r => r.json())).playlists;
       console.log('playlists', playlists)
       state.myLikedPlaylists = playlists.map((playlist) => ({
-        id: playlist.id, 
-        image: playlist.images[0], 
-        name: playlist.name, 
-        owner: playlist.owner.display_name})
+        id: playlist.id,
+        image: playlist.images[0],
+        name: playlist.name,
+        owner: playlist.owner.display_name
+      })
       )
     },
     setMyLikedPlaylists(state, playlists) {
