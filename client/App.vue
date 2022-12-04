@@ -20,7 +20,7 @@ export default {
       this.$store.commit("setUsername", myDataJson.id);
 
       const script = document.createElement("script");
-      script.setAttribute("id", "spotifyWebPlayer");
+      
       script.src = "https://sdk.scdn.co/spotify-player.js";
       script.async = true;
       document.body.appendChild(script);

@@ -17,14 +17,14 @@ import PlaylistInfoPage from './pages/PlaylistInfoPage.vue';
 Vue.use(VueRouter);
 
 const routes = [
-  {path: '/', name: 'Home', component: HomePage},
-  {path: '/login', name: 'Login', component: LoginPage},
-  {path: '/profile', name: 'Profile', component: ProfilePage},
-  {path: '/leaderboard', name: 'Leaderboard', component: LeaderboardPage},
-  {path: '/playlists', name: 'Playlists', component: PlaylistsPage},
-  {path: '/playlists/info/:spotifyId', name: 'PlaylistInfoPage', component: PlaylistInfoPage},
-  {path: '/callback', name: 'Callback', component: CallbackPage},
-  {path: '*', name: 'Not Found', component: NotFound}
+  { path: '/', name: 'Home', component: HomePage },
+  { path: '/login', name: 'Login', component: LoginPage },
+  { path: '/profile', name: 'Profile', component: ProfilePage },
+  { path: '/leaderboard', name: 'Leaderboard', component: LeaderboardPage },
+  { path: '/playlists', name: 'Playlists', component: PlaylistsPage },
+  { path: '/playlists/info/:spotifyId', name: 'PlaylistInfoPage', component: PlaylistInfoPage },
+  { path: '/callback', name: 'Callback', component: CallbackPage },
+  { path: '*', name: 'Not Found', component: NotFound }
 ];
 
 const router = new VueRouter({ mode: 'history', routes });
@@ -44,12 +44,14 @@ router.beforeEach((to, from, next) => {
   //     return;
   //   }
   // }
-  if (router.app.$store){
-    if (to.name === 'Home' && router.app.$store.state.spotifyPlayer){
-      router.app.$store.state.spotifyPlayer.connect();
-    }
-    if (from.name === 'Home' && router.app.$store.state.spotifyPlayer){
-      router.app.$store.state.spotifyPlayer.disconnect();
+  if (router.app.$store) {
+    if (router.app.$store.state.deviceId && router.app.$store.state.username) {
+      if (to.name === 'Home' && router.app.$store.state.spotifyPlayer) {
+        router.app.$store.state.spotifyPlayer.connect();
+      }
+      if (from.name === 'Home' && router.app.$store.state.spotifyPlayer) {
+        router.app.$store.state.spotifyPlayer.disconnect();
+      }
     }
   }
 
