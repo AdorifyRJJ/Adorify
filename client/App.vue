@@ -1,10 +1,10 @@
 <template>
-  <div id="app">
-    <header v-if="$store.state.displayName">
-      <NavBar />
-    </header>
-    <router-view />
-  </div>
+    <div id="app">
+      <header v-if="$store.state.displayName">
+        <NavBar />
+      </header>
+      <router-view />
+    </div>
 </template>
 
 <script>

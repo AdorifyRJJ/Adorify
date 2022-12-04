@@ -1,7 +1,6 @@
 <template>
   <main>
     <h1>Home Page</h1>
-    <v-btn>VUETIFY</v-btn>
     <!-- <div>
       <button @click="playMusic">Play Music</button>
       <button @click="pauseMusic">Pause Music</button>
@@ -35,10 +34,10 @@
         </div>
       </div>
       <HomePlaylistCard
-          :key="i"
-          v-for="(playlist, i) in this.$store.state.myLikedPlaylists"
-          :playlist="playlist"
-          @select="toggleSelected"
+        :key="i"
+        v-for="(playlist, i) in this.$store.state.myLikedPlaylists"
+        :playlist="playlist"
+        @select="toggleSelected"
       ></HomePlaylistCard>
 
       <!-- start focus session and play selected playlist -->
@@ -186,8 +185,13 @@ export default {
         // console.log(await fetch(`/api/playlists/info/2E97C5dfeyPyCgTr6ntCpA`).then(async r=> r.json()))
         // await fetch(`/api/spotify/skipQueue`, {method: 'POST'});
         await this.getPlaylistTracks();
-        await fetch(`/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex]}`, {method: 'POST'});
-        await fetch(`/api/spotify/next`, {method: 'POST'});
+        await fetch(
+          `/api/spotify/addToQueue/spotify:track:${
+            this.playlistTracks[this.playlistIndex]
+          }`,
+          { method: "POST" }
+        );
+        await fetch(`/api/spotify/next`, { method: "POST" });
         // await fetch(`/api/spotify/addToQueue/spotify:playlist:2E97C5dfeyPyCgTr6ntCpA`, {method: 'POST'});
 
         await this.startTimer();
@@ -217,9 +221,9 @@ export default {
       if (this.timerActive) {
         console.log("play next song");
         await this.addNextTrackToQueue();
-        await new Promise(f => setTimeout(f, 200));
-        await fetch(`/api/spotify/next`, {method: 'POST'});
-        await new Promise(f => setTimeout(f, 500));
+        await new Promise((f) => setTimeout(f, 200));
+        await fetch(`/api/spotify/next`, { method: "POST" });
+        await new Promise((f) => setTimeout(f, 500));
         await this.getCurrTrack();
       }
     },
@@ -232,9 +236,9 @@ export default {
       }
     },
     toggleSelected(spotifyId) {
-      console.log('re')
+      console.log("re");
       this.selectedPlaylistId = spotifyId;
-      console.log(this.selectedPlaylistId)
+      console.log(this.selectedPlaylistId);
     },
     async getCurrTrack() {
       this.clearTrackTimer();
@@ -253,11 +257,10 @@ export default {
         this.clearTrackTimer();
         this.trackTimerId = setTimeout(async () => {
           await this.addNextTrackToQueue();
-          await new Promise(f => setTimeout(f, 500));
+          await new Promise((f) => setTimeout(f, 500));
           await this.getCurrTrack();
         }, timeout - 500);
-      }
-      else {
+      } else {
         this.clearTrackTimer();
         this.trackTimerId = setTimeout(async () => {
           await this.getCurrTrack();
@@ -265,21 +268,36 @@ export default {
       }
     },
     async addNextTrackToQueue() {
-      console.log(this.playlistIndex+1, this.playlistTracks.length, this.playlistLimit)
+      console.log(
+        this.playlistIndex + 1,
+        this.playlistTracks.length,
+        this.playlistLimit
+      );
       this.playlistIndex++;
-      if (this.playlistIndex % this.playlistLimit === 0 || this.playlistIndex >= this.totalPlaylistTracks)
+      if (
+        this.playlistIndex % this.playlistLimit === 0 ||
+        this.playlistIndex >= this.totalPlaylistTracks
+      )
         await this.getPlaylistTracks();
-      await fetch(`/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex % this.playlistLimit]}`, {method: 'POST'});
+      await fetch(
+        `/api/spotify/addToQueue/spotify:track:${
+          this.playlistTracks[this.playlistIndex % this.playlistLimit]
+        }`,
+        { method: "POST" }
+      );
     },
     async getPlaylistTracks() {
-      console.log('getting more tracks')
-      const offset = (this.playlistIndex >= this.totalPlaylistTracks) ? 0 : this.playlistIndex;
-      const res = await fetch(`/api/playlists/info/${this.selectedPlaylistId}/tracks?offset=${offset}`).then(async r => r.json());
-      this.playlistTracks = res.tracks.items.map(r => r.track.id);
+      console.log("getting more tracks");
+      const offset =
+        this.playlistIndex >= this.totalPlaylistTracks ? 0 : this.playlistIndex;
+      const res = await fetch(
+        `/api/playlists/info/${this.selectedPlaylistId}/tracks?offset=${offset}`
+      ).then(async (r) => r.json());
+      this.playlistTracks = res.tracks.items.map((r) => r.track.id);
       this.playlistIndex = offset;
       this.totalPlaylistTracks = res.tracks.total;
       this.playlistLimit = res.tracks.limit;
-    }
+    },
   },
   async beforeCreate() {
     if (this.$store.state.displayName) {
