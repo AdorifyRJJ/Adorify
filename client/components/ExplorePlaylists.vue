@@ -16,6 +16,8 @@
             :playlist="playlist"
         ></PlaylistCard>
         <div>
+            <p>{{ this.limit }}</p>
+            <p>{{ this.offset }}</p>
             <button v-if="currPlaylists.previous" @click="prevPage">
                 prev page
             </button>

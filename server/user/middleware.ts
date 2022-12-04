@@ -64,7 +64,7 @@ const validAccessToken = (req: Request, res: Response, next: NextFunction) => {
   next();
 }
 
- const isUserLoggedOut = (req: Request, res: Response, next: NextFunction) => {
+const isUserLoggedOut = (req: Request, res: Response, next: NextFunction) => {
   if (req.session.username) {
     res.status(403).json({
       error: 'You are already signed in.'

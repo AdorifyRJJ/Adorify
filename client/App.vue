@@ -22,6 +22,8 @@ export default {
       const myDataJson = await myData.json();
       this.$store.commit("setDisplayName", myDataJson.display_name);
 
+      this.$store.commit("refreshLikedPlaylists");
+
       const script = document.createElement("script");
 
       script.src = "https://sdk.scdn.co/spotify-player.js";

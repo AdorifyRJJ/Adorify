@@ -76,7 +76,7 @@ export default {
       focusTime: 25,
       breakTime: 5,
       intervals: 2,
-      selectedPlaylistId: "2GFpVSTpzgKEsuWGQIKZu4",
+      selectedPlaylistId: null,
       sessionStarted: false,
       focusing: false,
       currInterval: 1,
@@ -176,20 +176,22 @@ export default {
     },
     async startSession() {
       // api call POST /api/adorifySession
-      this.focusing = true;
-      this.sessionStarted = true;
-      this.playlistIndex = 0;
-      console.log("session started");
-      // console.log(await fetch(`/api/playlists/mine?offset=0`).then(async r => r.json()));
-      // console.log(await fetch(`/api/playlists/info/2E97C5dfeyPyCgTr6ntCpA`).then(async r=> r.json()))
-      // await fetch(`/api/spotify/skipQueue`, {method: 'POST'});
-      await this.getPlaylistTracks();
-      await fetch(`/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex % this.playlistLimit]}`, {method: 'POST'});
-      await fetch(`/api/spotify/next`, {method: 'POST'});
-      // await fetch(`/api/spotify/addToQueue/spotify:playlist:2E97C5dfeyPyCgTr6ntCpA`, {method: 'POST'});
+      console.log(this.selectedPlaylistId)
+      if (this.selectedPlaylistId) {
+        this.focusing = true;
+        this.sessionStarted = true;
+        this.playlistIndex = 0;
+        console.log("session started");
+        // console.log(await fetch(`/api/playlists/mine?offset=0`).then(async r => r.json()));
+        // console.log(await fetch(`/api/playlists/info/2E97C5dfeyPyCgTr6ntCpA`).then(async r=> r.json()))
+        // await fetch(`/api/spotify/skipQueue`, {method: 'POST'});
+        await this.getPlaylistTracks();
+        await fetch(`/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex % this.playlistLimit]}`, {method: 'POST'});
+        await fetch(`/api/spotify/next`, {method: 'POST'});
+        // await fetch(`/api/spotify/addToQueue/spotify:playlist:2E97C5dfeyPyCgTr6ntCpA`, {method: 'POST'});
 
-      await this.startTimer();
-      // start playlist
+        await this.startTimer();
+      }
     },
     async endSession() {
       // api call PUT /api/adorifySession/:asID
@@ -198,6 +200,7 @@ export default {
       this.focusing = false;
       this.currInterval = 1;
       this.sessionStarted = false;
+      this.selected = null;
       console.log("session ended");
       // end timer
       // end playlist
@@ -206,7 +209,7 @@ export default {
       if (this.timerActive) {
         console.log("play prev song");
         await fetch(`/api/spotify/previous`, { method: "POST" });
-        await new Promise((f) => setTimeout(f, 200));
+        await new Promise((f) => setTimeout(f, 500));
         await this.getCurrTrack();
       }
     },
@@ -215,7 +218,7 @@ export default {
         console.log("play next song");
         await this.addNextTrackToQueue();
         await fetch(`/api/spotify/next`, {method: 'POST'});
-        await new Promise(f => setTimeout(f, 200));
+        await new Promise(f => setTimeout(f, 500));
         await this.getCurrTrack();
       }
     },
@@ -228,7 +231,9 @@ export default {
       }
     },
     toggleSelected(spotifyId) {
+      console.log('re')
       this.selectedPlaylistId = spotifyId;
+      console.log(this.selectedPlaylistId)
     },
     async getCurrTrack() {
       this.clearTrackTimer();
@@ -244,12 +249,14 @@ export default {
       // const timeout = res.track.item.duration_ms - (new Date().getTime() - res.track.timestamp + res.track.progress_ms) + 1000;
       // console.log(res.track.item.duration_ms, new Date().getTime(), res.track.timestamp, res.track.progress_ms)
       if (timeout > 5000) {
+        this.clearTrackTimer();
         this.trackTimerId = setTimeout(async () => {
           await this.addNextTrackToQueue();
           await this.getCurrTrack();
         }, timeout);
       }
       else {
+        this.clearTrackTimer();
         this.trackTimerId = setTimeout(async () => {
           await this.getCurrTrack();
         }, timeout);

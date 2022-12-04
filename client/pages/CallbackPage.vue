@@ -14,6 +14,7 @@ export default {
         const myDataJson = await myData.json();
         this.$store.commit("setDisplayName", myDataJson.display_name);
         this.$store.commit("scheduleRefresh");
+        this.$store.commit("refreshLikedPlaylists");
 
         const script = document.createElement("script");
         
