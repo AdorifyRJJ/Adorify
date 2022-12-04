@@ -77,7 +77,6 @@ app.use('/api/users', userRouter);
 app.use('/api/spotify', spotifyRouter);
 app.use('/api/playlists', playlistRouter);
 
-
 // Catch all the other routes and display error message
 app.all('*', (req: Request, res: Response) => {
   res.status(404).json({
