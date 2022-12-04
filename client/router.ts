@@ -44,6 +44,14 @@ router.beforeEach((to, from, next) => {
   //     return;
   //   }
   // }
+  if (router.app.$store){
+    if (to.name === 'Home' && router.app.$store.state.spotifyPlayer){
+      router.app.$store.state.spotifyPlayer.connect();
+    }
+    if (from.name === 'Home' && router.app.$store.state.spotifyPlayer){
+      router.app.$store.state.spotifyPlayer.disconnect();
+    }
+  }
 
   next();
 });

@@ -21,8 +21,10 @@ const spotifyApi = new SpotifyWebApi({
 });
 
 router.get(
-    '/login', 
-    [],
+    '/login',
+    [
+        userValidator.isUserLoggedOut
+    ],
     async function (req: Request, res: Response) {
         const loginSpotifyApi = new SpotifyWebApi({
             clientId: process.env.ID,
@@ -39,20 +41,30 @@ router.get(
 );
 
 router.get(
-    '/logout', 
-    [],
+    '/logout',
+    [
+        userValidator.isCurrentSessionUserExists,
+        userValidator.isUserLoggedIn,
+    ],
     async function (req: Request, res: Response) {
-        req.session.username = undefined;
-        req.session.refreshToken = undefined;
-        req.session.accessToken = undefined;
-        res.status(200).json({
-            message: 'You have logged out successfully.'
-        });
+        const destroyCallback = (err: any) => {
+            if (err) {
+                res.status(500).json({
+                    message: 'Session destroy error'
+                })
+            } else {
+                res.status(200).json({
+                    message: 'You have logged out successfully.'
+                });
+            }
+            res.end();
+        }
+        req.session.destroy(destroyCallback);
     }
 )
 
 router.get(
-    '/refreshAccessToken', 
+    '/refreshAccessToken',
     [
         userValidator.isUserLoggedIn,
         userValidator.validRefreshToken,
@@ -84,41 +96,37 @@ router.get(
 );
 
 router.get(
-    '/getExpiryTime', 
-    [],
+    '/getExpiryTime',
+    [
+        userValidator.isCurrentSessionUserExists,
+        userValidator.isUserLoggedIn,
+        userValidator.doesExpiryTimeExist,
+    ],
     async function (req: Request, res: Response) {
-        if (req.session.expiryTime) {
-            res.status(200).json({
-                expiryTime: req.session.expiryTime
-            });
-        } else {
-            res.status(404).json({
-                message: 'expiry time not found'
-            })
-        }
+        res.status(200).json({
+            expiryTime: req.session.expiryTime
+        });
         res.end();
     }
 );
 
 router.get(
-    '/getAccessToken', 
-    [],
+    '/getAccessToken',
+    [
+        userValidator.isCurrentSessionUserExists,
+        userValidator.isUserLoggedIn,
+        userValidator.validAccessToken,
+    ],
     async function (req: Request, res: Response) {
-        if (req.session.accessToken) {
-            res.status(200).json({
-                token: req.session.accessToken,
-            })
-        } else {
-            res.status(404).json({
-                message: 'access token does not exist'
-            });
-        }
+        res.status(200).json({
+            token: req.session.accessToken,
+        })
         res.end();
     }
 );
 
 router.get(
-    '/initializeAuth', 
+    '/initializeAuth',
     [],
     async function (req: Request, res: Response) {
         try {
@@ -152,7 +160,7 @@ router.get(
 );
 
 router.get(
-    '/getMe', 
+    '/getMe',
     [
         userValidator.isUserLoggedIn,
         userValidator.validAccessToken,
@@ -178,7 +186,7 @@ router.get(
 );
 
 router.get(
-    '/transfer', 
+    '/transfer',
     [
         userValidator.isUserLoggedIn,
         userValidator.validAccessToken,
@@ -223,7 +231,7 @@ router.get(
         const currentTrack = await playbackSpotifyApi.getMyCurrentPlayingTrack();
         if (currentTrack.statusCode != 200)
             res.status(currentTrack.statusCode).json(currentTrack.body);
-        
+
         res.status(200).json({
             message: 'Retrieved successfully',
             track: currentTrack.body,
@@ -232,7 +240,7 @@ router.get(
 )
 
 router.get(
-    '/play', 
+    '/play',
     [
         userValidator.isUserLoggedIn,
         userValidator.validAccessToken,
@@ -260,20 +268,13 @@ router.get(
 );
 
 router.get(
-    '/pause', 
+    '/pause',
     [
         userValidator.isUserLoggedIn,
         userValidator.validAccessToken,
     ],
     async function (req: Request, res: Response) {
         try {
-            if (!req.session.accessToken){
-                res.status(404).json({
-                    message: 'Access token not found.',
-                })
-                res.end();
-                return;
-            }
             const playbackSpotifyApi = new SpotifyWebApi({
                 clientId: process.env.ID,
                 clientSecret: process.env.SECRET,
