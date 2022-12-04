@@ -126,7 +126,9 @@ export default {
     },
     clearTrackTimer() {
       if (this.trackTimerId) {
-        clearInterval(this.trackTimerId);
+        // console.log('cleared')
+        clearTimeout(this.trackTimerId);
+        // console.log(this.trackTimerId)
       }
     },
     async startTimer() {
@@ -170,8 +172,9 @@ export default {
       this.sessionStarted = true;
       this.playlistIndex = 0;
       console.log("session started");
-      console.log(await fetch(`/api/playlists/mine?offset=0`).then(async r => r.json()));
+      // console.log(await fetch(`/api/playlists/mine?offset=0`).then(async r => r.json()));
       // console.log(await fetch(`/api/playlists/info/2E97C5dfeyPyCgTr6ntCpA`).then(async r=> r.json()))
+      // await fetch(`/api/spotify/skipQueue`, {method: 'POST'});
       await this.getPlaylistTracks();
       await fetch(`/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex % this.playlistLimit]}`, {method: 'POST'});
       await fetch(`/api/spotify/next`, {method: 'POST'});
@@ -225,12 +228,21 @@ export default {
       this.currTrackArtist = res.track.item.artists
         .map((a) => a.name)
         .join(" ");
-      const timeout = res.track.item.duration_ms - res.track.progress_ms;
+      const timeout = res.track.item.duration_ms - res.track.progress_ms + 200;
+      console.log(timeout);
       // const timeout = res.track.item.duration_ms - (new Date().getTime() - res.track.timestamp + res.track.progress_ms) + 1000;
       // console.log(res.track.item.duration_ms, new Date().getTime(), res.track.timestamp, res.track.progress_ms)
-      this.trackTimerId = setTimeout(async () => {
-        await this.getCurrTrack();
-      }, timeout);
+      if (timeout > 5000) {
+        this.trackTimerId = setTimeout(async () => {
+          await this.addNextTrackToQueue();
+          await this.getCurrTrack();
+        }, timeout);
+      }
+      else {
+        this.trackTimerId = setTimeout(async () => {
+          await this.getCurrTrack();
+        }, timeout);
+      }
     },
     async addNextTrackToQueue() {
       console.log(this.playlistIndex+1, this.playlistTracks.length, this.playlistLimit)
