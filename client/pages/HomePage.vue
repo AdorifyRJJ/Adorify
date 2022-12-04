@@ -162,14 +162,16 @@ export default {
       this.sessionStarted = true;
       console.log("session started");
       // console.log(await fetch(`/api/playlists/mine?offset=0`).then(async r => r.json()));
-      await fetch(`/api/spotify/addToQueue/spotify:playlist:2E97C5dfeyPyCgTr6ntCpA`, {method: 'POST'});
+      console.log(await fetch(`/api/playlists/info/2E97C5dfeyPyCgTr6ntCpA`).then(async r=> r.json()))
+      await fetch(`/api/spotify/addToQueue/spotify:track:2g0LdZQce9xlcHb1mBJyuz`, {method: 'POST'});
+      // await fetch(`/api/spotify/addToQueue/spotify:playlist:2E97C5dfeyPyCgTr6ntCpA`, {method: 'POST'});
       
       await this.startTimer();
       // start playlist
     },
-    endSession() {
+    async endSession() {
       // api call PUT /api/adorifySession/:asID
-      this.pauseTimer();
+      await this.pauseTimer();
       this.timestamp = null;
       this.focusing = false;
       this.currInterval = 1;
@@ -179,21 +181,25 @@ export default {
       // end playlist
     },
     async playPrev() {
-      console.log("play prev song");
-      await fetch(`/api/spotify/previous`, {method: 'POST'});
-      await this.getCurrTrack();
+      if (this.timerActive) {
+        console.log("play prev song");
+        await fetch(`/api/spotify/previous`, {method: 'POST'});
+        await this.getCurrTrack();
+      }
     },
     async playNext() {
-      console.log("play next song");
-      await fetch(`/api/spotify/next`, {method: 'POST'});
-      await this.getCurrTrack();
+      if (this.timerActive) {
+        console.log("play next song");
+        await fetch(`/api/spotify/next`, {method: 'POST'});
+        await this.getCurrTrack();
+      }
     },
-    togglePlay() {
+    async togglePlay() {
       console.log("toggle timer and song");
       if (this.timerActive) {
-        this.pauseTimer();
+        await this.pauseTimer();
       } else {
-        this.startTimer();
+        await this.startTimer();
       }
     },
     async getCurrTrack() {
@@ -205,8 +211,8 @@ export default {
       // const timeout = res.track.item.duration_ms - (new Date().getTime() - res.track.timestamp + res.track.progress_ms) + 1000;
       console.log(timeout);
       // console.log(res.track.item.duration_ms, new Date().getTime(), res.track.timestamp, res.track.progress_ms)
-      this.trackTimerId = setTimeout(() => {
-        this.getCurrTrack();
+      this.trackTimerId = setTimeout(async () => {
+        await this.getCurrTrack();
       }, timeout);
     },
   },
