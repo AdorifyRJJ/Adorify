@@ -156,13 +156,15 @@ export default {
       this.clearTrackTimer();
       await this.pauseMusic();
     },
-    startSession() {
+    async startSession() {
       // api call POST /api/adorifySession
       this.focusing = true;
       this.sessionStarted = true;
       console.log("session started");
-
-      this.startTimer();
+      // console.log(await fetch(`/api/playlists/mine?offset=0`).then(async r => r.json()));
+      await fetch(`/api/spotify/addToQueue/spotify:playlist:2E97C5dfeyPyCgTr6ntCpA`, {method: 'POST'});
+      
+      await this.startTimer();
       // start playlist
     },
     endSession() {

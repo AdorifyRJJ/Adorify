@@ -287,7 +287,10 @@ router.get(
 
 router.post(
     '/next',
-    [],
+    [
+        userValidator.isUserLoggedIn,
+        userValidator.validAccessToken,
+    ],
     async function (req: Request, res: Response) {
         try {
             const playbackSpotifyApi = new SpotifyWebApi({
@@ -311,7 +314,10 @@ router.post(
 
 router.post(
     '/previous',
-    [],
+    [
+        userValidator.isUserLoggedIn,
+        userValidator.validAccessToken,
+    ],
     async function (req: Request, res: Response) {
         try {
             const playbackSpotifyApi = new SpotifyWebApi({
@@ -323,6 +329,33 @@ router.post(
             await playbackSpotifyApi.skipToPrevious({ device_id: req.query.deviceId as string });
             res.status(200).json({
                 message: 'Skipped to previous.',
+            });
+        } catch (e: any) {
+            res.status(e.body.error.status).json({
+                message: e.body.error
+            })
+        }
+        res.end();
+    }
+)
+
+router.post(
+    '/addToQueue/:spotifyId?',
+    [
+        userValidator.isUserLoggedIn,
+        userValidator.validAccessToken,
+    ],
+    async function (req: Request, res: Response) {
+        try {
+            const playbackSpotifyApi = new SpotifyWebApi({
+                clientId: process.env.ID,
+                clientSecret: process.env.SECRET,
+                redirectUri: process.env.REDIRECT,
+            });
+            playbackSpotifyApi.setAccessToken(req.session.accessToken);
+            await playbackSpotifyApi.addToQueue(req.params.spotifyId);
+            res.status(200).json({
+                message: 'Added to queue.',
             });
         } catch (e: any) {
             res.status(e.body.error.status).json({
