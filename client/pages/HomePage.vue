@@ -180,6 +180,9 @@ export default {
     },
   },
   async beforeCreate() {
+    if (this.$store.state.username) {
+      
+    }
   }
 };
 </script>
