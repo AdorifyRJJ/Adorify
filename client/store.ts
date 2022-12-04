@@ -15,16 +15,16 @@ const store = new Vuex.Store({
     refreshTimeout: null,
     deviceId: null,
     myLikedPlaylists: [],
-    mySpotifyPlaylists: [],
-    publicPlaylists: [],
+    // mySpotifyPlaylists: [],
+    // publicPlaylists: [],
     spotifyPlayer: null,
     connected: false,
   },
-  getters: {
-    getPlaylistById: (state) => (spotifyId) => {
-      return state.mySpotifyPlaylists.find((playlist) => playlist.id === spotifyId) ?? state.publicPlaylists.find((playlist) => playlist.id === spotifyId);
-    }
-  },
+  // getters: {
+  //   getPlaylistById: (state) => (spotifyId) => {
+  //     return state.mySpotifyPlaylists.find((playlist) => playlist.id === spotifyId) ?? state.publicPlaylists.find((playlist) => playlist.id === spotifyId);
+  //   }
+  // },
   mutations: {
     setDisplayName(state, displayName) {
       /**
@@ -125,12 +125,12 @@ const store = new Vuex.Store({
     setMyLikedPlaylists(state, playlists) {
       state.myLikedPlaylists = [...playlists]
     },
-    setMySpotifyPlaylists(state, playlists) {
-      state.mySpotifyPlaylists = [...playlists]
-    },
-    setPublicPlaylists(state, playlists) {
-      state.publicPlaylists = [...playlists]
-    },
+    // setMySpotifyPlaylists(state, playlists) {
+    //   state.mySpotifyPlaylists = [...playlists]
+    // },
+    // setPublicPlaylists(state, playlists) {
+    //   state.publicPlaylists = [...playlists]
+    // },
 
   },
 

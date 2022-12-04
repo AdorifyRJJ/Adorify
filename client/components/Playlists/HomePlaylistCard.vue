@@ -1,20 +1,10 @@
 <template>
     <div>
         <div @click="$emit('select', spotifyId)">
-            <!-- <router-link
-            style="text-decoration: none"
-            :to="{
-                name: 'PlaylistInfoPage',
-                params: {
-                    spotifyId: this.playlist.id,
-                },
-            }"
-        > -->
             <img :src="image" height="100" width="100" />
             <div>playlist name: {{ playlistName }}</div>
             <div>owner: {{ owner }}</div>
             <div>id: {{ spotifyId }}</div>
-            <!-- </router-link> -->
         </div>
     </div>
 </template>
@@ -36,10 +26,6 @@ export default {
         spotifyId() {
             return this.playlist.id;
         },
-    },
-    methods: {
-        // programmatic navigation
-        
     },
 };
 </script>
