@@ -13,12 +13,12 @@ import NavBar from "@/components/common/NavBar.vue";
 export default {
   name: "App",
   components: { NavBar },
-  async onCreate() {
+  async beforeCreate() {
     const myData = await fetch("/api/spotify/getMe");
     if (myData.ok) {
       const myDataJson = await myData.json();
       this.$store.commit("setUsername", myDataJson.id);
-      
+
       const script = document.createElement("script");
       script.src = "https://sdk.scdn.co/spotify-player.js";
       script.async = true;
