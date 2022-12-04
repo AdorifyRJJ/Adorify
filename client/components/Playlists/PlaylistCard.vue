@@ -10,7 +10,9 @@
                 },
             }"
         > -->
-            <div>Card: {{ this.playlist }}</div>
+            <img :src="image" height="100" width="100" />
+            <div>playlist name: {{ playlistName }}</div>
+            <div>username: {{ username }}</div>
             <!-- </router-link> -->
         </div>
         <LikeButton :playlist="playlist" />
@@ -23,6 +25,17 @@ export default {
     components: { LikeButton },
     name: "PlaylistCard",
     props: ["playlist"],
+    computed: {
+        image() {
+            return this.playlist.images[0].url;
+        },
+        playlistName() {
+            return this.playlist.name;
+        },
+        username() {
+            return this.playlist.owner.display_name;
+        },
+    },
     methods: {
         // programmatic navigation
         openPlaylist() {

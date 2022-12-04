@@ -75,7 +75,8 @@ app.use(userValidator.isCurrentSessionUserExists);
 // Add routers from routes folder
 app.use('/api/users', userRouter);
 app.use('/api/spotify', spotifyRouter);
-app.use('/api/playlist,', playlistRouter)
+app.use('/api/playlists', playlistRouter);
+
 
 // Catch all the other routes and display error message
 app.all('*', (req: Request, res: Response) => {
