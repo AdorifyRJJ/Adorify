@@ -22,10 +22,11 @@ router.get(
       redirectUri: process.env.REDIRECT,
     });
     spotifyApi.setAccessToken(req.session.accessToken);
-
     const myPlaylists = await spotifyApi.getUserPlaylists(req.session.username, {offset: parseInt(req.query.offset as string)});
-    if (myPlaylists.statusCode !== 200)
+    if (myPlaylists.statusCode !== 200) {
       res.status(myPlaylists.statusCode).json(myPlaylists.body);
+    }
+      
     
     res.status(200).json({
       message: 'Retrieved succesfully.',
@@ -138,6 +139,7 @@ router.get(
     userValidator.validAccessToken,
   ],
   async (req: Request, res: Response) => {
+    console.log('here')
     const spotifyApi = new SpotifyWebApi({
       clientId: process.env.ID,
       clientSecret: process.env.SECRET,

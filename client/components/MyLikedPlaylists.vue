@@ -17,9 +17,12 @@
 import { myLikedPlaylists } from "../dummyData.js";
 export default {
     name: "MyLikedPlaylists",
-    mounted() {
+    async mounted() {
         // api call GET /api/users
-        // this.$store.commit("setMyLikedPlaylists", myLikedPlaylists);
+        const url = "/api/users";
+        const res = await fetch(url).then((r) => r.json());
+        console.log("my liked playlists", res);
+        this.$store.commit("setMyLikedPlaylists", myLikedPlaylists);
     },
 };
 </script>

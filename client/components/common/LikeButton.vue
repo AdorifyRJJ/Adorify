@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button v-if="this.playlist.liked" @click="removePlaylist">
+        <button v-if="this.playlist.isLiked" @click="removePlaylist">
             Click to unlike
         </button>
         <button v-else @click="addPlaylist">Click to like</button>
