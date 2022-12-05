@@ -65,7 +65,23 @@ export default {
 <style>
 @font-face {
   font-family: "AdorifyF";
-  src: url("./public/fonts/AdorifyF/adorifyFont.otf");
+  src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Regular.otf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "AdorifyF";
+  src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Medium.otf");
+  font-weight: medium;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "AdorifyF";
+  src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Bold.otf");
+  font-weight: bold;
+  font-style: normal;
 }
 
 * {
@@ -84,37 +100,37 @@ body {
 
 main {
   padding: 0 5em 5em;
-} */
-* {
+}
+*/ * {
   box-sizing: border-box;
   font-family: "Leelawadee UI";
 }
 
 .wh20b {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 20px;
   font-weight: bold;
 }
 
 .wh50b {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 50px;
   font-weight: bold;
 }
 
 .wh100b {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 100px;
   font-weight: bold;
 }
 
 .gr20 {
-  color: #A9A9A9;
+  color: #a9a9a9;
   font-size: 20px;
 }
 
 .gr30 {
-  color: #A9A9A9;
+  color: #a9a9a9;
   font-size: 30px;
 }
 
@@ -122,7 +138,7 @@ body {
   height: 100vh;
   padding: 0;
   margin: 0;
-  background-color: #1F1B2E;
+  background-color: #1f1b2e;
 }
 
 .center {
@@ -132,8 +148,8 @@ body {
 }
 
 .button {
-  color: #FFFFFF;
-  background-color: #6C4EB3;
+  color: #ffffff;
+  background-color: #6c4eb3;
   height: 50px;
   border-radius: 20px;
   border-width: 0;
@@ -151,5 +167,4 @@ a:link {
 a:visited {
   text-decoration: none;
 }
-
 </style>
