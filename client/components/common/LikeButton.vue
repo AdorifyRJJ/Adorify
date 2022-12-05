@@ -1,8 +1,7 @@
 <template>
-    <div>
-        <button @click="toggleLike">
-            Click to {{ this.isLiked ? "unlike" : "like" }}
-        </button>
+    <div @click="toggleLike">
+        <img v-if="isLiked" src="../../public/filledHeart.svg" />
+        <img v-else src="../../public/heart.svg" />
     </div>
 </template>
 
@@ -10,16 +9,6 @@
 export default {
     name: "LikeButton",
     props: ["spotifyId", "isLiked"],
-    // computed: {
-    //     like: {
-    //         get() {
-    //             return this.isLiked;
-    //         },
-    //         set(newLike) {
-    //             return newLike;
-    //         },
-    //     },
-    // },
     methods: {
         async toggleLike() {
             // api call PUT /api/playlists/:spotifyId
@@ -34,10 +23,7 @@ export default {
             ).then(async (r) => r.json());
             console.log("liking", res);
             this.isLiked = res.isLiked;
-
             this.$store.commit("refreshLikedPlaylists");
-
-            // this.$store.commit("addMyLikedPlaylists", this.playlist);
         },
     },
 };
