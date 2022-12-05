@@ -45,11 +45,11 @@ export default {
     align-self: center;
     position: relative;
     min-height: 340px;
-    filter: brightness(90%);
+    /* filter: brightness(90%); */
 }
 
 .card:hover {
-    filter: brightness(100%);
+    /* filter: brightness(100%); */
     cursor: pointer;
 }
 
@@ -57,7 +57,11 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* filter: brightness(100%); */
+    filter: brightness(90%);
+}
+
+.cardContent:hover {
+    filter: brightness(100%);
 }
 
 .image {
@@ -65,21 +69,8 @@ export default {
     width: 100%;
     height: auto;
 }
-
-/* .image:hover {
-    
-} */
-
-.likeBtn {
-    display: flex;
-    margin: 16px;
-    position: absolute;
-    z-index: 1;
-    filter: brightness(100%);
-}
-
-/* .likeBtn:hover {
-    filter: brightness(100%);
+/* 
+.image:hover {
 } */
 
 .playlistName {
@@ -94,5 +85,16 @@ export default {
     font-weight: 400;
     color: #a9a9a9;
     padding-top: 2px;
+}
+.likeBtn {
+    display: flex;
+    margin: 16px;
+    position: absolute;
+    z-index: 1;
+}
+
+.delete {
+    position: absolute;
+    z-index: 1;
 }
 </style>
