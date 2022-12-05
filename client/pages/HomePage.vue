@@ -54,16 +54,21 @@
           Slide {{ i }}
         </vue-glide-slide>
       </vue-glide> -->
-      <carousel :perPage="3" :navigationEnabled="true" :paginationEnabled="false">
-        <slide :key="i"
-          v-for="(playlist, i) in this.$store.state.myLikedPlaylists">
-          <HomePlaylistCard
-            :playlist="playlist"
-            :isSelected="selectedPlaylistId === playlist.id"
-          @select="toggleSelected">
-          </HomePlaylistCard>
-        </slide>
-      </carousel>
+      <div v-if="($store.state.myLikedPlaylists.length > 0)">
+        <carousel :perPage="3" :navigationEnabled="true" :paginationEnabled="false">
+            <slide :key="i"
+            v-for="(playlist, i) in this.$store.state.myLikedPlaylists">
+            <HomePlaylistCard
+                :playlist="playlist"
+                :isSelected="selectedPlaylistId === playlist.id"
+            @select="toggleSelected">
+            </HomePlaylistCard>
+            </slide>
+        </carousel>
+        </div>
+        <div v-else class="gr20 hint">
+            Go to the Playlists page and like playlists to use for your study sessions!
+        </div>
       <div class="bottomDiv">
         <button @click="startSession" class="pButton">
           <img src="../public/play.svg">
@@ -102,12 +107,11 @@
 <script>
 import HomePlaylistCard from "../components/Playlists/HomePlaylistCard.vue";
 import { Carousel, Slide } from 'vue-carousel';
-import { Glide, GlideSlide } from 'vue-glide-js';
+// import { Glide, GlideSlide } from 'vue-glide-js';
 
 
 export default {
-  components: { HomePlaylistCard, Carousel, Slide, [Glide.name]: Glide,
-    [GlideSlide.name]: GlideSlide },
+  components: { HomePlaylistCard, Carousel, Slide},
   name: "HomePage",
   data() {
     return {
@@ -473,6 +477,12 @@ main {
   padding-top: 20px;
   padding-bottom: 10px;
 }
+
+.hint {
+    padding: 40px 0px;
+
+}
+
 /* .VueCarousel-wrapper {
   display: flex;
 } */
