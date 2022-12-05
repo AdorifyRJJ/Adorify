@@ -45,31 +45,42 @@ export default {
     align-self: center;
     position: relative;
     min-height: 340px;
+    filter: brightness(90%);
+}
+
+.card:hover {
+    filter: brightness(100%);
+    cursor: pointer;
 }
 
 .cardContent {
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* filter: brightness(100%); */
 }
 
 .image {
-    filter: brightness(80%);
     border-radius: 10px;
     width: 100%;
     height: auto;
 }
 
-.image:hover {
-    filter: brightness(90%);
-}
+/* .image:hover {
+    
+} */
 
 .likeBtn {
     display: flex;
     margin: 16px;
     position: absolute;
     z-index: 1;
+    filter: brightness(100%);
 }
+
+/* .likeBtn:hover {
+    filter: brightness(100%);
+} */
 
 .playlistName {
     font-size: 16px;
