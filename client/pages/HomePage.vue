@@ -1,11 +1,6 @@
 <template>
-  <main>
-    <h1>Home Page</h1>
+  <main class="center">
     <!-- <div>
-      <button @click="playMusic">Play Music</button>
-      <button @click="pauseMusic">Pause Music</button>
-    </div> -->
-    <div>
       <p v-if="!this.$store.state.connected">
         Device is not ready, so music playback will not work. Either wait for
         connection or please log in. (Click "Profile" -> "Logout" -> "Login")
@@ -15,22 +10,35 @@
     <div>
       <p v-if="!playing">Not playing music.</p>
       <p v-else>Playing music! Turn it up!</p>
-    </div>
+    </div> -->
 
     <!-- fetch username -->
-    <div>{{ this.$store.state.displayName }}</div>
+    <div class="wh50b"> {{ this.$store.state.displayName }}, </div>
+    <div class="gr30">
+      <span v-if="!sessionStarted">Start a focus session</span>
+      <span v-else-if="focusing">You're doing great!</span>
+      <span v-else>Take a break!</span>
+    </div>
 
-    <div v-if="!sessionStarted">
-      <div>Start a focus session</div>
-      <div>
-        <div>
-          Focus Time
-          <input v-model="focusTime" placeholder="25" /> min
+    <div class="center" v-if="!sessionStarted">
+      <div class="selector">
+        <div class="selectorItem">
+          <div class="left gr20">Focus Time</div>
+          <div class="right gr20">
+            <input v-model="focusTime" /> min
+          </div>
         </div>
-        <div>Break Time <input v-model="breakTime" placeholder="5" /> min</div>
-        <div>
-          Intervals
-          <input v-model="intervals" placeholder="4" /> times
+        <div class="selectorItem">
+          <div class="left gr20">Break Time</div>
+          <div class="right gr20">
+            <input v-model="breakTime" /> min
+          </div>
+        </div>
+        <div class="selectorItem">
+          <div class="left gr20">Intervals</div>
+          <div class="right gr20">
+            <input v-model="intervals"  /> times
+          </div>
         </div>
       </div>
       <HomePlaylistCard
@@ -39,24 +47,35 @@
           :playlist="playlist"
           @select="toggleSelected"
       ></HomePlaylistCard>
-
-      <!-- start focus session and play selected playlist -->
-      <button @click="startSession">[Play button]</button>
-    </div>
-    <div v-else>
-      <!-- !TODO: user refreshes page-->
-      <div>You're doing great!</div>
-      <div>
-        <h2>{{ this.getTime }}</h2>
+      <div class="bottomDiv">
+        <button @click="startSession" class="pButton">
+          <img src="../public/play.svg">
+        </button>
       </div>
+    </div>
+    <div class="center" v-else>
+      <div class="wh100b">{{ this.getTime }}</div>
       <div>{{ this.currInterval }} / {{ this.intervals }}</div>
-      <button @click="endSession">End Session</button>
-      <div>{{ this.currTrackTitle }}</div>
-      <div>{{ this.currTrackArtist }}</div>
-      <div>
-        <button @click="playPrev">[prev]</button>
-        <button @click="togglePlay">[pause/play]</button>
-        <button @click="playNext">[next]</button>
+      <button class="button" @click="endSession">
+        <span class="wh20b">End Session</span>
+      </button>
+      <div class="bottomDiv">
+        <div class="center trackInfo">
+          <div class="wh20b">{{ this.currTrackTitle }}</div>
+          <div class="gr20">{{ this.currTrackArtist }}</div>
+        </div>
+        <div class="controls">
+          <button v-if="timerActive" @click="playPrev" class="prevButton">
+            <img src="../public/prev.svg">
+          </button>
+          <button @click="togglePlay" class="pButton">
+            <img v-if="timerActive" src="../public/pause.svg">
+            <img v-else src="../public/play.svg">
+          </button>
+          <button v-if="timerActive" @click="playNext" class="nextButton">
+            <img src="../public/forward.svg">
+          </button>
+        </div>
       </div>
     </div>
   </main>
@@ -291,4 +310,112 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+
+main {
+  justify-content: center;
+}
+
+.selector {
+  display: grid;
+  gap: 8px;
+  padding-top: 10%;
+  padding-bottom: 10%;
+  
+}
+
+.selectorItem {
+  height: 60px;
+  width: 360px;
+  /* padding: 15px; */
+  padding: 0px 20px;
+  background-color: #373544;
+  border-radius: 25px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.right {
+  width: 140px;
+}
+
+.right > input {
+  height: 36px;
+  width: 80px;
+  background-color: #1F1B2E;
+  border-radius: 5px;
+  text-align: right;
+  color: #FFFFFF;
+  font-size: 20px;
+  border-style: none;
+  padding: 0px 4px;
+}
+
+.bottomDiv {
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  padding: 20px 0px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center
+}
+
+.pButton {
+  height: 80px;
+  width: 80px;
+  border-radius: 40px;
+  border-width: 0;
+  background-color: #664EFF;
+  filter: drop-shadow(0px 0px 10px #664EFF);
+}
+
+.prevButton {
+  height: 80px;
+  width: 80px;
+  margin-right: 20px;
+  border-radius: 40px;
+  border-width: 0;
+  background-color: transparent;
+}
+
+.nextButton {
+  height: 80px;
+  width: 80px;
+  margin-left: 20px;
+  border-radius: 40px;
+  border-width: 0;
+  background-color: transparent;
+}
+
+.pButton:hover > img {
+  filter: brightness(0) saturate(100%) invert(94%) sepia(1%) saturate(41%) hue-rotate(314deg) brightness(91%) contrast(101%);
+}
+
+.pButton:hover {
+  background-color: #5742d0;
+}
+
+.prevButton:hover {
+  background-color: #3f3b4c;
+}
+
+.nextButton:hover {
+  background-color: #3f3b4c;
+}
+
+.trackInfo {
+  padding: 20px;
+}
+
+</style>

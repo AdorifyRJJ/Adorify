@@ -63,7 +63,7 @@ export default {
 </script>
 
 <style>
-* {
+/* * {
   box-sizing: border-box;
 }
 
@@ -78,34 +78,72 @@ body {
 
 main {
   padding: 0 5em 5em;
+} */
+* {
+  box-sizing: border-box;
+  font-family: "Leelawadee UI";
 }
 
-.alerts {
-  position: absolute;
-  z-index: 99;
-  bottom: 0;
-  top: 100%;
-  left: 50%;
-  transform: translate(-50%, 10%);
-  width: 100%;
-  text-align: center;
+.wh20b {
+  color: #FFFFFF;
+  font-size: 20px;
+  font-weight: bold;
 }
 
-.alerts article {
-  border-radius: 5px;
-  padding: 10px 20px;
-  color: #fff;
+.wh50b {
+  color: #FFFFFF;
+  font-size: 50px;
+  font-weight: bold;
 }
 
-.alerts p {
+.wh100b {
+  color: #FFFFFF;
+  font-size: 100px;
+  font-weight: bold;
+}
+
+.gr20 {
+  color: #A9A9A9;
+  font-size: 20px;
+}
+
+.gr30 {
+  color: #A9A9A9;
+  font-size: 30px;
+}
+
+body {
+  height: 100vh;
+  padding: 0;
   margin: 0;
+  background-color: #1F1B2E;
 }
 
-.alerts .error {
-  background-color: rgb(166, 23, 33);
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.alerts .success {
-  background-color: rgb(45, 135, 87);
+.button {
+  color: #FFFFFF;
+  background-color: #6C4EB3;
+  height: 50px;
+  border-radius: 20px;
+  border-width: 0;
+  padding: 0px 30px;
 }
+
+.button:hover {
+  background-color: #5a4193;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
 </style>
