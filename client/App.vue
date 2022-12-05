@@ -1,64 +1,68 @@
 <template>
-  <div id="app">
-    <header v-if="$store.state.displayName">
-      <NavBar />
-    </header>
-    <router-view />
-  </div>
+    <div id="app">
+        <header v-if="$store.state.displayName">
+            <NavBar />
+        </header>
+        <router-view />
+    </div>
 </template>
 
 <script>
 import NavBar from "@/components/common/NavBar.vue";
 
 export default {
-  name: "App",
-  components: { NavBar },
-  async beforeCreate() {
-    //this.$store.commit('setSpotifyPlayer', null)
-    //this.$store.commit('setDeviceId', null)
-    //this.$store.commit('setConnected', false)
-    const myData = await fetch("/api/spotify/getMe");
-    if (myData.ok) {
-      const myDataJson = await myData.json();
-      this.$store.commit("setDisplayName", myDataJson.display_name);
-      this.$store.commit("scheduleRefresh");
-      this.$store.commit("refreshLikedPlaylists");
+    name: "App",
+    components: { NavBar },
+    async beforeCreate() {
+        //this.$store.commit('setSpotifyPlayer', null)
+        //this.$store.commit('setDeviceId', null)
+        //this.$store.commit('setConnected', false)
+        const myData = await fetch("/api/spotify/getMe");
+        if (myData.ok) {
+            const myDataJson = await myData.json();
+            this.$store.commit("setDisplayName", myDataJson.display_name);
+            this.$store.commit("scheduleRefresh");
+            this.$store.commit("refreshLikedPlaylists");
 
-      const script = document.createElement("script");
+            const script = document.createElement("script");
 
-      script.src = "https://sdk.scdn.co/spotify-player.js";
-      script.async = true;
-      document.body.appendChild(script);
+            script.src = "https://sdk.scdn.co/spotify-player.js";
+            script.async = true;
+            document.body.appendChild(script);
 
-      window.onSpotifyWebPlaybackSDKReady = async () => {
-        const player = await new window.Spotify.Player({
-          name: "Web Playback SDK",
-          getOAuthToken: async (cb) => {
-            cb(
-              (await (await fetch(`/api/spotify/getAccessToken`)).json()).token
-            );
-          },
-          volume: 0.5,
-        });
+            window.onSpotifyWebPlaybackSDKReady = async () => {
+                const player = await new window.Spotify.Player({
+                    name: "Web Playback SDK",
+                    getOAuthToken: async (cb) => {
+                        cb(
+                            (
+                                await (
+                                    await fetch(`/api/spotify/getAccessToken`)
+                                ).json()
+                            ).token
+                        );
+                    },
+                    volume: 0.5,
+                });
 
-        player.addListener("ready", async ({ device_id }) => {
-          console.log("Ready with Device ID", device_id);
-          await fetch(`/api/spotify/transfer?deviceId=${device_id}`);
-          await fetch(`/api/spotify/pause?deviceId=${device_id}`);
-          this.$store.commit("setSpotifyPlayer", player);
-          this.$store.commit("setDeviceId", device_id);
-          this.$store.commit("setConnected", true);
-        });
+                player.addListener("ready", async ({ device_id }) => {
+                    console.log("Ready with Device ID", device_id);
+                    await fetch(`/api/spotify/transfer?deviceId=${device_id}`);
+                    await fetch(`/api/spotify/pause?deviceId=${device_id}`);
+                    this.$store.commit("setSpotifyPlayer", player);
+                    this.$store.commit("setDeviceId", device_id);
+                    this.$store.commit("setConnected", true);
+                });
 
-        player.addListener("not_ready", ({ device_id }) => {
-          console.log("Device ID has gone offline", device_id);
-          this.$store.commit("setConnected", false);
-        });
+                player.addListener("not_ready", ({ device_id }) => {
+                    console.log("Device ID has gone offline", device_id);
+                    this.$store.commit("setConnected", false);
+                });
 
-        player.connect();
-      };
-    }
-  },
+                player.connect();
+            };
+        }
+    },
 };
 </script>
 
@@ -89,18 +93,31 @@ export default {
   font-family: "AdorifyF";
 }
 
+#app {
+    color: white;
+    background: #1f1b2e;
+    /* width: 100vw; */
+    height: 100vh;
+}
+
+::-webkit-scrollbar {
+    width: 0; /* Remove scrollbar space */
+    background: transparent; /* Optional: just make scrollbar invisible */
+}
+
 body {
-  height: 100vh;
-  flex-direction: column;
-  display: flex;
-  padding: 0;
-  margin: 0;
-  font-size: 1.2em;
+    height: 100vh;
+    flex-direction: column;
+    display: flex;
+    padding: 0;
+    margin: 0;
+    font-size: 1.2em;
 }
 
 main {
-  padding: 0 5em 5em;
+    padding: 0 5em 5em;
 }
+
 
 .wh20b {
   color: #ffffff;
@@ -130,12 +147,7 @@ main {
   font-size: 30px;
 }
 
-body {
-  height: 100vh;
-  padding: 0;
-  margin: 0;
-  background-color: #1f1b2e;
-}
+
 
 .center {
   display: flex;
