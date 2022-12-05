@@ -33,6 +33,6 @@ export default {
 .exploreSection {
     display: flex;
     flex-direction: column;
-    width: 65%;
+    /* width: 65%; */
 }
 </style>
