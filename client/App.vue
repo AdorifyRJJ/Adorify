@@ -68,33 +68,29 @@ export default {
 
 <style>
 @font-face {
-  font-family: "AdorifyF";
-  src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Regular.otf");
-  font-weight: normal;
-  font-style: normal;
+    font-family: "AdorifyF";
+    src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Regular.otf");
+    font-weight: normal;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: "AdorifyF";
-  src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Medium.otf");
-  font-weight: medium;
-  font-style: normal;
+    font-family: "AdorifyF";
+    src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Medium.otf");
+    font-weight: medium;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: "AdorifyF";
-  src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Bold.otf");
-  font-weight: bold;
-  font-style: normal;
+    font-family: "AdorifyF";
+    src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Bold.otf");
+    font-weight: bold;
+    font-style: normal;
 }
 
 * {
-<<<<<<< HEAD
     box-sizing: border-box;
-=======
-  box-sizing: border-box;
-  font-family: "AdorifyF";
->>>>>>> 39ed262cbd791ab4abbbf60b636531ab41eea46d
+    font-family: "AdorifyF";
 }
 
 #app {
@@ -122,91 +118,58 @@ main {
     padding: 0 5em 5em;
 }
 
-<<<<<<< HEAD
-.alerts {
-    position: absolute;
-    z-index: 99;
-    bottom: 0;
-    top: 100%;
-    left: 50%;
-    transform: translate(-50%, 10%);
-    width: 100%;
-    text-align: center;
-}
-
-.alerts article {
-    border-radius: 5px;
-    padding: 10px 20px;
-    color: #fff;
-}
-
-.alerts p {
-    margin: 0;
-}
-
-.alerts .error {
-    background-color: rgb(166, 23, 33);
-}
-
-.alerts .success {
-    background-color: rgb(45, 135, 87);
-=======
-
 .wh20b {
-  color: #ffffff;
-  font-size: 20px;
-  font-weight: bold;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .wh50b {
-  color: #ffffff;
-  font-size: 50px;
-  font-weight: bold;
+    color: #ffffff;
+    font-size: 50px;
+    font-weight: bold;
 }
 
 .wh100b {
-  color: #ffffff;
-  font-size: 100px;
-  font-weight: bold;
+    color: #ffffff;
+    font-size: 100px;
+    font-weight: bold;
 }
 
 .gr20 {
-  color: #a9a9a9;
-  font-size: 20px;
+    color: #a9a9a9;
+    font-size: 20px;
 }
 
 .gr30 {
-  color: #a9a9a9;
-  font-size: 30px;
+    color: #a9a9a9;
+    font-size: 30px;
 }
 
-
-
 .center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .button {
-  color: #ffffff;
-  background-color: #6c4eb3;
-  height: 50px;
-  border-radius: 20px;
-  border-width: 0;
-  padding: 0px 30px;
+    color: #ffffff;
+    background-color: #6c4eb3;
+    height: 50px;
+    border-radius: 20px;
+    border-width: 0;
+    padding: 0px 30px;
 }
 
 .button:hover {
-  background-color: #5a4193;
+    background-color: #5a4193;
 }
 
 a:link {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 a:visited {
-  text-decoration: none;
->>>>>>> 39ed262cbd791ab4abbbf60b636531ab41eea46d
+    text-decoration: none;
 }
 </style>

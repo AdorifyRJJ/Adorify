@@ -26,11 +26,6 @@
         "spotify-web-api-node": "^5.0.2",
         "vue": "^2.7.13",
         "vue-router": "^3.6.5",
-<<<<<<< HEAD
-        "vue-svg-loader": "^0.16.0",
-        "vuetify": "^2.6.12",
-=======
->>>>>>> 39ed262cbd791ab4abbbf60b636531ab41eea46d
         "vuex": "^3.6.2",
         "vuex-persistedstate": "^4.1.0"
     },
