@@ -76,7 +76,7 @@ setInterval(async () => {
 
     mostResults[i] = playlistInfos;
   }
-}, 60 * 60 * 1000);
+}, 10 * 1000);
 
 
 
