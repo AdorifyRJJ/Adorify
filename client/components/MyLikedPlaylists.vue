@@ -38,6 +38,10 @@ export default {
 .section {
     display: flex;
     padding-right: 80px;
+    height: 100%;
+    flex-direction: column;
+    width: 35%;
+    align-items: end;
 }
 .title {
     display: flex;
@@ -55,5 +59,6 @@ export default {
     justify-content: end;
     padding-top: 8px;
     padding-bottom: 8px;
+    cursor: pointer;
 }
 </style>

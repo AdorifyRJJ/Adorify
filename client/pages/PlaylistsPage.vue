@@ -1,6 +1,6 @@
 <template>
     <div class="page">
-        <MyLikedPlaylists class="likedSection" />
+        <MyLikedPlaylists />
         <ExplorePlaylists class="exploreSection" />
     </div>
 </template>
@@ -26,15 +26,8 @@ export default {
 <style scoped>
 .page {
     display: flex;
+    flex-direction: row;
     color: white;
-    background: #1f1b2e;
-}
-
-.likedSection {
-    display: flex;
-    flex-direction: column;
-    width: 35%;
-    align-items: end;
 }
 
 .exploreSection {

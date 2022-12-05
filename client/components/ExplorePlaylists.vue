@@ -82,7 +82,9 @@ export default {
             console.log("my spotify playlists", this.currPlaylists);
         },
         async getPublicPlaylists() {
-            await this.getMostLiked();
+            if (this.viewingMine) {
+                await this.getMostLiked();
+            }
         },
         async getMostLiked() {
             const url = `/api/playlists/mostLiked?offset=0`;
@@ -107,9 +109,6 @@ export default {
         // initial api call GET public playlists by likes
         await this.getMyPlaylists();
         console.log("public playlists by likes", this.currPlaylists);
-
-        // this.$store.commit("setMySpotifyPlaylists", mySpotifyPlaylists);
-        // this.$store.commit("setPublicPlaylists", publicPlaylists);
     },
 };
 </script>
@@ -117,7 +116,7 @@ export default {
 <style scoped>
 .section {
     display: flex;
-    padding-right: 350px;
+    padding-right: 20rem;
 }
 
 .title {
@@ -134,8 +133,8 @@ export default {
     grid-template-columns: repeat(3, 1fr);
     column-gap: 40px;
     row-gap: 32px;
-    min-height: 200px;
-    max-height: 680px;
+    /* min-height: 200px; */
+    max-height: 65vh;
     overflow-y: scroll;
 }
 
@@ -146,11 +145,9 @@ export default {
 
 .bgroup1 {
     display: flex;
-    justify-content: left;
 }
 .bgroup2 {
     display: flex;
-    justify-self: center;
 }
 
 .btn {
@@ -158,6 +155,7 @@ export default {
     border: solid;
     width: 185px;
     height: 44px;
+    cursor: pointer;
 }
 
 .dropdown {
@@ -165,5 +163,6 @@ export default {
     border: solid;
     width: 134px;
     height: 44px;
+    cursor: pointer;
 }
 </style>

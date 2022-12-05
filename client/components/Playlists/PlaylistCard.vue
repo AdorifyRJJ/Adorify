@@ -66,10 +66,13 @@ export default {
 
 .image {
     border-radius: 10px;
-    width: 100%;
-    height: auto;
+    /* object-fit: cover; */
+    width: 240px;
+    height: 240px;
+    /* width: 100%;
+    height: auto; */
 }
-/* 
+/*
 .image:hover {
 } */
 
@@ -78,6 +81,11 @@ export default {
     font-weight: 700;
     color: white;
     padding-top: 15px;
+    /* white-space: nowrap; */
+    /* display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden; */
 }
 
 .owner {
