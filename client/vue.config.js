@@ -1,5 +1,4 @@
 const path = require("path");
-const prefixer = require("postcss-prefix-selector");
 
 module.exports = {
   devServer: {

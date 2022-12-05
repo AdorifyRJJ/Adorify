@@ -6,7 +6,7 @@
             <button>Log Out</button>
         </router-link> -->
 
-    <AdorifyButton :clickHandler="logout" content="Log Out" />
+    <button @click="logout">Log Out</button>
     <div v-if="$store.state.displayName">
       <img :src="image_url" />
       <h2>{{ display_name }}</h2>
@@ -17,9 +17,9 @@
     </div>
 
     <div>
-      <AdorifyButton :clickHandler="getThisWeek" content="This Week" />
-      <AdorifyButton :clickHandler="getThisMonth" content="This Month" />
-      <AdorifyButton :clickHandler="getAllTime" content="All Time" />
+      <button @click="getThisWeek">This Week</button>
+      <button @click="getThisMonth">This Month</button>
+      <button @click="getAllTime">All Time</button>
     </div>
 
     <h3>Most Played</h3>
@@ -33,11 +33,8 @@
 </template>
 
 <script>
-import AdorifyButton from "../components/common/AdorifyButton.vue";
-
 export default {
   name: "ProfilePage",
-  components: { AdorifyButton },
   data() {
     return {
       display_name: null,
