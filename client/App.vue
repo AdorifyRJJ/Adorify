@@ -101,10 +101,6 @@ body {
 main {
   padding: 0 5em 5em;
 }
-*/ * {
-  box-sizing: border-box;
-  font-family: "Leelawadee UI";
-}
 
 .wh20b {
   color: #ffffff;
