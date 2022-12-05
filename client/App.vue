@@ -1,10 +1,10 @@
 <template>
-    <div id="app">
-      <header v-if="$store.state.displayName">
-        <NavBar />
-      </header>
-      <router-view />
-    </div>
+  <div id="app">
+    <header v-if="$store.state.displayName">
+      <NavBar />
+    </header>
+    <router-view />
+  </div>
 </template>
 
 <script>
@@ -63,8 +63,14 @@ export default {
 </script>
 
 <style>
+@font-face {
+  font-family: "AdorifyF";
+  src: url("./public/fonts/AdorifyF/adorifyFont.otf");
+}
+
 * {
   box-sizing: border-box;
+  font-family: "AdorifyF";
 }
 
 body {
