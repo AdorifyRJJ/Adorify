@@ -67,8 +67,30 @@ export default {
 </script>
 
 <style>
+@font-face {
+  font-family: "AdorifyF";
+  src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Regular.otf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "AdorifyF";
+  src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Medium.otf");
+  font-weight: medium;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "AdorifyF";
+  src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Bold.otf");
+  font-weight: bold;
+  font-style: normal;
+}
+
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
+  font-family: "AdorifyF";
 }
 
 #app {
@@ -96,32 +118,61 @@ main {
     padding: 0 5em 5em;
 }
 
-.alerts {
-    position: absolute;
-    z-index: 99;
-    bottom: 0;
-    top: 100%;
-    left: 50%;
-    transform: translate(-50%, 10%);
-    width: 100%;
-    text-align: center;
+
+.wh20b {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: bold;
 }
 
-.alerts article {
-    border-radius: 5px;
-    padding: 10px 20px;
-    color: #fff;
+.wh50b {
+  color: #ffffff;
+  font-size: 50px;
+  font-weight: bold;
 }
 
-.alerts p {
-    margin: 0;
+.wh100b {
+  color: #ffffff;
+  font-size: 100px;
+  font-weight: bold;
 }
 
-.alerts .error {
-    background-color: rgb(166, 23, 33);
+.gr20 {
+  color: #a9a9a9;
+  font-size: 20px;
 }
 
-.alerts .success {
-    background-color: rgb(45, 135, 87);
+.gr30 {
+  color: #a9a9a9;
+  font-size: 30px;
+}
+
+
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button {
+  color: #ffffff;
+  background-color: #6c4eb3;
+  height: 50px;
+  border-radius: 20px;
+  border-width: 0;
+  padding: 0px 30px;
+}
+
+.button:hover {
+  background-color: #5a4193;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
 }
 </style>

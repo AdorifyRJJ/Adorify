@@ -4,26 +4,16 @@
 
 <template>
     <nav>
-        <div>
-            <router-link to="/" class="left">
-                <img src="../../public/headphones.svg" />
-                <h1 class="title">Adorify</h1>
+        <div class="left">
+            <router-link to="/" class="wh20b">
+                adorify
             </router-link>
         </div>
         <div class="right">
-            <router-link to="/playlists"> playlists </router-link>
-            <router-link to="/leaderboard"> leaderboard </router-link>
-            <router-link to="/profile"> profile </router-link>
+            <router-link to="/playlists" class="wh20b"> playlists </router-link>
+            <router-link to="/leaderboard" class="wh20b"> leaderboard </router-link>
+            <router-link to="/profile" class="wh20b"> profile </router-link>
         </div>
-        <section class="alerts">
-            <article
-                v-for="(status, alert, index) in $store.state.alerts"
-                :key="index"
-                :class="status"
-            >
-                <p>{{ alert }}</p>
-            </article>
-        </section>
     </nav>
 </template>
 
@@ -35,41 +25,20 @@ export default {
 
 <style scoped>
 nav {
-    padding: 1vw 2vw;
-    background-color: #ccc;
+    padding: 30px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
-}
-
-.title {
-    font-size: 32px;
-    margin: 0 5px;
-}
-
-img {
-    height: 32px;
 }
 
 .left {
-    display: flex;
-    align-items: center;
+
 }
 
 .right {
-    font-size: 20px;
     display: grid;
-    gap: 16px;
+    gap: 30px;
     grid-auto-flow: column;
-    align-items: center;
 }
 
-.right a {
-    margin-left: 5px;
-}
-
-.alerts {
-    width: 25%;
-}
 </style>
