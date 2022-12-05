@@ -43,11 +43,15 @@ const store = new Vuex.Store({
       state.spotifyPlayer = player;
     },
     forceDisconnect(state) {
-      if (state.spotifyPlayer) state.spotifyPlayer.disconnect();
-      state.connected = false;
+      try {
+        if (state.spotifyPlayer) state.spotifyPlayer.disconnect();
+        state.connected = false;
+      } catch (e) {
+        console.log(e)
+      }
     },
     deleteRefreshTimeout(state) {
-      if (state.refreshTimeout) { 
+      if (state.refreshTimeout) {
         clearTimeout(state.refreshTimeout);
         state.refreshTimeout = null;
       }

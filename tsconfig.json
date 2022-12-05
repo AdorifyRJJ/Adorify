@@ -7,6 +7,6 @@
     "outDir": "./dist",
     "rootDir": "./",
     "baseUrl": "./",
-    "module": "commonjs"
+    "module": "commonjs",
   }
 }

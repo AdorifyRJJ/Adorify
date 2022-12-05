@@ -63,8 +63,14 @@ export default {
 </script>
 
 <style>
-/* * {
+@font-face {
+  font-family: "AdorifyF";
+  src: url("./public/fonts/AdorifyF/adorifyFont.otf");
+}
+
+* {
   box-sizing: border-box;
+  font-family: "AdorifyF";
 }
 
 body {

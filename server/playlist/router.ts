@@ -1,100 +1,55 @@
-import type {Request, Response} from 'express';
+import type { Request, Response } from 'express';
 import express from 'express';
 import PlaylistCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as util from './util';
 import UserCollection from '../user/collection';
 import SpotifyWebApi from 'spotify-web-api-node';
-import { spotifyApi } from '../spotify/router';
+//import { spotifyApi } from '../spotify/router';
+
+import dotenv from 'dotenv';
+dotenv.config({});
 
 const router = express.Router();
 
 //////////////////////////
 
-// let tokenExpirationEpoch: number;
-// const authorizationCode = 'AQCelEmlus6jfIhTiw9McSNIIxfeyQ7cqVltIB-bCtKXBY0stfBLDdO3xAgE74e4_cvjbaXH_IIbfEri4DohxgXAya5GA8PU5jonuCtv9YJmlmaX0u_hUgUIZb--2EHV9I-sDTEn10WwQCefh65JaGaGM8WvfM7QTTp3ZDKEvfuQoOIP18iQRS5K0ziqRIVpuhzAEa_pqKGcfPaT0-DvZq0t-zF4XsyfE5odCDCbQczWGefCjOCPQ76BlL4HPpUam_x-2459gtkrQxrz1MW3QFd7yHAn53AAOxjG-eAbRhalrKwDrYqfKHse8aA';
+const playlistSpotifyApi = new SpotifyWebApi({
+  clientId: process.env.ID,
+  clientSecret: process.env.SECRET,
+  redirectUri: process.env.PLAYLISTREDIRECT,
+});
 
-// spotifyApi.authorizationCodeGrant(authorizationCode).then(
-//   function(data) {
-//     // Set the access token and refresh token
-//     spotifyApi.setAccessToken(data.body['access_token']);
-//     spotifyApi.setRefreshToken(data.body['refresh_token']);
+playlistSpotifyApi.setRefreshToken(process.env.REFRESHTOKEN);
 
-//     // Save the amount of seconds until the access token expired
-//     tokenExpirationEpoch =
-//       new Date().getTime() / 1000 + data.body['expires_in'];
-//     console.log(
-//       'Retrieved token. It expires in ' +
-//         Math.floor(tokenExpirationEpoch - new Date().getTime() / 1000) +
-//         ' seconds!'
-//     );
-//   },
-//   function(err) {
-//     console.log(
-//       'Something went wrong when retrieving the access token!',
-//       err.message
-//     );
-//   }
-// );
+const mostResults: Array<any> = [[], [], []];
 
-// // Continually print out the time left until the token expires..
-// let numberOfTimesUpdated = 0;
+//update most liked, used, productive every hour
+setInterval(async () => {
+  console.log('refreshing most liked, used, productive');
+  // spotifyApi.setAccessToken();
+  const data = await playlistSpotifyApi.refreshAccessToken();
 
-// setInterval(function() {
-//   console.log(
-//     'Time left: ' +
-//       Math.floor(tokenExpirationEpoch - new Date().getTime() / 1000) +
-//       ' seconds left!'
-//   );
+  playlistSpotifyApi.setAccessToken(data.body['access_token']);
+  if (data.body['refresh_token']) playlistSpotifyApi.setRefreshToken(data.body['refresh_token']);
 
-//   // OK, we need to refresh the token. Stop printing and refresh.
-//   if (++numberOfTimesUpdated > 5) {
-//     clearInterval(this);
+  const filters = [PlaylistCollection.findMostLikes, PlaylistCollection.findMostUsed, PlaylistCollection.findMostProductive];
 
-//     // Refresh token and print the new time to expiration.
-//     spotifyApi.refreshAccessToken().then(
-//       function(data) {
-//         tokenExpirationEpoch =
-//           new Date().getTime() / 1000 + data.body['expires_in'];
-//         console.log(
-//           'Refreshed token. It now expires in ' +
-//             Math.floor(tokenExpirationEpoch - new Date().getTime() / 1000) +
-//             ' seconds!'
-//         );
-//       },
-//       function(err) {
-//         console.log('Could not refresh the token!', err.message);
-//       }
-//     );
-//   }
-// }, 1000);
+  for (let i = 0; i < filters.length; i++) {
+    const playlists = await filters[i]();
+    const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
 
-// //////////////////
+    for (const p of playlists) {
+      const playlistInfo = await playlistSpotifyApi.getPlaylist(p.spotifyId, { fields: 'id, images, name, owner.display_name, public' });
+      if (playlistInfo.statusCode === 200)
+        playlistInfos.push(playlistInfo.body);
+      else
+        console.log('Failed to retrieve', playlistInfo.body);
+    }
 
-// const mostResults: Array<any> = [null, null, null];
-
-// //update most liked, used, productive every hour
-// setInterval(async () => {
-//   console.log('refreshing most liked, used, productive');
-//   // spotifyApi.setAccessToken();
-
-//   const filters = [PlaylistCollection.findMostLikes, PlaylistCollection.findMostUsed, PlaylistCollection.findMostProductive];
-
-//   for (let i = 0; i < filters.length; i++) {
-//     const playlists = await filters[i]();
-//     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
-
-//     for (const p of playlists) {
-//       const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId,  {fields: 'id, images, name, owner.display_name, public'});
-//       if (playlistInfo.statusCode === 200)
-//         playlistInfos.push(playlistInfo.body);
-//       else
-//         console.log('Failed to retrieve', playlistInfo.body);
-//     }
-
-//     mostResults[i] = playlistInfos;
-//   }
-// }, 10*1000);
+    mostResults[i] = playlistInfos;
+  }
+}, 60 * 60 * 1000);
 
 
 
@@ -112,12 +67,12 @@ router.get(
       redirectUri: process.env.REDIRECT,
     });
     spotifyApi.setAccessToken(req.session.accessToken);
-    const myPlaylists = await spotifyApi.getUserPlaylists(req.session.username, {offset: parseInt(req.query.offset as string)});
+    const myPlaylists = await spotifyApi.getUserPlaylists(req.session.username, { offset: parseInt(req.query.offset as string) });
     if (myPlaylists.statusCode !== 200) {
       res.status(myPlaylists.statusCode).json(myPlaylists.body);
     }
-      
-    
+
+
     res.status(200).json({
       message: 'Retrieved succesfully.',
       ...myPlaylists.body,
@@ -178,7 +133,7 @@ router.get(
     });
     spotifyApi.setAccessToken(req.session.accessToken);
 
-    const tracks = await spotifyApi.getPlaylistTracks(req.params.spotifyId, {offset: parseInt(req.query.offset as string)})
+    const tracks = await spotifyApi.getPlaylistTracks(req.params.spotifyId, { offset: parseInt(req.query.offset as string) })
     if (tracks.statusCode !== 200)
       res.status(tracks.statusCode).json(tracks.body);
 
@@ -206,7 +161,7 @@ router.put(
       });
       spotifyApi.setAccessToken(req.session.accessToken);
 
-      const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId, {fields: 'owner.id, public'});
+      const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId, { fields: 'owner.id, public' });
       if (playlistInfo.statusCode !== 200)
         res.status(playlistInfo.statusCode).json(playlistInfo.body);
 
@@ -229,27 +184,27 @@ router.get(
     userValidator.validAccessToken,
   ],
   async (req: Request, res: Response) => {
-    console.log('here')
-    const spotifyApi = new SpotifyWebApi({
-      clientId: process.env.ID,
-      clientSecret: process.env.SECRET,
-      redirectUri: process.env.REDIRECT,
-    });
-    spotifyApi.setAccessToken(req.session.accessToken);
+    // console.log('here')
+    // const spotifyApi = new SpotifyWebApi({
+    //   clientId: process.env.ID,
+    //   clientSecret: process.env.SECRET,
+    //   redirectUri: process.env.REDIRECT,
+    // });
+    // spotifyApi.setAccessToken(req.session.accessToken);
 
-    const playlists = await PlaylistCollection.findMostLikes();
-    const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
-    
-    for (const p of playlists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'id, images, name, owner.display_name, public'});
-      if (playlistInfo.statusCode === 200)
-        playlistInfos.push(playlistInfo.body);
-      else
-        console.log('Failed to retrieve', playlistInfo.body);
-    }
+    // const playlists = await PlaylistCollection.findMostLikes();
+    // const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+
+    // for (const p of playlists) {
+    //   const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, { fields: 'id, images, name, owner.display_name, public' });
+    //   if (playlistInfo.statusCode === 200)
+    //     playlistInfos.push(playlistInfo.body);
+    //   else
+    //     console.log('Failed to retrieve', playlistInfo.body);
+    // }
     res.status(200).json({
       message: 'Retrieved successfully.',
-      items: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
+      items: await Promise.all(mostResults[0].map((p: SpotifyApi.PlaylistObjectSimplified) => util.constructShallowPlaylistResponse(req.session.username, p))),
     });
   }
 )
@@ -262,26 +217,26 @@ router.get(
     userValidator.validAccessToken,
   ],
   async (req: Request, res: Response) => {
-    const spotifyApi = new SpotifyWebApi({
-      clientId: process.env.ID,
-      clientSecret: process.env.SECRET,
-      redirectUri: process.env.REDIRECT,
-    });
-    spotifyApi.setAccessToken(req.session.accessToken);
+    // const spotifyApi = new SpotifyWebApi({
+    //   clientId: process.env.ID,
+    //   clientSecret: process.env.SECRET,
+    //   redirectUri: process.env.REDIRECT,
+    // });
+    // spotifyApi.setAccessToken(req.session.accessToken);
 
-    const playlists = await PlaylistCollection.findMostUsed();
-    const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+    // const playlists = await PlaylistCollection.findMostUsed();
+    // const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
 
-    for (const p of playlists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId,  {fields: 'id, images, name, owner.display_name, public'});
-      if (playlistInfo.statusCode === 200)
-        playlistInfos.push(playlistInfo.body);
-      else
-        console.log('Failed to retrieve', playlistInfo.body);
-    }
+    // for (const p of playlists) {
+    //   const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, { fields: 'id, images, name, owner.display_name, public' });
+    //   if (playlistInfo.statusCode === 200)
+    //     playlistInfos.push(playlistInfo.body);
+    //   else
+    //     console.log('Failed to retrieve', playlistInfo.body);
+    // }
     res.status(200).json({
       message: 'Retrieved successfully.',
-      items: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
+      items: await Promise.all(mostResults[1].map((p: SpotifyApi.PlaylistObjectSimplified) => util.constructShallowPlaylistResponse(req.session.username, p))),
     });
   }
 )
@@ -294,26 +249,26 @@ router.get(
     userValidator.validAccessToken,
   ],
   async (req: Request, res: Response) => {
-    const spotifyApi = new SpotifyWebApi({
-      clientId: process.env.ID,
-      clientSecret: process.env.SECRET,
-      redirectUri: process.env.REDIRECT,
-    });
-    spotifyApi.setAccessToken(req.session.accessToken);
+    // const spotifyApi = new SpotifyWebApi({
+    //   clientId: process.env.ID,
+    //   clientSecret: process.env.SECRET,
+    //   redirectUri: process.env.REDIRECT,
+    // });
+    // spotifyApi.setAccessToken(req.session.accessToken);
 
-    const playlists = await PlaylistCollection.findMostProductive();
-    const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+    // const playlists = await PlaylistCollection.findMostProductive();
+    // const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
 
-    for (const p of playlists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId,  {fields: 'id, images, name, owner.display_name, public'});
-      if (playlistInfo.statusCode === 200)
-        playlistInfos.push(playlistInfo.body);
-      else
-        console.log('Failed to retrieve', playlistInfo.body);
-    }
+    // for (const p of playlists) {
+    //   const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, { fields: 'id, images, name, owner.display_name, public' });
+    //   if (playlistInfo.statusCode === 200)
+    //     playlistInfos.push(playlistInfo.body);
+    //   else
+    //     console.log('Failed to retrieve', playlistInfo.body);
+    // }
     res.status(200).json({
       message: 'Retrieved successfully.',
-      items: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
+      items: await Promise.all(mostResults[2].map((p: SpotifyApi.PlaylistObjectSimplified) => util.constructShallowPlaylistResponse(req.session.username, p))),
     });
   }
 )
@@ -321,4 +276,4 @@ router.get(
 
 
 
-export {router as playlistRouter};
+export { router as playlistRouter };
