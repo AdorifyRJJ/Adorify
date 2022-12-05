@@ -41,12 +41,28 @@
           </div>
         </div>
       </div>
-      <HomePlaylistCard
+      <!-- <HomePlaylistCard
         :key="i"
         v-for="(playlist, i) in this.$store.state.myLikedPlaylists"
         :playlist="playlist"
         @select="toggleSelected"
-      ></HomePlaylistCard>
+      ></HomePlaylistCard> -->
+      <!-- <vue-glide v-model="active">
+        <vue-glide-slide
+          v-for="i in 10"
+          :key="i">
+          Slide {{ i }}
+        </vue-glide-slide>
+      </vue-glide> -->
+      <carousel :perPage="3" :navigationEnabled="true" :paginationEnabled="false">
+        <slide :key="i"
+          v-for="(playlist, i) in this.$store.state.myLikedPlaylists">
+          <HomePlaylistCard
+            :playlist="playlist"
+          @select="toggleSelected">
+          </HomePlaylistCard>
+        </slide>
+      </carousel>
       <div class="bottomDiv">
         <button @click="startSession" class="pButton">
           <img src="../public/play.svg">
@@ -54,8 +70,8 @@
       </div>
     </div>
     <div class="center" v-else>
-      <div class="wh100b">{{ this.getTime }}</div>
-      <div>{{ this.currInterval }} / {{ this.intervals }}</div>
+      <div class="wh100b time">{{ this.getTime }}</div>
+      <div class="wh20b intervals">{{ this.currInterval }} / {{ this.intervals }}</div>
       <button class="button" @click="endSession">
         <span class="wh20b">End Session</span>
       </button>
@@ -78,14 +94,19 @@
         </div>
       </div>
     </div>
+    
   </main>
 </template>
 
 <script>
 import HomePlaylistCard from "../components/Playlists/HomePlaylistCard.vue";
+import { Carousel, Slide } from 'vue-carousel';
+import { Glide, GlideSlide } from 'vue-glide-js';
+
 
 export default {
-  components: { HomePlaylistCard },
+  components: { HomePlaylistCard, Carousel, Slide, [Glide.name]: Glide,
+    [GlideSlide.name]: GlideSlide },
   name: "HomePage",
   data() {
     return {
@@ -338,8 +359,8 @@ main {
 .selector {
   display: grid;
   gap: 8px;
-  padding-top: 10%;
-  padding-bottom: 10%;
+  padding-top: 40px;
+  padding-bottom: 40px;
   
 }
 
@@ -435,6 +456,22 @@ main {
 
 .trackInfo {
   padding: 20px;
+}
+
+.time {
+  padding-top: 40px;
+}
+
+.intervals {
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+/* .VueCarousel-wrapper {
+  display: flex;
+} */
+
+.VueCarousel-inner {
+  width: 1000px;
 }
 
 </style>

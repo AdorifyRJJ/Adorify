@@ -1,11 +1,8 @@
 <template>
-    <div>
-        <div @click="$emit('select', spotifyId)">
-            <img :src="image" height="100" width="100" />
-            <div>playlist name: {{ playlistName }}</div>
-            <div>owner: {{ owner }}</div>
-            <div>id: {{ spotifyId }}</div>
-        </div>
+    <div class="card center" @click="$emit('select', spotifyId)">
+        <img :src="image" height="120" width="120" />
+        <div class="wh16b">{{ playlistName }}</div>
+        <div class="gr16">{{ owner }}</div>
     </div>
 </template>
 
@@ -21,7 +18,7 @@ export default {
             return this.playlist.name;
         },
         owner() {
-            return this.playlist.owner.display_name;
+            return this.playlist.owner;
         },
         spotifyId() {
             return this.playlist.id;
@@ -30,4 +27,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.card {}
+</style>

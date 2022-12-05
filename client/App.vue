@@ -63,6 +63,12 @@ export default {
 </script>
 
 <style>
+
+li {
+  display: block;
+}
+
+
 @font-face {
   font-family: "AdorifyF";
   src: url("./public/fonts/AdorifyF/adorifyFont.otf");
@@ -90,6 +96,12 @@ main {
   font-family: "Leelawadee UI";
 }
 
+.wh16b {
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: bold;
+}
+
 .wh20b {
   color: #FFFFFF;
   font-size: 20px;
@@ -106,6 +118,11 @@ main {
   color: #FFFFFF;
   font-size: 100px;
   font-weight: bold;
+}
+
+.gr16 {
+  color: #A9A9A9;
+  font-size: 16px;
 }
 
 .gr20 {
