@@ -12,107 +12,125 @@
       <p v-else>Playing music! Turn it up!</p>
     </div> -->
 
-        <!-- fetch username -->
-        <div class="wh50b">{{ this.$store.state.displayName }},</div>
-        <div class="gr30">
-            <span v-if="!sessionStarted">Start a focus session</span>
-            <span v-else-if="focusing">You're doing great!</span>
-            <span v-else>Take a break!</span>
-        </div>
+    <!-- fetch username -->
+    <div class="wh50b">{{ this.$store.state.displayName }},</div>
+    <div class="gr30">
+        <span v-if="!sessionStarted">Start a focus session</span>
+        <span v-else-if="focusing">You're doing great!</span>
+        <span v-else>Take a break!</span>
+    </div>
 
-        <div class="center" v-if="!sessionStarted">
-            <div class="selector">
-                <div class="selectorItem">
-                    <div class="left gr20">Focus Time</div>
-                    <div class="right gr20">
-                        <input v-model="focusTime" /> min
-                    </div>
-                </div>
-                <div class="selectorItem">
-                    <div class="left gr20">Break Time</div>
-                    <div class="right gr20">
-                        <input v-model="breakTime" /> min
-                    </div>
-                </div>
-                <div class="selectorItem">
-                    <div class="left gr20">Intervals</div>
-                    <div class="right gr20">
-                        <input v-model="intervals" /> times
-                    </div>
-                </div>
-            </div>
+    <div class="center" v-if="!sessionStarted">
+      <div class="selector">
+        <div class="selectorItem">
+          <div class="left gr20">Focus Time</div>
+          <div class="right gr20">
+            <input v-model="focusTime" /> min
+          </div>
+        </div>
+        <div class="selectorItem">
+          <div class="left gr20">Break Time</div>
+          <div class="right gr20">
+            <input v-model="breakTime" /> min
+          </div>
+        </div>
+        <div class="selectorItem">
+          <div class="left gr20">Intervals</div>
+          <div class="right gr20">
+            <input v-model="intervals"  /> times
+          </div>
+        </div>
+      </div>
+      <!-- <HomePlaylistCard
+        :key="i"
+        v-for="(playlist, i) in this.$store.state.myLikedPlaylists"
+        :playlist="playlist"
+        @select="toggleSelected"
+      ></HomePlaylistCard> -->
+      <!-- <vue-glide v-model="active">
+        <vue-glide-slide
+          v-for="i in 10"
+          :key="i">
+          Slide {{ i }}
+        </vue-glide-slide>
+      </vue-glide> -->
+      <div v-if="($store.state.myLikedPlaylists.length > 0)">
+        <carousel :perPage="3" :navigationEnabled="true" :paginationEnabled="false">
+            <slide :key="i"
+            v-for="(playlist, i) in this.$store.state.myLikedPlaylists">
             <HomePlaylistCard
-                :key="i"
-                v-for="(playlist, i) in this.$store.state.myLikedPlaylists"
                 :playlist="playlist"
-                @select="toggleSelected"
-            ></HomePlaylistCard>
-            <div class="bottomDiv">
-                <button @click="startSession" class="pButton">
-                    <img src="../public/play.svg" />
-                </button>
-            </div>
+                :isSelected="selectedPlaylistId === playlist.id"
+            @select="toggleSelected">
+            </HomePlaylistCard>
+            </slide>
+        </carousel>
         </div>
-        <div class="center" v-else>
-            <div class="wh100b">{{ this.getTime }}</div>
-            <div>{{ this.currInterval }} / {{ this.intervals }}</div>
-            <button class="button" @click="endSession">
-                <span class="wh20b">End Session</span>
-            </button>
-            <div class="bottomDiv">
-                <div class="center trackInfo">
-                    <div class="wh20b">{{ this.currTrackTitle }}</div>
-                    <div class="gr20">{{ this.currTrackArtist }}</div>
-                </div>
-                <div class="controls">
-                    <button
-                        v-if="timerActive"
-                        @click="playPrev"
-                        class="prevButton"
-                    >
-                        <img src="../public/prev.svg" />
-                    </button>
-                    <button @click="togglePlay" class="pButton">
-                        <img v-if="timerActive" src="../public/pause.svg" />
-                        <img v-else src="../public/play.svg" />
-                    </button>
-                    <button
-                        v-if="timerActive"
-                        @click="playNext"
-                        class="nextButton"
-                    >
-                        <img src="../public/forward.svg" />
-                    </button>
-                </div>
-            </div>
+        <div v-else class="gr20 hint">
+            Go to the Playlists page and like playlists to use for your study sessions!
         </div>
-    </main>
+      <div class="bottomDiv">
+        <button @click="startSession" class="pButton">
+          <img src="../public/play.svg">
+        </button>
+      </div>
+    </div>
+    <div class="center" v-else>
+      <div class="wh100b time">{{ this.getTime }}</div>
+      <div class="wh20b intervals">{{ this.currInterval }} / {{ this.intervals }}</div>
+      <button class="button" @click="endSession">
+        <span class="wh20b">End Session</span>
+      </button>
+      <div class="bottomDiv">
+        <div class="center trackInfo">
+          <div class="wh20b">{{ this.currTrackTitle }}</div>
+          <div class="gr20">{{ this.currTrackArtist }}</div>
+        </div>
+        <div class="controls">
+          <button v-if="timerActive" @click="playPrev" class="prevButton">
+            <img src="../public/prev.svg">
+          </button>
+          <button @click="togglePlay" class="pButton">
+            <img v-if="timerActive" src="../public/pause.svg">
+            <img v-else src="../public/play.svg">
+          </button>
+          <button v-if="timerActive" @click="playNext" class="nextButton">
+            <img src="../public/forward.svg">
+          </button>
+        </div>
+      </div>
+    </div>
+    
+  </main>
 </template>
 
 <script>
 import HomePlaylistCard from "../components/Playlists/HomePlaylistCard.vue";
+import { Carousel, Slide } from 'vue-carousel';
+// import { Glide, GlideSlide } from 'vue-glide-js';
+
 
 export default {
-    components: { HomePlaylistCard },
-    name: "HomePage",
-    data() {
-        return {
-            // player: undefined,
-            // player_device_id: undefined,
-            playing: false,
-            focusTime: 25,
-            breakTime: 5,
-            intervals: 2,
-            selectedPlaylistId: null,
-            sessionStarted: false,
-            focusing: false,
-            currInterval: 1,
-            timerActive: false,
-            timestamp: null,
-            timerId: null,
-            currTrackTitle: "",
-            currTrackArtist: "",
-            trackTimerId: null,
+  components: { HomePlaylistCard, Carousel, Slide},
+  name: "HomePage",
+  data() {
+    return {
+      // player: undefined,
+      // player_device_id: undefined,
+      playing: false,
+      focusTime: 25,
+      breakTime: 5,
+      intervals: 2,
+      selectedPlaylistId: null,
+      sessionStarted: false,
+      focusing: false,
+      currInterval: 1,
+      timerActive: false,
+      timestamp: null,
+      timerId: null,
+      currTrackTitle: "",
+      currTrackArtist: "",
+      trackTimerId: null,
 
             playlistTracks: null,
             totalPlaylistTracks: 1,
@@ -349,6 +367,11 @@ main {
     gap: 8px;
     padding-top: 10%;
     padding-bottom: 10%;
+    display: grid;
+    gap: 8px;
+    padding-top: 40px;
+    padding-bottom: 20px;
+  
 }
 
 .selectorItem {
@@ -445,4 +468,27 @@ main {
 .trackInfo {
     padding: 20px;
 }
+
+.time {
+  padding-top: 40px;
+}
+
+.intervals {
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.hint {
+    padding: 40px 0px;
+
+}
+
+/* .VueCarousel-wrapper {
+  display: flex;
+} */
+
+.VueCarousel-inner {
+  width: 1000px;
+}
+
 </style>

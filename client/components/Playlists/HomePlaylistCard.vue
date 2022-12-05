@@ -1,10 +1,16 @@
 <template>
-    <div>
-        <div @click="$emit('select', spotifyId)">
-            <img :src="image" height="100" width="100" />
-            <div>playlist name: {{ playlistName }}</div>
-            <div>owner: {{ owner }}</div>
-            <div>id: {{ spotifyId }}</div>
+    <div v-if="isSelected" class="card center selected" @click="$emit('select', spotifyId)">
+        <img :src="image" height="120" width="120" />
+        <div class="playlistInfo center">
+            <div class="wh16b">{{ playlistName }}</div>
+            <div class="gr16">{{ owner }}</div>
+        </div>
+    </div>
+    <div v-else class="card center" @click="$emit('select', spotifyId)">
+        <img :src="image" height="120" width="120" />
+        <div class="playlistInfo center">
+            <div class="wh16b">{{ playlistName }}</div>
+            <div class="gr16">{{ owner }}</div>
         </div>
     </div>
 </template>
@@ -12,7 +18,7 @@
 <script>
 export default {
     name: "HomePlaylistCard",
-    props: ["playlist"],
+    props: ["playlist", "isSelected"],
     computed: {
         image() {
             return this.playlist.image.url;
@@ -21,7 +27,7 @@ export default {
             return this.playlist.name;
         },
         owner() {
-            return this.playlist.owner.display_name;
+            return this.playlist.owner;
         },
         spotifyId() {
             return this.playlist.id;
@@ -30,4 +36,16 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.card {
+    padding: 20px 0px;
+}
+.playlistInfo {
+    margin-top: 8px;
+    
+}
+
+.selected {
+    filter: drop-shadow(0px 0px 10px rgba(255,255,255,0.75));
+}
+</style>

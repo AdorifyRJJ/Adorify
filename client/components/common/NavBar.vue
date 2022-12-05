@@ -42,3 +42,5 @@ nav {
 }
 
 </style>
+	Boolean	false	Flag to make the carousel loop around when it reaches the end.
+m

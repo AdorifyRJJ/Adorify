@@ -3,6 +3,7 @@ import express from 'express';
 import UserCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as util from '../playlist/util';
+import * as spotifyUtil from '../spotify/util';
 import SpotifyWebApi from 'spotify-web-api-node';
 
 const router = express.Router();
@@ -42,6 +43,7 @@ router.get(
   [
     userValidator.isUserLoggedIn,
     userValidator.validAccessToken,
+    spotifyUtil.refreshIfNeeded,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({
