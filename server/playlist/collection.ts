@@ -29,16 +29,16 @@ class PlaylistCollection {
   }
 
   static async findMostLikes(): Promise<Array<HydratedDocument<Playlist>>> {
-    return PlaylistModel.find({isPublic: true}).sort({numLikes: -1}).limit(20);
+    return PlaylistModel.find({isPublic: true}).sort({numLikes: -1}).limit(6);
   }
 
   static async findMostUsed(): Promise<Array<HydratedDocument<Playlist>>> {
-    return PlaylistModel.find({isPublic: true}).sort({numUsed: -1}).limit(20);
+    return PlaylistModel.find({isPublic: true}).sort({numUsed: -1}).limit(6);
   }
 
   static async findMostProductive(): Promise<Array<HydratedDocument<Playlist>>> {
     // improve this metric in the future
-    return PlaylistModel.find({isPublic: true}).sort({numCompleted: -1}).limit(20);
+    return PlaylistModel.find({isPublic: true}).sort({numCompleted: -1}).limit(6);
   }
 
   static async addLike(spotifyId: string): Promise<void> {

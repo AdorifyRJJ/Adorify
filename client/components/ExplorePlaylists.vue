@@ -10,7 +10,7 @@
                     Public Library
                 </button>
             </div>
-            <div v-show="!viewingMine" class="bgroup2">
+            <div v-if="!viewingMine" class="bgroup2">
                 <button class="dropdown" @click="getMostLiked">
                     Most liked
                 </button>
