@@ -44,7 +44,7 @@ export default {
     /* border: solid; */
     align-self: center;
     position: relative;
-    min-height: 340px;
+    /* min-height: 340px; */
     /* filter: brightness(90%); */
 }
 
