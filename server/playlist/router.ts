@@ -24,6 +24,33 @@ playlistSpotifyApi.setRefreshToken(process.env.REFRESHTOKEN);
 
 const mostResults: Array<any> = [[], [], []];
 
+const temp = setInterval(async () => {
+  console.log('refreshing most liked, used, productive');
+  // spotifyApi.setAccessToken();
+  const data = await playlistSpotifyApi.refreshAccessToken();
+
+  playlistSpotifyApi.setAccessToken(data.body['access_token']);
+  if (data.body['refresh_token']) playlistSpotifyApi.setRefreshToken(data.body['refresh_token']);
+
+  const filters = [PlaylistCollection.findMostLikes, PlaylistCollection.findMostUsed, PlaylistCollection.findMostProductive];
+
+  for (let i = 0; i < filters.length; i++) {
+    const playlists = await filters[i]();
+    const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+
+    for (const p of playlists) {
+      const playlistInfo = await playlistSpotifyApi.getPlaylist(p.spotifyId, { fields: 'id, images, name, owner.display_name, public' });
+      if (playlistInfo.statusCode === 200)
+        playlistInfos.push(playlistInfo.body);
+      else
+        console.log('Failed to retrieve', playlistInfo.body);
+    }
+
+    mostResults[i] = playlistInfos;
+  }
+  clearInterval(temp);
+}, 1000);
+
 //update most liked, used, productive every hour
 setInterval(async () => {
   console.log('refreshing most liked, used, productive');
