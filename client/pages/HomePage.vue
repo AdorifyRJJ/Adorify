@@ -59,6 +59,7 @@
           v-for="(playlist, i) in this.$store.state.myLikedPlaylists">
           <HomePlaylistCard
             :playlist="playlist"
+            :isSelected="selectedPlaylistId === playlist.id"
           @select="toggleSelected">
           </HomePlaylistCard>
         </slide>
@@ -362,10 +363,10 @@ main {
     gap: 8px;
     padding-top: 10%;
     padding-bottom: 10%;
-  display: grid;
-  gap: 8px;
-  padding-top: 40px;
-  padding-bottom: 40px;
+    display: grid;
+    gap: 8px;
+    padding-top: 40px;
+    padding-bottom: 20px;
   
 }
 
