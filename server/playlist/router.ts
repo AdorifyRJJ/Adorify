@@ -3,6 +3,7 @@ import express from 'express';
 import PlaylistCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as util from './util';
+import * as spotifyUtil from '../spotify/util';
 import UserCollection from '../user/collection';
 import SpotifyWebApi from 'spotify-web-api-node';
 //import { spotifyApi } from '../spotify/router';
@@ -59,6 +60,7 @@ router.get(
   [
     userValidator.isUserLoggedIn,
     userValidator.validAccessToken,
+    spotifyUtil.refreshIfNeeded,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({
@@ -93,6 +95,7 @@ router.get(
   [
     userValidator.isUserLoggedIn,
     userValidator.validAccessToken,
+    spotifyUtil.refreshIfNeeded,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({
@@ -124,6 +127,7 @@ router.get(
   [
     userValidator.isUserLoggedIn,
     userValidator.validAccessToken,
+    spotifyUtil.refreshIfNeeded,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({
@@ -150,6 +154,7 @@ router.put(
   [
     userValidator.isUserLoggedIn,
     userValidator.validAccessToken,
+    spotifyUtil.refreshIfNeeded,
   ],
   async (req: Request, res: Response) => {
     const playlist = await PlaylistCollection.findOneBySpotifyId(req.params.spotifyId);
@@ -182,6 +187,7 @@ router.get(
   [
     userValidator.isUserLoggedIn,
     userValidator.validAccessToken,
+    spotifyUtil.refreshIfNeeded,
   ],
   async (req: Request, res: Response) => {
     console.log('here')
@@ -215,6 +221,7 @@ router.get(
   [
     userValidator.isUserLoggedIn,
     userValidator.validAccessToken,
+    spotifyUtil.refreshIfNeeded,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({
@@ -247,6 +254,7 @@ router.get(
   [
     userValidator.isUserLoggedIn,
     userValidator.validAccessToken,
+    spotifyUtil.refreshIfNeeded,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({
