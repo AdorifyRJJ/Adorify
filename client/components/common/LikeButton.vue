@@ -1,7 +1,8 @@
 <template>
     <div>
         <button @click="toggleLike">
-            Click to {{ this.isLiked ? "unlike" : "like" }}
+            <img v-if="isLiked" src="../../public/filledHeart.svg" />
+            <img v-else src="../../public/heart.svg" />
         </button>
     </div>
 </template>

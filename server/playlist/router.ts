@@ -110,7 +110,7 @@ setInterval(async () => {
 
     mostResults[i] = playlistInfos;
   }
-}, 10 * 1000);
+}, 60*60 * 1000);
 
 
 

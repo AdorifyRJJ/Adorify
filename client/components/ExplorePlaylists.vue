@@ -1,23 +1,33 @@
 <template>
-    <div>
-        <h3>Find playlists</h3>
-        <div>
-            <button @click="getMyPlaylists">My Spotify Library</button>
-            <button @click="getPublicPlaylists">Public Library</button>
-            <div v-show="!viewingMine">
-                <button @click="getMostLiked">Most liked</button>
-                <button @click="getMostUsed">Most Used</button>
-                <button @click="getMostProductive">Most Productive</button>
+    <div class="section">
+        <div class="title">Find playlists</div>
+        <div class="selectPlaylists">
+            <div class="bgroup1">
+                <button class="btn" @click="getMyPlaylists">
+                    My Spotify Library
+                </button>
+                <button class="btn" @click="getPublicPlaylists">
+                    Public Library
+                </button>
+            </div>
+            <div v-show="!viewingMine" class="bgroup2">
+                <button class="dropdown" @click="getMostLiked">
+                    Most liked
+                </button>
+                <button class="dropdown" @click="getMostUsed">Most Used</button>
+                <button class="dropdown" @click="getMostProductive">
+                    Most Productive
+                </button>
             </div>
         </div>
-        <PlaylistCard
-            :key="i"
-            v-for="(playlist, i) in currPlaylists.items"
-            :playlist="playlist"
-        ></PlaylistCard>
+        <div class="playlists">
+            <PlaylistCard
+                :key="i"
+                v-for="(playlist, i) in currPlaylists.items"
+                :playlist="playlist"
+            ></PlaylistCard>
+        </div>
         <div>
-            <p>{{ this.limit }}</p>
-            <p>{{ this.offset }}</p>
             <button v-if="currPlaylists.previous" @click="prevPage">
                 prev page
             </button>
@@ -104,4 +114,56 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.section {
+    display: flex;
+    padding-right: 350px;
+}
+
+.title {
+    display: flex;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 48px;
+    padding-bottom: 16px;
+}
+.playlists {
+    /* border: solid; */
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 40px;
+    row-gap: 32px;
+    min-height: 200px;
+    max-height: 680px;
+    overflow-y: scroll;
+}
+
+.selectPlaylists {
+    display: flex;
+    justify-content: space-between;
+}
+
+.bgroup1 {
+    display: flex;
+    justify-content: left;
+}
+.bgroup2 {
+    display: flex;
+    justify-self: center;
+}
+
+.btn {
+    padding: 10px;
+    border: solid;
+    width: 185px;
+    height: 44px;
+}
+
+.dropdown {
+    padding: 10px;
+    border: solid;
+    width: 134px;
+    height: 44px;
+}
+</style>
