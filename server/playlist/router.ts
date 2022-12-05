@@ -17,71 +17,10 @@ const router = express.Router();
 const playlistSpotifyApi = new SpotifyWebApi({
   clientId: process.env.ID,
   clientSecret: process.env.SECRET,
-  redirectUri: 'http://localhost:3000',
+  redirectUri: process.env.PLAYLISTREDIRECT,
 });
 
-let tokenExpirationEpoch: number;
-//const authorizationCode = 'AQCelEmlus6jfIhTiw9McSNIIxfeyQ7cqVltIB-bCtKXBY0stfBLDdO3xAgE74e4_cvjbaXH_IIbfEri4DohxgXAya5GA8PU5jonuCtv9YJmlmaX0u_hUgUIZb--2EHV9I-sDTEn10WwQCefh65JaGaGM8WvfM7QTTp3ZDKEvfuQoOIP18iQRS5K0ziqRIVpuhzAEa_pqKGcfPaT0-DvZq0t-zF4XsyfE5odCDCbQczWGefCjOCPQ76BlL4HPpUam_x-2459gtkrQxrz1MW3QFd7yHAn53AAOxjG-eAbRhalrKwDrYqfKHse8aA';
-
-playlistSpotifyApi.setRefreshToken('AQAT9rYtXW8cfp8bYEBQ3EIBPKksZZ6Qdny7523zguL8ysbb-f8lWRNr-3x9HX4wM4dcDQ8IbxcLueDha3aET5vs2fLOJnfaejWK9ZpThGwTfhfb-x7Wze99ghrV4nCTV5k');
-
-
-// playlistSpotifyApi.authorizationCodeGrant(authorizationCode).then(
-//   function(data) {
-//     // Set the access token and refresh token
-//     playlistSpotifyApi.setAccessToken('BQAWazHW5JYEo0oio1OwIo7eOtqTDJqfd5v3CrlNWn-UHstbx20GsS1fRvYXOP0eeRQngsu2RDcaUpWoXGHg-gmlHdhePupUqBGvj9JunbpecPK32FE-zoEOcqIs5cxb131-nANRveZneSmq5VzqPh7-ER40uxGB3KBWYkFvPIh_tHI-Fuck617x20c9GqURq6IW4ldamwhTsIrkda3RokyOo4r0QQZEjF8');
-//     playlistSpotifyApi.setRefreshToken('AQAT9rYtXW8cfp8bYEBQ3EIBPKksZZ6Qdny7523zguL8ysbb-f8lWRNr-3x9HX4wM4dcDQ8IbxcLueDha3aET5vs2fLOJnfaejWK9ZpThGwTfhfb-x7Wze99ghrV4nCTV5k');
-
-//     // Save the amount of seconds until the access token expired
-//     tokenExpirationEpoch =
-//       new Date().getTime() / 1000 + data.body['expires_in'];
-//     console.log(
-//       'Retrieved token. It expires in ' +
-//         Math.floor(tokenExpirationEpoch - new Date().getTime() / 1000) +
-//         ' seconds!'
-//     );
-//   },
-//   function(err) {
-//     console.log(
-//       'Something went wrong when retrieving the access token!',
-//       err.message
-//     );
-//   }
-// );
-
-// // Continually print out the time left until the token expires..
-// let numberOfTimesUpdated = 0;
-
-// setInterval(function () {
-//   console.log(
-//     'Time left: ' +
-//     Math.floor(tokenExpirationEpoch - new Date().getTime() / 1000) +
-//     ' seconds left!'
-//   );
-
-//   // OK, we need to refresh the token. Stop printing and refresh.
-//   if (++numberOfTimesUpdated > 5) {
-//     clearInterval(this);
-
-//     // Refresh token and print the new time to expiration.
-//     playlistSpotifyApi.refreshAccessToken().then(
-//       function (data) {
-//         tokenExpirationEpoch =
-//           new Date().getTime() / 1000 + data.body['expires_in'];
-//         console.log(
-//           'Refreshed token. It now expires in ' +
-//           Math.floor(tokenExpirationEpoch - new Date().getTime() / 1000) +
-//           ' seconds!'
-//         );
-//       },
-//       function (err) {
-//         console.log('Could not refresh the token!', err.message);
-//       }
-//     );
-//   }
-// }, 1000);
-
-//////////////////
+playlistSpotifyApi.setRefreshToken(process.env.REFRESHTOKEN);
 
 const mostResults: Array<any> = [[], [], []];
 
@@ -110,7 +49,7 @@ setInterval(async () => {
 
     mostResults[i] = playlistInfos;
   }
-}, 60*60 * 1000);
+}, 60 * 60 * 1000);
 
 
 
