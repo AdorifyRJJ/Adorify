@@ -29,6 +29,7 @@ const refreshIfNeeded = async (req: Request, res: Response, next: NextFunction) 
             req.session.expiryTime = tokenExpirationEpoch;
         }
     }
+    next();
 }
 
 export { generateRandomString, refreshIfNeeded };
