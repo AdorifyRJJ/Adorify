@@ -43,7 +43,7 @@ export default {
 .card {
     display: flex;
     flex-direction: column;
-    /* border: solid; */
+    border: solid;
     align-self: center;
     position: relative;
     width: 240px;

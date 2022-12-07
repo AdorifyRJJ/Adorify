@@ -16,10 +16,10 @@
                 <button class="dropdown" @click="getMostLiked">
                     Most liked
                 </button>
-                <!-- <button class="dropdown" @click="getMostUsed">Most Used</button>
+                <button class="dropdown" @click="getMostUsed">Most Used</button>
                 <button class="dropdown" @click="getMostProductive">
                     Most Productive
-                </button> -->
+                </button>
             </div>
         </div>
         <div v-if="loading" class="lds-ring">
