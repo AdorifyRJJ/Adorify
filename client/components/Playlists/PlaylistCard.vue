@@ -8,12 +8,14 @@
         <div class="cardContent" @click="openPlaylist">
             <img
                 class="image"
-                :src="this.playlist.images[0].url"
-                height="100"
-                width="100"
+                :src="this.playlist.images[0]?.url"
+                height="240"
+                width="240"
             />
-            <div class="playlistName">{{ this.playlist.name }}</div>
-            <div class="owner">{{ this.playlist.owner.display_name }}</div>
+            <div class="truncate2lines">
+                <div class="wh16b">{{ this.playlist.name }}</div>
+            </div>
+            <div class="gr16">{{ this.playlist.owner.display_name }}</div>
         </div>
     </div>
 </template>
@@ -44,7 +46,8 @@ export default {
     /* border: solid; */
     align-self: center;
     position: relative;
-    /* min-height: 340px; */
+    width: 240px;
+    height: 320px;
     /* filter: brightness(90%); */
 }
 
@@ -54,9 +57,11 @@ export default {
 }
 
 .cardContent {
+    /* border: solid; */
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
     filter: brightness(90%);
 }
 
@@ -66,42 +71,12 @@ export default {
 
 .image {
     border-radius: 10px;
-    /* object-fit: cover; */
-    width: 240px;
-    height: 240px;
-    /* width: 100%;
-    height: auto; */
-}
-/*
-.image:hover {
-} */
-
-.playlistName {
-    font-size: 16px;
-    font-weight: 700;
-    color: white;
-    padding-top: 15px;
-    /* white-space: nowrap; */
-    /* display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
-    overflow: hidden; */
+    object-fit: cover;
 }
 
-.owner {
-    font-size: 16px;
-    font-weight: 400;
-    color: #a9a9a9;
-    padding-top: 2px;
-}
 .likeBtn {
-    display: flex;
+    /* display: flex; */
     margin: 16px;
-    position: absolute;
-    z-index: 1;
-}
-
-.delete {
     position: absolute;
     z-index: 1;
 }

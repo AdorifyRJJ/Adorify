@@ -1,24 +1,25 @@
 <template>
     <div class="section">
-        <div class="title">Find playlists</div>
-        <div class="selectPlaylists">
-            <div class="bgroup1">
-                <button class="btn" @click="getMyPlaylists">
-                    My Spotify Library
+        <div class="wh40b">Find playlists</div>
+
+        <div class="btn-div">
+            <div class="btn-group">
+                <button class="dimButton" @click="getMyPlaylists">
+                    <span class="wh20n">My Spotify Library</span>
                 </button>
-                <button class="btn" @click="getPublicPlaylists">
-                    Public Library
+                <button class="dimButton" @click="getPublicPlaylists">
+                    <span class="wh20n">Public Library</span>
                 </button>
             </div>
 
-            <div v-if="!viewingMine" class="bgroup2">
+            <div v-if="!loading && !viewingMine" class="bgroup2">
                 <button class="dropdown" @click="getMostLiked">
                     Most liked
                 </button>
-                <button class="dropdown" @click="getMostUsed">Most Used</button>
+                <!-- <button class="dropdown" @click="getMostUsed">Most Used</button>
                 <button class="dropdown" @click="getMostProductive">
                     Most Productive
-                </button>
+                </button> -->
             </div>
         </div>
         <div v-if="loading" class="lds-ring">
@@ -28,7 +29,7 @@
             <div></div>
         </div>
         <div v-else>
-            <div class="playlists">
+            <div class="playlists columns">
                 <PlaylistCard
                     :key="i"
                     v-for="(playlist, i) in currPlaylists.items"
@@ -182,21 +183,17 @@ export default {
 
 .section {
     display: flex;
-    padding-right: 20rem;
+    width: 65%;
+    border: solid;
+    /* flex-basis: 2; */
+    /* padding-right: 100px; */
 }
 
-.title {
-    display: flex;
-    font-size: 40px;
-    font-weight: 700;
-    line-height: 48px;
-    padding-bottom: 16px;
-}
 .playlists {
-    /* border: solid; */
-    margin-top: 50px;
+    border: solid;
+    margin-top: 40px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+
     column-gap: 40px;
     row-gap: 32px;
     /* min-height: 200px; */
@@ -204,31 +201,40 @@ export default {
     overflow-y: scroll;
 }
 
+.columns {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 1000px) {
+    .columns {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 2000px) {
+    .columns {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
 .selectPlaylists {
     display: flex;
     justify-content: space-between;
 }
 
-.bgroup1 {
+.btn-div {
     display: flex;
+    justify-content: space-between;
 }
 .bgroup2 {
     display: flex;
 }
 
-.btn {
-    padding: 10px;
-    border: solid;
-    width: 185px;
-    height: 44px;
-    cursor: pointer;
-}
-
 .dropdown {
     padding: 10px;
     border: solid;
-    width: 134px;
-    height: 44px;
+    /* width: 134px;
+    height: 44px; */
     cursor: pointer;
 }
 </style>

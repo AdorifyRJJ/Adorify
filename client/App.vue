@@ -67,11 +67,9 @@ export default {
 </script>
 
 <style>
-
 li {
-  display: block;
+    display: block;
 }
-
 
 @font-face {
     font-family: "AdorifyF";
@@ -102,7 +100,7 @@ li {
 #app {
     color: white;
     background: #1f1b2e;
-    /* width: 100vw; */
+    width: 100vw;
     height: 100vh;
 }
 
@@ -125,14 +123,20 @@ main {
 }
 
 .wh16b {
-  color: #FFFFFF;
-  font-size: 16px;
-  font-weight: bold;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .wh20b {
     color: #ffffff;
     font-size: 20px;
+    font-weight: bold;
+}
+
+.wh40b {
+    color: #ffffff;
+    font-size: 40px;
     font-weight: bold;
 }
 
@@ -148,9 +152,21 @@ main {
     font-weight: bold;
 }
 
+.wh20n {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.wh40n {
+    color: #ffffff;
+    font-size: 40px;
+    font-weight: normal;
+}
+
 .gr16 {
-  color: #A9A9A9;
-  font-size: 16px;
+    color: #a9a9a9;
+    font-size: 16px;
 }
 
 .gr20 {
@@ -180,6 +196,47 @@ main {
 
 .button:hover {
     background-color: #5a4193;
+}
+
+.dimButton {
+    color: #ffffff;
+    background-color: #373544;
+    height: 50px;
+    border-radius: 0px;
+    border-width: 0;
+    /* border-right: 10px, solid, #6c4eb3; */
+    padding: 0px 30px;
+}
+.btn-group {
+    margin: 18px 0;
+}
+
+.btn-group > .dimButton {
+    border-right: 2px solid #6c4eb3;
+}
+.btn-group > *:last-child {
+    border-radius: 0 20px 20px 0;
+    border-right: 0;
+}
+
+.btn-group > *:first-child {
+    border-radius: 20px 0 0 20px;
+}
+
+.truncate1line {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.truncate2lines {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 a:link {

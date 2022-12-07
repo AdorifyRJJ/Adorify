@@ -27,6 +27,8 @@ export default {
 .page {
     display: flex;
     flex-direction: row;
+    /* align-content: space-between; */
+    gap: 80px;
     color: white;
 }
 
