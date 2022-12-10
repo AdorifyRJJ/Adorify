@@ -1,22 +1,39 @@
 <template>
-    <div>
-        <h1>Playlist Info Page</h1>
+    <div class="page">
         <MyLikedPlaylists />
-        <button @click="exit">Back</button>
-        <div>
-            <img :src="image" height="100" width="100" />
-        </div>
-        <div>{{ this.name }}</div>
-        <div>{{ this.owner }}</div>
-        <LikeButton :spotifyId="spotifyId" :isLiked="isLiked" />
-        <TrackItem
-            :key="i"
-            v-for="(track, i) in tracks.items"
-            :track="track.track"
-        />
-        <div>
-            <button v-if="tracks.previous" @click="prevPage">prev page</button>
-            <button v-if="tracks.next" @click="nextPage">next page</button>
+        <div class="infoSection">
+            <div class="playlistInfo">
+                <img :src="image" height="186" width="186" />
+                <div class="rightContainer">
+                    <div class="btnContainer">
+                        <button class="backBtn" @click="exit">Back</button>
+                    </div>
+                    <div class="namesAndLike">
+                        <div class="names">
+                            <div class="playlistName">{{ this.name }}</div>
+                            <div class="owner">{{ this.owner }}</div>
+                        </div>
+                        <LikeButton
+                            class="likeBtn"
+                            :spotifyId="spotifyId"
+                            :isLiked="isLiked"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="tracks">
+                <TrackItem
+                    :key="i"
+                    v-for="(track, i) in tracks.items"
+                    :track="track.track"
+                />
+            </div>
+            <div>
+                <button v-if="tracks.previous" @click="prevPage">
+                    prev page
+                </button>
+                <button v-if="tracks.next" @click="nextPage">next page</button>
+            </div>
         </div>
     </div>
 </template>
@@ -35,7 +52,6 @@ export default {
             owner: null,
             image: null,
             isLiked: null,
-            playlist: null,
             tracks: [],
         };
     },
@@ -70,11 +86,11 @@ export default {
         const url = `/api/playlists/info/${this.spotifyId}`;
         const res = await fetch(url).then(async (r) => r.json());
         console.log("playlist info", res);
-        this.image = res.playlistInfo.images[0].url;
         this.name = res.playlistInfo.name;
         this.owner = res.playlistInfo.owner.display_name;
         this.isLiked = res.isLiked;
         this.tracks = res.playlistInfo.tracks;
+        this.image = res.playlistInfo.images[0].url;
         console.log("init playlist info", res);
     },
 
@@ -89,4 +105,90 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.page {
+    display: flex;
+    flex-direction: row;
+    color: white;
+}
+
+.infoSection {
+    display: flex;
+    flex-direction: column;
+    padding-right: 350px;
+    width: 65%;
+}
+
+.playlistInfo {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.rightContainer {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+}
+
+.btnContainer {
+    display: flex;
+    justify-content: right;
+}
+
+.backBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 100px;
+    background-color: #6c4eb3;
+    border-radius: 20px;
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+}
+.namesAndLike {
+    display: flex;
+
+    flex-direction: row;
+}
+
+.names {
+    display: flex;
+    flex-direction: column;
+    /* border: solid; */
+}
+.playlistName {
+    display: flex;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 36px;
+}
+
+.owner {
+    display: flex;
+    color: #a9a9a9;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.likeBtn {
+    display: flex;
+    align-items: right;
+    width: 29px;
+    height: auto;
+}
+
+.tracks {
+    border: solid;
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: 1fr;
+    column-gap: 40px;
+    row-gap: 32px;
+    min-height: 200px;
+    max-height: 580px;
+    overflow-y: scroll;
+}
+</style>
