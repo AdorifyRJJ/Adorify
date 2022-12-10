@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
+import router from './router';
 
 Vue.use(Vuex);
 
@@ -15,10 +16,13 @@ const store = new Vuex.Store({
     refreshTimeout: null,
     deviceId: null,
     myLikedPlaylists: [],
+    imgURL: null,
     // mySpotifyPlaylists: [],
     // publicPlaylists: [],
     spotifyPlayer: null,
     connected: false,
+    accessToken: null,
+    expiryTime: null,
   },
   // getters: {
   //   getPlaylistById: (state) => (spotifyId) => {
@@ -33,11 +37,20 @@ const store = new Vuex.Store({
        */
       state.displayName = displayName;
     },
+    setImgURL(state, imgURL) {
+      state.imgURL = imgURL;
+    },
+    setAccessToken(state, accessToken) {
+      state.accessToken = accessToken;
+    },
     setConnected(state, connected) {
       state.connected = connected;
     },
     setDeviceId(state, deviceId) {
       state.deviceId = deviceId;
+    },
+    setExpiryTime(state, expiryTime) {
+      state.expiryTime = expiryTime;
     },
     setSpotifyPlayer(state, player) {
       state.spotifyPlayer = player;
@@ -56,23 +69,51 @@ const store = new Vuex.Store({
         state.refreshTimeout = null;
       }
     },
+    resetStore(state) {
+      store.commit("forceDisconnect");
+      store.commit("setDisplayName", null);
+      store.commit("setImgURL", null);
+      store.commit("setAccessToken", null);
+      store.commit("deleteRefreshTimeout");
+      store.commit("setMyLikedPlaylists", []);
+      store.commit("setSpotifyPlayer", null);
+      store.commit("setExpiryTime", null);
+      store.commit("setDeviceId", null);
+    },
     async scheduleRefresh(state) {
+      console.log('in refresh')
       if (state.displayName) {
-        const expiryTime = (await (await fetch('/api/spotify/getExpiryTime')).json()).expiryTime;
         // Everything is in seconds
-        const timeFromNow = expiryTime - (new Date().getTime() / 1000) - BUFFER_TIME;
+        const timeFromNow = state.expiryTime - (new Date().getTime() / 1000) - BUFFER_TIME;
         // Convert to MS for setTimeout
         const timeFromNowMS = timeFromNow * 1000;
         if (state.refreshTimeout) clearTimeout(state.refreshTimeout);
         if (timeFromNowMS < 0) {
-          await fetch('/api/spotify/refreshAccessToken');
-          store.commit("scheduleRefresh");
+          const accessTokenResponse = await fetch('/api/spotify/refreshAccessToken');
+          const accessTokenJson = await accessTokenResponse.json();
+          if (accessTokenResponse.ok) {
+            store.commit("setAccessToken", accessTokenJson.accessToken);
+            store.commit("setExpiryTime", accessTokenJson.expiryTime)
+            store.commit("scheduleRefresh");
+            return;
+          } else {
+            console.log(accessTokenJson.error)
+            await fetch(`/api/spotify/logout`);
+            store.commit("resetStore");
+            if (router.history.current.name !== 'Login') router.push({ name: 'Login' });
+            return;
+          }
         } else {
           state.refreshTimeout = setTimeout(async () => {
-            await fetch('/api/spotify/refreshAccessToken');
             store.commit("scheduleRefresh");
-          }, timeFromNowMS)
+          }, timeFromNowMS);
+          return;
         }
+      } else {
+        await fetch(`/api/spotify/logout`);
+        store.commit("resetStore");
+        if (router.history.current.name !== 'Login') router.push({ name: 'Login' });
+        return;
       }
     },
     // addMyLikedPlaylists(state, playlist) {

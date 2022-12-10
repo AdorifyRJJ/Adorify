@@ -41,22 +41,22 @@ router.beforeEach((to, from, next) => {
   //   }
   // }
   if (router.app.$store) {
-    if (router.app.$store.state.deviceId && router.app.$store.state.displayName) {
-      if (to.name === 'Home' && router.app.$store.state.spotifyPlayer) {
-        try {
-          router.app.$store.state.spotifyPlayer.connect();
-        } catch (e) {
-          console.log(e)
-        }
-      }
-      if (from.name === 'Home' && router.app.$store.state.spotifyPlayer) {
-        try {
-          router.app.$store.commit('forceDisconnect');
-        } catch (e) {
-          console.log(e)
-        }
-      }
-    }
+    // if (router.app.$store.state.deviceId && router.app.$store.state.displayName) {
+    //   if (to.name === 'Home' && router.app.$store.state.spotifyPlayer) {
+    //     try {
+    //       router.app.$store.state.spotifyPlayer.connect();
+    //     } catch (e) {
+    //       console.log(e)
+    //     }
+    //   }
+    //   if (from.name === 'Home' && router.app.$store.state.spotifyPlayer) {
+    //     try {
+    //       router.app.$store.commit('forceDisconnect');
+    //     } catch (e) {
+    //       console.log(e)
+    //     }
+    //   }
+    // }
     if (router.app.$store.state.displayName && to.name === 'Login') {
       next({ name: 'Profile' });
       return;
