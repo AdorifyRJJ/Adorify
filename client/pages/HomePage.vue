@@ -347,16 +347,16 @@ export default {
     },
   },
   async mounted() {
-    // if (!this.$store.state.displayName) {
-    //   this.$router.push({ name: "Login" });
-    // }
-    // if (this.$store.state.spotifyPlayer) {
-    //   try {
-    //     this.$store.state.spotifyPlayer.connect();
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    // }
+    if (!this.$store.state.displayName) {
+      this.$router.push({ name: "Login" });
+    }
+    if (this.$store.state.spotifyPlayer) {
+      try {
+        this.$store.state.spotifyPlayer.connect();
+      } catch (e) {
+        console.log(e);
+      }
+    }
   },
   async beforeUnmount() {
     try {
