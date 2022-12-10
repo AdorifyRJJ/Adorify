@@ -1,9 +1,9 @@
 <template>
     <div class="section">
-        <div class="title">Liked</div>
+        <div class="wh40b">Liked</div>
         <div v-if="$store.state.myLikedPlaylists.length">
             <div
-                class="item"
+                class="item wh20n truncate1line"
                 @click="openPlaylist(playlist.id)"
                 :key="i"
                 v-for="(playlist, i) in $store.state.myLikedPlaylists"
@@ -11,7 +11,7 @@
                 {{ playlist.name }}
             </div>
         </div>
-        <div v-else>Like to add playlists!</div>
+        <div v-else class="item wh20n">Like to add playlists!</div>
     </div>
 </template>
 
@@ -28,37 +28,51 @@ export default {
             });
         },
     },
-    async mounted() {
-        // this.$store.commit("refreshLikedPlaylists");
-    },
+    async mounted() {},
 };
 </script>
 
 <style scoped>
 .section {
     display: flex;
-    padding-right: 80px;
-    height: 100%;
     flex-direction: column;
-    width: 35%;
+    padding: 0 60px 0 60px;
     align-items: end;
-}
-.title {
-    display: flex;
-    font-size: 40px;
-    font-weight: 700;
-    line-height: 48px;
-    padding-bottom: 8px;
+    max-height: 80vh;
+    overflow-y: scroll;
 }
 .item {
-    display: flex;
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 24px;
-    align-items: center;
-    justify-content: end;
+    text-align: right;
     padding-top: 8px;
     padding-bottom: 8px;
     cursor: pointer;
+    width: 300px;
+}
+
+@media (min-width: 1200px) {
+    .section {
+        padding: 0 80px 0 80px;
+    }
+    .item {
+        width: 400px;
+    }
+}
+
+@media (min-width: 1500px) {
+    .section {
+        padding: 0 80px 0 100px;
+    }
+}
+
+@media (min-width: 1800px) {
+    .section {
+        padding: 0 80px 0 120px;
+    }
+}
+
+@media (min-width: 2100px) {
+    .section {
+        padding: 0 80px 0 140px;
+    }
 }
 </style>
