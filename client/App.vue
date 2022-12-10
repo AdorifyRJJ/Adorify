@@ -174,7 +174,7 @@ main {
 }
 
 .button:hover {
-    background-color: #5a4193;
+    filter: brightness(80%);
 }
 
 a:link {

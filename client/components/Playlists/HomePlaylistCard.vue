@@ -1,16 +1,9 @@
 <template>
-    <div v-if="isSelected" class="card center selected" @click="$emit('select', spotifyId)">
+    <div :class="{'selected': isSelected, 'unselected': !isSelected}" class="card center">
         <img :src="image" height="120" width="120" />
         <div class="playlistInfo center">
-            <div class="wh16b">{{ playlistName }}</div>
-            <div class="gr16">{{ owner }}</div>
-        </div>
-    </div>
-    <div v-else class="card center" @click="$emit('select', spotifyId)">
-        <img :src="image" height="120" width="120" />
-        <div class="playlistInfo center">
-            <div class="wh16b">{{ playlistName }}</div>
-            <div class="gr16">{{ owner }}</div>
+            <div class="wh16b trunc">{{ playlistName }}</div>
+            <div class="gr16 trunc">{{ owner }}</div>
         </div>
     </div>
 </template>
@@ -40,12 +33,28 @@ export default {
 .card {
     padding: 20px 0px;
 }
-.playlistInfo {
-    margin-top: 8px;
-    
+
+.card > img {
+    border-radius: 6px;
+    object-fit: cover;
 }
 
-.selected {
+.playlistInfo {
+    margin-top: 8px;
+}
+
+.trunc {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.selected > img {
     filter: drop-shadow(0px 0px 10px rgba(255,255,255,0.75));
+}
+
+.unselected {
+    filter: brightness(40%);
 }
 </style>
