@@ -1,7 +1,7 @@
 <template>
     <div class="page">
         <MyLikedPlaylists />
-        <ExplorePlaylists class="exploreSection" />
+        <ExplorePlaylists />
     </div>
 </template>
 
@@ -28,13 +28,7 @@ export default {
     display: flex;
     flex-direction: row;
     /* align-content: space-between; */
-    gap: 80px;
+    /* gap: 80px; */
     color: white;
-}
-
-.exploreSection {
-    display: flex;
-    flex-direction: column;
-    /* width: 65%; */
 }
 </style>

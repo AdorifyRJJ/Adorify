@@ -4,7 +4,7 @@
         <div v-if="$store.state.myLikedPlaylists.length">
             <div class="">
                 <div
-                    class="item wh20n"
+                    class="item wh20n truncate1line"
                     @click="openPlaylist(playlist.id)"
                     :key="i"
                     v-for="(playlist, i) in $store.state.myLikedPlaylists"
@@ -30,9 +30,7 @@ export default {
             });
         },
     },
-    async mounted() {
-        // this.$store.commit("refreshLikedPlaylists");
-    },
+    async mounted() {},
 };
 </script>
 
@@ -40,17 +38,14 @@ export default {
 .section {
     display: flex;
     flex-direction: column;
-    width: 25%;
+    padding: 0 80px 0 80px;
     align-items: end;
 }
 .item {
-    display: flex;
-    justify-content: end;
+    text-align: right;
     padding-top: 8px;
     padding-bottom: 8px;
     cursor: pointer;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    width: 400px;
 }
 </style>

@@ -183,25 +183,31 @@ export default {
 
 .section {
     display: flex;
-    width: 65%;
-    border: solid;
+    flex-direction: column;
+    /* width: 65%; */
+    width: 800px;
+    /* border: solid; */
     /* flex-basis: 2; */
     /* padding-right: 100px; */
 }
 
 .playlists {
-    border: solid;
+    /* border: solid; */
     margin-top: 40px;
-    display: grid;
+    /* display: grid; */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
 
     column-gap: 40px;
     row-gap: 32px;
     /* min-height: 200px; */
     max-height: 65vh;
+
     overflow-y: scroll;
 }
 
-.columns {
+/* .columns {
     grid-template-columns: repeat(3, 1fr);
 }
 
@@ -215,7 +221,7 @@ export default {
     .columns {
         grid-template-columns: repeat(4, 1fr);
     }
-}
+} */
 
 .selectPlaylists {
     display: flex;
