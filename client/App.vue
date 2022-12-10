@@ -34,7 +34,7 @@ export default {
         clientId: process.env.ID,
       });
 
-      spotifyApi.setAccessToken(allDataJson.accessToken);
+      await spotifyApi.setAccessToken(allDataJson.accessToken);
 
       this.$store.commit("setSpotifyApi", spotifyApi);
 

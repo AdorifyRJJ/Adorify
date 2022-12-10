@@ -100,7 +100,7 @@ const store = new Vuex.Store({
           if (accessTokenResponse.ok) {
             store.commit("setAccessToken", accessTokenJson.accessToken);
             store.commit("setExpiryTime", accessTokenJson.expiryTime);
-            state.spotifyApi.setAccessToken(accessTokenJson.accessToken);
+            await state.spotifyApi.setAccessToken(accessTokenJson.accessToken);
             store.commit("scheduleRefresh");
             return;
           } else {
