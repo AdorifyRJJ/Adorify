@@ -1,7 +1,3 @@
-<!-- A basic navigation bar component -->
-<!-- Example of a component which is included on all pages (via App.vue) -->
-<!-- This navbar takes advantage of both flex and grid layouts for positioning elements; feel free to redesign as you see fit! -->
-
 <template>
     <nav>
         <div class="left">
@@ -25,22 +21,17 @@ export default {
 
 <style scoped>
 nav {
+    /* line-height: 1.2; */
     padding: 30px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.left {
-
-}
-
 .right {
-    display: grid;
+    display: flex;
     gap: 30px;
-    grid-auto-flow: column;
+    align-items: center;
 }
 
 </style>
-	Boolean	false	Flag to make the carousel loop around when it reaches the end.
-m
