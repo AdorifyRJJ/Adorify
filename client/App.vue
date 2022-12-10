@@ -68,11 +68,6 @@ export default {
 
 <style>
 
-li {
-  display: block;
-}
-
-
 @font-face {
     font-family: "AdorifyF";
     src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Regular.otf");

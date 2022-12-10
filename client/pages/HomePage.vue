@@ -1,18 +1,5 @@
 <template>
     <main class="center">
-        <!-- <div>
-      <p v-if="!this.$store.state.connected">
-        Device is not ready, so music playback will not work. Either wait for
-        connection or please log in. (Click "Profile" -> "Logout" -> "Login")
-      </p>
-      <p v-else>Device ready!</p>
-    </div>
-    <div>
-      <p v-if="!playing">Not playing music.</p>
-      <p v-else>Playing music! Turn it up!</p>
-    </div> -->
-
-    <!-- fetch username -->
     <div class="wh50b">{{ this.$store.state.displayName }},</div>
     <div class="gr30">
         <span v-if="!sessionStarted">Start a focus session</span>
@@ -41,21 +28,8 @@
           </div>
         </div>
       </div>
-      <!-- <HomePlaylistCard
-        :key="i"
-        v-for="(playlist, i) in this.$store.state.myLikedPlaylists"
-        :playlist="playlist"
-        @select="toggleSelected"
-      ></HomePlaylistCard> -->
-      <!-- <vue-glide v-model="active">
-        <vue-glide-slide
-          v-for="i in 10"
-          :key="i">
-          Slide {{ i }}
-        </vue-glide-slide>
-      </vue-glide> -->
       <div v-if="($store.state.myLikedPlaylists.length > 0)">
-        <carousel :perPage="3" :navigationEnabled="true" :paginationEnabled="false">
+        <carousel class="reset" :perPage="3" :navigationEnabled="true" :paginationEnabled="false">
             <slide :key="i"
             v-for="(playlist, i) in this.$store.state.myLikedPlaylists">
             <HomePlaylistCard
@@ -154,9 +128,7 @@ export default {
     methods: {
         async playMusic() {
             if (this.$store.state.deviceId) {
-                const playback = await fetch(
-                    `/api/spotify/play?deviceId=${this.$store.state.deviceId}`
-                );
+                const playback = await fetch(`/api/spotify/play?deviceId=${this.$store.state.deviceId}`);
                 if (playback.ok) {
                     this.playing = true;
                 }
@@ -287,9 +259,7 @@ export default {
         },
         async getCurrTrack() {
             this.clearTrackTimer();
-            const res = await fetch(`/api/spotify/getCurrentTrack`).then(
-                async (r) => r.json()
-            );
+            const res = await fetch(`/api/spotify/getCurrentTrack`).then(async (r) => r.json());
             this.currTrackTitle = res.track.item.name;
             this.currTrackArtist = res.track.item.artists
                 .map((a) => a.name)
@@ -319,15 +289,10 @@ export default {
                 this.playlistLimit
             );
             this.playlistIndex++;
-            if (
-                this.playlistIndex % this.playlistLimit === 0 ||
-                this.playlistIndex >= this.totalPlaylistTracks
-            )
+            if (this.playlistIndex % this.playlistLimit === 0 || this.playlistIndex >= this.totalPlaylistTracks)
                 await this.getPlaylistTracks();
             await fetch(
-                `/api/spotify/addToQueue/spotify:track:${
-                    this.playlistTracks[this.playlistIndex % this.playlistLimit]
-                }`,
+                `/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex % this.playlistLimit]}`,
                 { method: "POST" }
             );
         },
@@ -365,13 +330,8 @@ main {
 .selector {
     display: grid;
     gap: 8px;
-    padding-top: 10%;
-    padding-bottom: 10%;
-    display: grid;
-    gap: 8px;
     padding-top: 40px;
     padding-bottom: 20px;
-  
 }
 
 .selectorItem {
@@ -480,15 +440,10 @@ main {
 
 .hint {
     padding: 40px 0px;
-
 }
 
-/* .VueCarousel-wrapper {
-  display: flex;
-} */
-
-.VueCarousel-inner {
-  width: 1000px;
+.reset {
+    width: 600px;
 }
 
 </style>
