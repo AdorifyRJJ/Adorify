@@ -8,8 +8,13 @@
 
     <button @click="logout">Log Out</button>
     <div v-if="$store.state.displayName">
-      <img :src="image_url" />
-      <h2>{{ display_name }}</h2>
+      <img
+        :src="
+          $store.state.imgURL ??
+          'https://www.computerhope.com/jargon/g/guest-user.png'
+        "
+      />
+      <h2>{{ $store.state.displayName }}</h2>
       <!-- total session time -->
       <div>125hr 34 min</div>
       <!-- session copmletion rate -->
@@ -37,8 +42,6 @@ export default {
   name: "ProfilePage",
   data() {
     return {
-      display_name: null,
-      image_url: null,
       stats: "graph1 uwu",
     };
   },
@@ -55,37 +58,13 @@ export default {
     },
     async logout() {
       await fetch(`/api/spotify/logout`);
-
-      this.$store.commit("setDeviceId", undefined);
-      this.$store.commit("setDisplayName", null);
-      this.$store.commit("deleteRefreshTimeout");
-      this.$store.commit("setMyLikedPlaylists", []);
-
-      if (this.$store.state.spotifyPlayer) {
-        try {
-          this.$store.state.spotifyPlayer.disconnect();
-        } catch (e) {
-          console.log(e);
-        }
-        this.$store.commit("setSpotifyPlayer", null);
-      }
-
+      this.$store.commit("resetStore");
       this.$router.push({ name: "Login" });
     },
   },
   async beforeCreate() {
     if (this.$store.state.connected) {
       this.$store.commit("forceDisconnect");
-    }
-    if (this.$store.state.displayName) {
-      const me = await fetch(`/api/spotify/getMe`);
-      if (me.ok) {
-        const meJson = await me.json();
-        this.display_name = meJson.display_name;
-        this.image_url = meJson.images[0].url;
-      }
-    } else {
-      this.$router.push({ name: "Login" });
     }
   },
 };

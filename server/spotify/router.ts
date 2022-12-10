@@ -84,44 +84,14 @@ router.get(
                 new Date().getTime() / 1000 + data.body['expires_in'];
             req.session.expiryTime = tokenExpirationEpoch;
             res.status(200).json({
-                message: 'Success!',
+                accessToken: req.session.accessToken,
+                expiryTime: req.session.expiryTime,
             })
         } catch (e: any) {
-            res.status(e.body.error.status).json({
-                message: e.body.error
+            res.status(e.statusCode).json({
+                message: e.body.error_description
             });
         }
-        res.end();
-    }
-);
-
-router.get(
-    '/getExpiryTime',
-    [
-        userValidator.isCurrentSessionUserExists,
-        userValidator.isUserLoggedIn,
-        userValidator.doesExpiryTimeExist,
-    ],
-    async function (req: Request, res: Response) {
-        res.status(200).json({
-            expiryTime: req.session.expiryTime
-        });
-        res.end();
-    }
-);
-
-router.get(
-    '/getAccessToken',
-    [
-        userValidator.isCurrentSessionUserExists,
-        userValidator.isUserLoggedIn,
-        userValidator.validAccessToken,
-        util.refreshIfNeeded,
-    ],
-    async function (req: Request, res: Response) {
-        res.status(200).json({
-            token: req.session.accessToken,
-        })
         res.end();
     }
 );
@@ -150,9 +120,9 @@ router.get(
             if (!user)
                 await UserCollection.addOne(me.body.id);
             req.session.username = me.body.id;
-            res.status(200).json(me.body);
+            res.status(200).json({ me: me.body, accessToken: req.session.accessToken, expiryTime: req.session.expiryTime });
         } catch (e: any) {
-            res.status(e.body.error.status).json({
+            res.status(401).json({
                 message: e.body.error
             });
         }
@@ -175,9 +145,8 @@ router.get(
                 redirectUri: process.env.REDIRECT,
             });
             meSpotifyApi.setAccessToken(req.session.accessToken);
-
             const me = await meSpotifyApi.getMe();
-            res.status(200).json(me.body);
+            res.status(200).json({ me: me.body, accessToken: req.session.accessToken, expiryTime: req.session.expiryTime });
         } catch (e: any) {
             res.status(e.body.error.status).json({
                 message: e.body.error
@@ -398,7 +367,7 @@ router.post(
                 redirectUri: process.env.REDIRECT,
             });
             playbackSpotifyApi.setAccessToken(req.session.accessToken);
-            for (let i=0; i<1; i++)
+            for (let i = 0; i < 1; i++)
                 await playbackSpotifyApi.skipToNext({ device_id: req.query.deviceId as string });
             res.status(200).json({
                 message: 'Added to queue.',

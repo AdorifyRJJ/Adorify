@@ -44,14 +44,16 @@ export default {
       this.leaderboard = leaderboardByAllTime;
     },
   },
-  async beforeCreate() {
+  async mounted() {
     if (!this.$store.state.displayName) {
       this.$router.push({ name: "Login" });
     }
+  },
+  async beforeCreate() {
     if (this.$store.state.connected) {
       this.$store.commit("forceDisconnect");
     }
-  },
+  }
 };
 </script>
 
