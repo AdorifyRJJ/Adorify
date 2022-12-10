@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import router from './router';
 
+
 Vue.use(Vuex);
 
 const BUFFER_TIME = 30;
@@ -23,6 +24,7 @@ const store = new Vuex.Store({
     connected: false,
     accessToken: null,
     expiryTime: null,
+    spotifyApi: null,
   },
   // getters: {
   //   getPlaylistById: (state) => (spotifyId) => {
@@ -55,6 +57,9 @@ const store = new Vuex.Store({
     setSpotifyPlayer(state, player) {
       state.spotifyPlayer = player;
     },
+    setSpotifyApi(state, spotifyApi) {
+      state.spotifyApi = spotifyApi;
+    },
     forceDisconnect(state) {
       try {
         if (state.spotifyPlayer) state.spotifyPlayer.disconnect();
@@ -79,6 +84,7 @@ const store = new Vuex.Store({
       store.commit("setSpotifyPlayer", null);
       store.commit("setExpiryTime", null);
       store.commit("setDeviceId", null);
+      store.commit("setSpotifyApi", null);
     },
     async scheduleRefresh(state) {
       console.log('in refresh')
@@ -93,7 +99,8 @@ const store = new Vuex.Store({
           const accessTokenJson = await accessTokenResponse.json();
           if (accessTokenResponse.ok) {
             store.commit("setAccessToken", accessTokenJson.accessToken);
-            store.commit("setExpiryTime", accessTokenJson.expiryTime)
+            store.commit("setExpiryTime", accessTokenJson.expiryTime);
+            state.spotifyApi.setAccessToken(accessTokenJson.accessToken);
             store.commit("scheduleRefresh");
             return;
           } else {
@@ -107,7 +114,7 @@ const store = new Vuex.Store({
           state.refreshTimeout = setTimeout(async () => {
             store.commit("scheduleRefresh");
           }, timeFromNowMS);
-          return;
+          return;zs
         }
       } else {
         await fetch(`/api/spotify/logout`);

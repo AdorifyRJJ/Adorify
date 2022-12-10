@@ -9,6 +9,7 @@
 
 <script>
 import NavBar from "@/components/common/NavBar.vue";
+import SpotifyWebApi from "spotify-web-api-node";
 
 export default {
   name: "App",
@@ -28,6 +29,14 @@ export default {
       this.$store.commit("setExpiryTime", allDataJson.expiryTime);
       this.$store.commit("scheduleRefresh");
       this.$store.commit("refreshLikedPlaylists");
+
+      const spotifyApi = new SpotifyWebApi({
+        clientId: process.env.ID,
+      });
+
+      spotifyApi.setAccessToken(allDataJson.accessToken);
+
+      this.$store.commit("setSpotifyApi", spotifyApi);
 
       const script = document.createElement("script");
 
@@ -73,7 +82,6 @@ export default {
 </script>
 
 <style>
-
 @font-face {
   font-family: "AdorifyF";
   src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Regular.otf");
@@ -180,7 +188,7 @@ main {
 }
 
 .button:hover {
-    filter: brightness(80%);
+  filter: brightness(80%);
 }
 
 a:link {
