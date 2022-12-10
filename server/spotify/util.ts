@@ -20,13 +20,22 @@ const refreshIfNeeded = async (req: Request, res: Response, next: NextFunction) 
                 clientSecret: process.env.SECRET,
                 redirectUri: process.env.REDIRECT,
             });
-            refreshSpotifyApi.setRefreshToken(req.session.refreshToken);
-            const data = await refreshSpotifyApi.refreshAccessToken();
-            req.session.accessToken = data.body['access_token']
-            if (data.body['refresh_token']) req.session.refreshToken = data.body['refresh_token'];
-            const tokenExpirationEpoch =
-                new Date().getTime() / 1000 + data.body['expires_in'];
-            req.session.expiryTime = tokenExpirationEpoch;
+            try {
+                refreshSpotifyApi.setRefreshToken(req.session.refreshToken);
+                const data = await refreshSpotifyApi.refreshAccessToken();
+                req.session.accessToken = data.body['access_token']
+                if (data.body['refresh_token']) req.session.refreshToken = data.body['refresh_token'];
+                const tokenExpirationEpoch =
+                    new Date().getTime() / 1000 + data.body['expires_in'];
+                req.session.expiryTime = tokenExpirationEpoch;
+            } catch (e: any) {
+                res.status(e.statusCode).json({
+                    message: e.body.error_description
+                });
+                res.end();
+                return;
+            }
+
         }
     }
     next();

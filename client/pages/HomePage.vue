@@ -120,8 +120,6 @@ import { Carousel, Slide } from 'vue-carousel';
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import '@splidejs/splide/dist/css/splide.min.css';
 // import { Glide, GlideSlide } from 'vue-glide-js';
-
-
 export default {
     components: { HomePlaylistCard, Carousel, Slide , Splide, SplideSlide},
     name: "HomePage",
@@ -148,82 +146,62 @@ export default {
             playlistIndex: 0,
             playlistLimit: 100,
         };
+  },
+  computed: {
+    getTime() {
+      return this.getMin + ":" + this.getSec;
     },
-    computed: {
-        getTime() {
-            return this.getMin + ":" + this.getSec;
-        },
-        getMin() {
-            const min = Math.round(Math.floor(this.timestamp / 60));
-            return min < 10 ? `0${min}` : `${min}`;
-        },
-        getSec() {
-            const sec = Math.round(this.timestamp % 60);
-            return sec < 10 ? `0${sec}` : `${sec}`;
-        },
+    getMin() {
+      const min = Math.round(Math.floor(this.timestamp / 60));
+      return min < 10 ? `0${min}` : `${min}`;
     },
-    methods: {
-        async playMusic() {
-            if (this.$store.state.deviceId) {
-                const playback = await fetch(`/api/spotify/play?deviceId=${this.$store.state.deviceId}`);
-                if (playback.ok) {
-                    this.playing = true;
-                }
-            }
-        },
-        async pauseMusic() {
-            if (this.$store.state.deviceId) {
-                const playback = await fetch(
-                    `/api/spotify/pause?deviceId=${this.$store.state.deviceId}`
-                );
-                if (playback.ok) {
-                    this.playing = false;
-                }
-            }
-        },
-        clearTimer() {
-            if (this.timerId) {
-                clearInterval(this.timerId);
-            }
-        },
-        clearTrackTimer() {
-            if (this.trackTimerId) {
-                // console.log('cleared')
-                clearTimeout(this.trackTimerId);
-                // console.log(this.trackTimerId)
-            }
-        },
-        async startTimer() {
-            this.timerActive = true;
-            this.timestamp =
-                this.timestamp ??
-                (this.focusing ? this.focusTime * 60 : this.breakTime * 60);
-            this.timerId = setInterval(() => {
-                if (this.timerActive) {
-                    this.timestamp--;
-                    if (this.timestamp <= 0) {
-                        this.clearTimer();
-                        this.timestamp = null;
-                        if (this.currInterval >= this.intervals) {
-                            this.endSession();
-                            return;
-                        }
-                        if (!this.focusing) {
-                            this.currInterval++;
-                            this.playMusic();
-                        } else {
-                            this.pauseMusic();
-                        }
-                        this.focusing = !this.focusing;
-                        this.startTimer();
-                    }
-                }
-            }, 1000);
-            if (this.focusing) await this.playMusic();
-            await this.getCurrTrack();
-        },
-        async pauseTimer() {
-            this.timerActive = false;
+    getSec() {
+      const sec = Math.round(this.timestamp % 60);
+      return sec < 10 ? `0${sec}` : `${sec}`;
+    },
+  },
+  methods: {
+    async playMusic() {
+      if (this.$store.state.deviceId) {
+        const playback = await fetch(
+          `/api/spotify/play?deviceId=${this.$store.state.deviceId}`
+        );
+        if (playback.ok) {
+          this.playing = true;
+        }
+      }
+    },
+    async pauseMusic() {
+      if (this.$store.state.deviceId) {
+        const playback = await fetch(
+          `/api/spotify/pause?deviceId=${this.$store.state.deviceId}`
+        );
+        if (playback.ok) {
+          this.playing = false;
+        }
+      }
+    },
+    clearTimer() {
+      if (this.timerId) {
+        clearInterval(this.timerId);
+      }
+    },
+    clearTrackTimer() {
+      if (this.trackTimerId) {
+        // console.log('cleared')
+        clearTimeout(this.trackTimerId);
+        // console.log(this.trackTimerId)
+      }
+    },
+    async startTimer() {
+      this.timerActive = true;
+      this.timestamp =
+        this.timestamp ??
+        (this.focusing ? this.focusTime * 60 : this.breakTime * 60);
+      this.timerId = setInterval(() => {
+        if (this.timerActive) {
+          this.timestamp--;
+          if (this.timestamp <= 0) {
             this.clearTimer();
             this.clearTrackTimer();
             await this.pauseMusic();
@@ -254,40 +232,37 @@ export default {
             // api call PUT /api/adorifySession/:asID
             await this.pauseTimer();
             this.timestamp = null;
-            this.focusing = false;
-            this.currInterval = 1;
-            this.sessionStarted = false;
-            this.selected = null;
-            console.log("session ended");
-            // end timer
-            // end playlist
-        },
-        async playPrev() {
-            if (this.timerActive) {
-                console.log("play prev song");
-                await fetch(`/api/spotify/previous`, { method: "POST" });
-                await new Promise((f) => setTimeout(f, 500));
-                await this.getCurrTrack();
+            if (this.currInterval >= this.intervals) {
+              this.endSession();
+              return;
             }
         },
-        async playNext() {
-            if (this.timerActive) {
-                console.log("play next song");
-                await this.addNextTrackToQueue();
-                await new Promise((f) => setTimeout(f, 200));
-                await fetch(`/api/spotify/next`, { method: "POST" });
-                await new Promise((f) => setTimeout(f, 500));
-                await this.getCurrTrack();
-            }
-        },
-        async togglePlay() {
-            console.log("toggle timer and song");
-            if (this.timerActive) {
-                await this.pauseTimer();
-            } else {
-                await this.startTimer();
-            }
-        },
+    async playPrev() {
+      if (this.timerActive) {
+        console.log("play prev song");
+        await fetch(`/api/spotify/previous`, { method: "POST" });
+        await new Promise((f) => setTimeout(f, 500));
+        await this.getCurrTrack();
+      }
+    },
+    async playNext() {
+      if (this.timerActive) {
+        console.log("play next song");
+        await this.addNextTrackToQueue();
+        await new Promise((f) => setTimeout(f, 200));
+        await fetch(`/api/spotify/next`, { method: "POST" });
+        await new Promise((f) => setTimeout(f, 500));
+        await this.getCurrTrack();
+      }
+    },
+    async togglePlay() {
+      console.log("toggle timer and song");
+      if (this.timerActive) {
+        await this.pauseTimer();
+      } else {
+        await this.startTimer();
+      }
+    },
         onActive(splide, slide) {
             this.selectedIndex = slide.index;
             console.log(this.selectedIndex);
@@ -296,68 +271,84 @@ export default {
             splide.go(slide.index);
             this.selectedIndex = slide.index;
         },
-        async getCurrTrack() {
-            this.clearTrackTimer();
-            const res = await fetch(`/api/spotify/getCurrentTrack`).then(async (r) => r.json());
-            this.currTrackTitle = res.track.item.name;
-            this.currTrackArtist = res.track.item.artists
-                .map((a) => a.name)
-                .join(" ");
-            const timeout = res.track.item.duration_ms - res.track.progress_ms;
-            console.log(timeout);
-            // const timeout = res.track.item.duration_ms - (new Date().getTime() - res.track.timestamp + res.track.progress_ms) + 1000;
-            // console.log(res.track.item.duration_ms, new Date().getTime(), res.track.timestamp, res.track.progress_ms)
-            if (timeout > 5000) {
-                this.clearTrackTimer();
-                this.trackTimerId = setTimeout(async () => {
-                    await this.addNextTrackToQueue();
-                    await new Promise((f) => setTimeout(f, 500));
-                    await this.getCurrTrack();
-                }, timeout - 500);
-            } else {
-                this.clearTrackTimer();
-                this.trackTimerId = setTimeout(async () => {
-                    await this.getCurrTrack();
-                }, timeout);
-            }
-        },
-        async addNextTrackToQueue() {
-            console.log(
-                this.playlistIndex + 1,
-                this.playlistTracks.length,
-                this.playlistLimit
-            );
-            this.playlistIndex++;
-            if (this.playlistIndex % this.playlistLimit === 0 || this.playlistIndex >= this.totalPlaylistTracks)
-                await this.getPlaylistTracks();
-            await fetch(
-                `/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex % this.playlistLimit]}`,
-                { method: "POST" }
-            );
-        },
-        async getPlaylistTracks() {
-            console.log("getting more tracks");
-            const offset =
-                this.playlistIndex >= this.totalPlaylistTracks
-                    ? 0
-                    : this.playlistIndex;
-            const res = await fetch(
-                `/api/playlists/info/${this.selectedPlaylistId}/tracks?offset=${offset}`
-            ).then(async (r) => r.json());
-            this.playlistTracks = res.tracks.items.map((r) => r.track.id);
-            this.playlistIndex = offset;
-            this.totalPlaylistTracks = res.tracks.total;
-            this.playlistLimit = res.tracks.limit;
-        },
+    async getCurrTrack() {
+      this.clearTrackTimer();
+      const res = await fetch(`/api/spotify/getCurrentTrack`).then(async (r) =>
+        r.json()
+      );
+      this.currTrackTitle = res.track.item.name;
+      this.currTrackArtist = res.track.item.artists
+        .map((a) => a.name)
+        .join(" ");
+      const timeout = res.track.item.duration_ms - res.track.progress_ms;
+      console.log(timeout);
+      // const timeout = res.track.item.duration_ms - (new Date().getTime() - res.track.timestamp + res.track.progress_ms) + 1000;
+      // console.log(res.track.item.duration_ms, new Date().getTime(), res.track.timestamp, res.track.progress_ms)
+      if (timeout > 5000) {
+        this.clearTrackTimer();
+        this.trackTimerId = setTimeout(async () => {
+          await this.addNextTrackToQueue();
+          await new Promise((f) => setTimeout(f, 500));
+          await this.getCurrTrack();
+        }, timeout - 500);
+      } else {
+        this.clearTrackTimer();
+        this.trackTimerId = setTimeout(async () => {
+          await this.getCurrTrack();
+        }, timeout);
+      }
     },
-    async beforeCreate() {
-        if (this.$store.state.displayName) {
-            // this.$store.commit("refreshLikedPlaylists");
-            this.$store.commit("scheduleRefresh");
-        } else {
-            this.$router.push({ name: "Login" });
-        }
+    async addNextTrackToQueue() {
+      console.log(
+        this.playlistIndex + 1,
+        this.playlistTracks.length,
+        this.playlistLimit
+      );
+      this.playlistIndex++;
+      if (
+        this.playlistIndex % this.playlistLimit === 0 ||
+        this.playlistIndex >= this.totalPlaylistTracks
+      )
+        await this.getPlaylistTracks();
+      await fetch(
+        `/api/spotify/addToQueue/spotify:track:${
+          this.playlistTracks[this.playlistIndex % this.playlistLimit]
+        }`,
+        { method: "POST" }
+      );
     },
+    async getPlaylistTracks() {
+      console.log("getting more tracks");
+      const offset =
+        this.playlistIndex >= this.totalPlaylistTracks ? 0 : this.playlistIndex;
+      const res = await fetch(
+        `/api/playlists/info/${this.selectedPlaylistId}/tracks?offset=${offset}`
+      ).then(async (r) => r.json());
+      this.playlistTracks = res.tracks.items.map((r) => r.track.id);
+      this.playlistIndex = offset;
+      this.totalPlaylistTracks = res.tracks.total;
+      this.playlistLimit = res.tracks.limit;
+    },
+  },
+  async mounted() {
+    if (!this.$store.state.displayName) {
+      this.$router.push({ name: "Login" });
+    }
+    if (this.$store.state.spotifyPlayer) {
+      try {
+        this.$store.state.spotifyPlayer.connect();
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  },
+  async beforeUnmount() {
+    try {
+      this.$store.commit("forceDisconnect");
+    } catch (e) {
+      console.log(e);
+    }
+  },
 };
 </script>
 
@@ -388,7 +379,7 @@ export default {
 }
 
 .right {
-    width: 140px;
+  width: 140px;
 }
 
 .right>input {
@@ -404,14 +395,14 @@ export default {
 }
 
 .bottomDiv {
-    width: 100vw;
-    position: fixed;
-    bottom: 0;
-    padding: 20px 0px;
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  padding: 20px 0px;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .controls {
@@ -446,15 +437,15 @@ export default {
 }
 
 .prevButton:hover {
-    background-color: #3f3b4c;
+  background-color: #3f3b4c;
 }
 
 .nextButton:hover {
-    background-color: #3f3b4c;
+  background-color: #3f3b4c;
 }
 
 .trackInfo {
-    padding: 20px;
+  padding: 20px;
 }
 
 .time {
@@ -494,5 +485,4 @@ export default {
     padding-top: 4px;
     text-align: center;
 }
-
 </style>
