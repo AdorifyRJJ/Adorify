@@ -73,9 +73,6 @@ export default {
 </script>
 
 <style>
-li {
-  display: block;
-}
 
 @font-face {
   font-family: "AdorifyF";

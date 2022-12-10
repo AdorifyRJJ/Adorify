@@ -12,7 +12,7 @@ dotenv.config({});
 
 // May need to edit this to do more things with playback, tracklist, etc.
 // https://developer.spotify.com/documentation/general/guides/authorization/scopes/
-const scopes = ['user-read-private', 'user-read-email', 'user-read-playback-state', 'user-modify-playback-state', 'streaming'];
+const scopes = ['user-read-private', 'user-read-email', 'user-read-playback-state', 'user-modify-playback-state', 'streaming', 'playlist-read-private', 'playlist-read-collaborative'];
 
 const spotifyApi = new SpotifyWebApi({
     clientId: process.env.ID,
@@ -148,9 +148,7 @@ router.get(
             const me = await meSpotifyApi.getMe();
             res.status(200).json({ me: me.body, accessToken: req.session.accessToken, expiryTime: req.session.expiryTime });
         } catch (e: any) {
-            res.status(e.body.error.status).json({
-                message: e.body.error
-            })
+            console.log(e)
         }
         res.end();
     }

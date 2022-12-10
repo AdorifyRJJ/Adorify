@@ -1,18 +1,5 @@
 <template>
   <main class="center">
-    <!-- <div>
-      <p v-if="!this.$store.state.connected">
-        Device is not ready, so music playback will not work. Either wait for
-        connection or please log in. (Click "Profile" -> "Logout" -> "Login")
-      </p>
-      <p v-else>Device ready!</p>
-    </div>
-    <div>
-      <p v-if="!playing">Not playing music.</p>
-      <p v-else>Playing music! Turn it up!</p>
-    </div> -->
-
-    <!-- fetch username -->
     <div class="wh50b">{{ this.$store.state.displayName }},</div>
     <div class="gr30">
       <span v-if="!sessionStarted">Start a focus session</span>
@@ -35,21 +22,9 @@
           <div class="right gr20"><input v-model="intervals" /> times</div>
         </div>
       </div>
-      <!-- <HomePlaylistCard
-        :key="i"
-        v-for="(playlist, i) in this.$store.state.myLikedPlaylists"
-        :playlist="playlist"
-        @select="toggleSelected"
-      ></HomePlaylistCard> -->
-      <!-- <vue-glide v-model="active">
-        <vue-glide-slide
-          v-for="i in 10"
-          :key="i">
-          Slide {{ i }}
-        </vue-glide-slide>
-      </vue-glide> -->
       <div v-if="$store.state.myLikedPlaylists.length > 0">
         <carousel
+          class="reset"
           :perPage="3"
           :navigationEnabled="true"
           :paginationEnabled="false"
@@ -111,7 +86,6 @@
 import HomePlaylistCard from "../components/Playlists/HomePlaylistCard.vue";
 import { Carousel, Slide } from "vue-carousel";
 // import { Glide, GlideSlide } from 'vue-glide-js';
-
 export default {
   components: { HomePlaylistCard, Carousel, Slide },
   name: "HomePage",
@@ -133,7 +107,6 @@ export default {
       currTrackTitle: "",
       currTrackArtist: "",
       trackTimerId: null,
-
       playlistTracks: null,
       totalPlaylistTracks: 1,
       playlistIndex: 0,
@@ -240,7 +213,6 @@ export default {
         );
         await fetch(`/api/spotify/next`, { method: "POST" });
         // await fetch(`/api/spotify/addToQueue/spotify:playlist:2E97C5dfeyPyCgTr6ntCpA`, {method: 'POST'});
-
         await this.startTimer();
       }
     },
@@ -376,10 +348,6 @@ main {
 .selector {
   display: grid;
   gap: 8px;
-  padding-top: 10%;
-  padding-bottom: 10%;
-  display: grid;
-  gap: 8px;
   padding-top: 40px;
   padding-bottom: 20px;
 }
@@ -492,11 +460,7 @@ main {
   padding: 40px 0px;
 }
 
-/* .VueCarousel-wrapper {
-  display: flex;
-} */
-
-.VueCarousel-inner {
-  width: 1000px;
+.reset {
+  width: 600px;
 }
 </style>

@@ -104,7 +104,6 @@ router.get(
       redirectUri: process.env.REDIRECT,
     });
     spotifyApi.setAccessToken(req.session.accessToken);
-
     const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId);
     if (playlistInfo.statusCode !== 200)
       res.status(playlistInfo.statusCode).json(playlistInfo.body);
