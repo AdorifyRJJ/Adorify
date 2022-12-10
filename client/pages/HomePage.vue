@@ -67,6 +67,7 @@
                 </Splide>
 
                 <Splide v-else @splide:active="onActive"
+                    @splide:click="onClick"
                     :options="{ type: 'loop', rewind: true, perPage: 3, padding: '40px', speed: 100, slideFocus: true, focus: 'center', cloneStatus: false, }">
                     <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
                         <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
