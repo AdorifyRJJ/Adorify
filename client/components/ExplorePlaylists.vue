@@ -4,10 +4,16 @@
 
         <div class="btn-div">
             <div class="btn-group">
-                <button class="dimButton" @click="getMyPlaylists">
+                <button
+                    class="btn-group-button btn-width-210"
+                    @click="getMyPlaylists"
+                >
                     <span class="wh20n">My Spotify Library</span>
                 </button>
-                <button class="dimButton" @click="getPublicPlaylists">
+                <button
+                    class="btn-group-button btn-width-210"
+                    @click="getPublicPlaylists"
+                >
                     <span class="wh20n">Public Library</span>
                 </button>
             </div>
@@ -29,7 +35,7 @@
             <div></div>
         </div>
         <div v-else>
-            <div class="playlists columns">
+            <div class="playlists">
                 <PlaylistCard
                     :key="i"
                     v-for="(playlist, i) in currPlaylists.items"
@@ -184,44 +190,37 @@ export default {
 .section {
     display: flex;
     flex-direction: column;
-    /* width: 65%; */
-    width: 800px;
-    /* border: solid; */
-    /* flex-basis: 2; */
-    /* padding-right: 100px; */
+    width: 520px;
 }
 
 .playlists {
-    /* border: solid; */
     margin-top: 40px;
-    /* display: grid; */
     display: flex;
     flex-wrap: wrap;
     justify-content: start;
-
     column-gap: 40px;
     row-gap: 32px;
-    /* min-height: 200px; */
     max-height: 65vh;
-
     overflow-y: scroll;
 }
 
-/* .columns {
-    grid-template-columns: repeat(3, 1fr);
-}
-
-@media (max-width: 1000px) {
-    .columns {
-        grid-template-columns: repeat(2, 1fr);
+@media (min-width: 1500px) {
+    .section {
+        width: 800px;
     }
 }
 
-@media (min-width: 2000px) {
-    .columns {
-        grid-template-columns: repeat(4, 1fr);
+@media (min-width: 1800px) {
+    .section {
+        width: 1080px;
     }
-} */
+}
+
+@media (min-width: 2100px) {
+    .section {
+        width: 1360px;
+    }
+}
 
 .selectPlaylists {
     display: flex;
@@ -232,6 +231,11 @@ export default {
     display: flex;
     justify-content: space-between;
 }
+
+.btn-width-210 {
+    width: 210px;
+}
+
 .bgroup2 {
     display: flex;
 }
@@ -239,8 +243,6 @@ export default {
 .dropdown {
     padding: 10px;
     border: solid;
-    /* width: 134px;
-    height: 44px; */
     cursor: pointer;
 }
 </style>

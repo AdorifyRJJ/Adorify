@@ -43,21 +43,17 @@ export default {
 .card {
     display: flex;
     flex-direction: column;
-    /* border: solid; */
     align-self: center;
     position: relative;
     width: 240px;
     height: 320px;
-    /* filter: brightness(90%); */
 }
 
 .card:hover {
-    /* filter: brightness(100%); */
     cursor: pointer;
 }
 
 .cardContent {
-    /* border: solid; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -75,7 +71,6 @@ export default {
 }
 
 .likeBtn {
-    /* display: flex; */
     margin: 16px;
     position: absolute;
     z-index: 1;

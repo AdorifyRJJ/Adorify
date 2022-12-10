@@ -198,20 +198,20 @@ main {
     background-color: #5a4193;
 }
 
-.dimButton {
+.btn-group-button {
     color: #ffffff;
     background-color: #373544;
-    height: 50px;
+    height: 44px;
     border-radius: 0px;
     border-width: 0;
     /* border-right: 10px, solid, #6c4eb3; */
-    padding: 0px 30px;
 }
 .btn-group {
     margin: 18px 0;
+    display: flex;
 }
 
-.btn-group > .dimButton {
+.btn-group > .btn-group-button {
     border-right: 2px solid #6c4eb3;
 }
 .btn-group > *:last-child {
