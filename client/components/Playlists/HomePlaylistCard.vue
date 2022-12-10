@@ -1,5 +1,8 @@
 <template>
-    <div :class="{'selected': isSelected, 'unselected': !isSelected}" class="card center">
+    <div
+        :class="{ selected: isSelected, unselected: !isSelected }"
+        class="card center"
+    >
         <img :src="image" height="120" width="120" />
         <div class="playlistInfo center">
             <div class="wh16b trunc">{{ playlistName }}</div>
@@ -14,7 +17,7 @@ export default {
     props: ["playlist", "isSelected"],
     computed: {
         image() {
-            return this.playlist.image.url;
+            return this.playlist.image?.url;
         },
         playlistName() {
             return this.playlist.name;
@@ -51,7 +54,7 @@ export default {
 }
 
 .selected > img {
-    filter: drop-shadow(0px 0px 10px rgba(255,255,255,0.75));
+    filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.75));
 }
 
 .unselected {
