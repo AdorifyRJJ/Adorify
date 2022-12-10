@@ -29,7 +29,7 @@
                 </div>
             </div>
 
-            <div class="carousel" >
+            <div class="carousel">
                 <div v-if="$store.state.myLikedPlaylists.length === 0" class="placeholder center">
                     <router-link to="playlists" class="placeholderInner center">
                         <img src="../public/add.svg">
@@ -38,29 +38,36 @@
                         </div>
                     </router-link>
                 </div>
-                
-                <Splide v-else-if="$store.state.myLikedPlaylists.length === 1" @splide:active="onActive" @splide:click="onClick" :options="{ arrows: false, perPage: 1, padding: '40px', speed: 100, slideFocus: true, cloneStatus: false, drag: false,}">
+
+                <Splide v-else-if="$store.state.myLikedPlaylists.length === 1" @splide:active="onActive"
+                    @splide:click="onClick"
+                    :options="{ arrows: false, perPage: 1, padding: '40px', speed: 100, slideFocus: true, cloneStatus: false, drag: false, }">
                     <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
                         <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
                         </HomePlaylistCard>
                     </SplideSlide>
                 </Splide>
 
-                <Splide v-else-if="$store.state.myLikedPlaylists.length === 2" @splide:active="onActive" @splide:click="onClick" :options="{ arrows: false, perPage: 2, padding: '40px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false,}">
+                <Splide v-else-if="$store.state.myLikedPlaylists.length === 2" @splide:active="onActive"
+                    @splide:click="onClick"
+                    :options="{ arrows: false, perPage: 2, padding: '40px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false, }">
                     <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
                         <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
                         </HomePlaylistCard>
                     </SplideSlide>
                 </Splide>
 
-                <Splide v-else-if="$store.state.myLikedPlaylists.length === 3" @splide:active="onActive" @splide:click="onClick" :options="{ arrows: false, perPage: 3, padding: '40px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false,}">
+                <Splide v-else-if="$store.state.myLikedPlaylists.length === 3" @splide:active="onActive"
+                    @splide:click="onClick"
+                    :options="{ arrows: false, perPage: 3, padding: '40px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false, }">
                     <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
                         <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
                         </HomePlaylistCard>
                     </SplideSlide>
                 </Splide>
 
-                <Splide v-else @splide:active="onActive" :options="{type: 'loop', rewind: true, perPage: 3, padding: '40px', speed: 100, slideFocus: true, focus: 'center', cloneStatus: false,}">
+                <Splide v-else @splide:active="onActive"
+                    :options="{ type: 'loop', rewind: true, perPage: 3, padding: '40px', speed: 100, slideFocus: true, focus: 'center', cloneStatus: false, }">
                     <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
                         <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
                         </HomePlaylistCard>
@@ -116,12 +123,11 @@
 
 <script>
 import HomePlaylistCard from "../components/Playlists/HomePlaylistCard.vue";
-import { Carousel, Slide } from 'vue-carousel';
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import '@splidejs/splide/dist/css/splide.min.css';
-// import { Glide, GlideSlide } from 'vue-glide-js';
+
 export default {
-    components: { HomePlaylistCard, Carousel, Slide , Splide, SplideSlide},
+    components: { HomePlaylistCard, Splide, SplideSlide },
     name: "HomePage",
     data() {
         return {
@@ -146,62 +152,84 @@ export default {
             playlistIndex: 0,
             playlistLimit: 100,
         };
-  },
-  computed: {
-    getTime() {
-      return this.getMin + ":" + this.getSec;
     },
-    getMin() {
-      const min = Math.round(Math.floor(this.timestamp / 60));
-      return min < 10 ? `0${min}` : `${min}`;
+    computed: {
+        getTime() {
+            return this.getMin + ":" + this.getSec;
+        },
+        getMin() {
+            const min = Math.round(Math.floor(this.timestamp / 60));
+            return min < 10 ? `0${min}` : `${min}`;
+        },
+        getSec() {
+            const sec = Math.round(this.timestamp % 60);
+            return sec < 10 ? `0${sec}` : `${sec}`;
+        },
     },
-    getSec() {
-      const sec = Math.round(this.timestamp % 60);
-      return sec < 10 ? `0${sec}` : `${sec}`;
-    },
-  },
-  methods: {
-    async playMusic() {
-      if (this.$store.state.deviceId) {
-        const playback = await fetch(
-          `/api/spotify/play?deviceId=${this.$store.state.deviceId}`
-        );
-        if (playback.ok) {
-          this.playing = true;
-        }
-      }
-    },
-    async pauseMusic() {
-      if (this.$store.state.deviceId) {
-        const playback = await fetch(
-          `/api/spotify/pause?deviceId=${this.$store.state.deviceId}`
-        );
-        if (playback.ok) {
-          this.playing = false;
-        }
-      }
-    },
-    clearTimer() {
-      if (this.timerId) {
-        clearInterval(this.timerId);
-      }
-    },
-    clearTrackTimer() {
-      if (this.trackTimerId) {
-        // console.log('cleared')
-        clearTimeout(this.trackTimerId);
-        // console.log(this.trackTimerId)
-      }
-    },
-    async startTimer() {
-      this.timerActive = true;
-      this.timestamp =
-        this.timestamp ??
-        (this.focusing ? this.focusTime * 60 : this.breakTime * 60);
-      this.timerId = setInterval(() => {
-        if (this.timerActive) {
-          this.timestamp--;
-          if (this.timestamp <= 0) {
+    methods: {
+        async playMusic() {
+            if (this.$store.state.deviceId) {
+                const playback = await fetch(
+                    `/api/spotify/play?deviceId=${this.$store.state.deviceId}`
+                );
+                if (playback.ok) {
+                    this.playing = true;
+                }
+            }
+        },
+        async pauseMusic() {
+            if (this.$store.state.deviceId) {
+                const playback = await fetch(
+                    `/api/spotify/pause?deviceId=${this.$store.state.deviceId}`
+                );
+                if (playback.ok) {
+                    this.playing = false;
+                }
+            }
+        },
+        clearTimer() {
+            if (this.timerId) {
+                clearInterval(this.timerId);
+            }
+        },
+        clearTrackTimer() {
+            if (this.trackTimerId) {
+                // console.log('cleared')
+                clearTimeout(this.trackTimerId);
+                // console.log(this.trackTimerId)
+            }
+        },
+        async startTimer() {
+            this.timerActive = true;
+            this.timestamp =
+                this.timestamp ??
+                (this.focusing ? this.focusTime * 60 : this.breakTime * 60);
+            this.timerId = setInterval(() => {
+                if (this.timerActive) {
+                    this.timestamp--;
+                    if (this.timestamp <= 0) {
+                        this.clearTimer();
+                        this.timestamp = null;
+                        if (this.currInterval >= this.intervals) {
+                            this.endSession();
+                            return;
+                        }
+                        if (!this.focusing) {
+                            this.currInterval++;
+                            this.playMusic();
+                        } else {
+                            this.pauseMusic();
+                        }
+                        this.focusing = !this.focusing;
+                        this.startTimer();
+                    }
+                }
+            }, 1000);
+            if (this.focusing) await this.playMusic();
+            await this.getCurrTrack();
+        },
+        async pauseTimer() {
+            this.timerActive = false;
             this.clearTimer();
             this.clearTrackTimer();
             await this.pauseMusic();
@@ -233,36 +261,36 @@ export default {
             await this.pauseTimer();
             this.timestamp = null;
             if (this.currInterval >= this.intervals) {
-              this.endSession();
-              return;
+                this.endSession();
+                return;
             }
         },
-    async playPrev() {
-      if (this.timerActive) {
-        console.log("play prev song");
-        await fetch(`/api/spotify/previous`, { method: "POST" });
-        await new Promise((f) => setTimeout(f, 500));
-        await this.getCurrTrack();
-      }
-    },
-    async playNext() {
-      if (this.timerActive) {
-        console.log("play next song");
-        await this.addNextTrackToQueue();
-        await new Promise((f) => setTimeout(f, 200));
-        await fetch(`/api/spotify/next`, { method: "POST" });
-        await new Promise((f) => setTimeout(f, 500));
-        await this.getCurrTrack();
-      }
-    },
-    async togglePlay() {
-      console.log("toggle timer and song");
-      if (this.timerActive) {
-        await this.pauseTimer();
-      } else {
-        await this.startTimer();
-      }
-    },
+        async playPrev() {
+            if (this.timerActive) {
+                console.log("play prev song");
+                await fetch(`/api/spotify/previous`, { method: "POST" });
+                await new Promise((f) => setTimeout(f, 500));
+                await this.getCurrTrack();
+            }
+        },
+        async playNext() {
+            if (this.timerActive) {
+                console.log("play next song");
+                await this.addNextTrackToQueue();
+                await new Promise((f) => setTimeout(f, 200));
+                await fetch(`/api/spotify/next`, { method: "POST" });
+                await new Promise((f) => setTimeout(f, 500));
+                await this.getCurrTrack();
+            }
+        },
+        async togglePlay() {
+            console.log("toggle timer and song");
+            if (this.timerActive) {
+                await this.pauseTimer();
+            } else {
+                await this.startTimer();
+            }
+        },
         onActive(splide, slide) {
             this.selectedIndex = slide.index;
             console.log(this.selectedIndex);
@@ -271,92 +299,87 @@ export default {
             splide.go(slide.index);
             this.selectedIndex = slide.index;
         },
-    async getCurrTrack() {
-      this.clearTrackTimer();
-      const res = await fetch(`/api/spotify/getCurrentTrack`).then(async (r) =>
-        r.json()
-      );
-      this.currTrackTitle = res.track.item.name;
-      this.currTrackArtist = res.track.item.artists
-        .map((a) => a.name)
-        .join(" ");
-      const timeout = res.track.item.duration_ms - res.track.progress_ms;
-      console.log(timeout);
-      // const timeout = res.track.item.duration_ms - (new Date().getTime() - res.track.timestamp + res.track.progress_ms) + 1000;
-      // console.log(res.track.item.duration_ms, new Date().getTime(), res.track.timestamp, res.track.progress_ms)
-      if (timeout > 5000) {
-        this.clearTrackTimer();
-        this.trackTimerId = setTimeout(async () => {
-          await this.addNextTrackToQueue();
-          await new Promise((f) => setTimeout(f, 500));
-          await this.getCurrTrack();
-        }, timeout - 500);
-      } else {
-        this.clearTrackTimer();
-        this.trackTimerId = setTimeout(async () => {
-          await this.getCurrTrack();
-        }, timeout);
-      }
+        async getCurrTrack() {
+            this.clearTrackTimer();
+            const res = await fetch(`/api/spotify/getCurrentTrack`).then(async (r) =>
+                r.json()
+            );
+            this.currTrackTitle = res.track.item.name;
+            this.currTrackArtist = res.track.item.artists
+                .map((a) => a.name)
+                .join(" ");
+            const timeout = res.track.item.duration_ms - res.track.progress_ms;
+            console.log(timeout);
+            // const timeout = res.track.item.duration_ms - (new Date().getTime() - res.track.timestamp + res.track.progress_ms) + 1000;
+            // console.log(res.track.item.duration_ms, new Date().getTime(), res.track.timestamp, res.track.progress_ms)
+            if (timeout > 5000) {
+                this.clearTrackTimer();
+                this.trackTimerId = setTimeout(async () => {
+                    await this.addNextTrackToQueue();
+                    await new Promise((f) => setTimeout(f, 500));
+                    await this.getCurrTrack();
+                }, timeout - 500);
+            } else {
+                this.clearTrackTimer();
+                this.trackTimerId = setTimeout(async () => {
+                    await this.getCurrTrack();
+                }, timeout);
+            }
+        },
+        async addNextTrackToQueue() {
+            console.log(
+                this.playlistIndex + 1,
+                this.playlistTracks.length,
+                this.playlistLimit
+            );
+            this.playlistIndex++;
+            if (
+                this.playlistIndex % this.playlistLimit === 0 ||
+                this.playlistIndex >= this.totalPlaylistTracks
+            )
+                await this.getPlaylistTracks();
+            await fetch(
+                `/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex % this.playlistLimit]
+                }`,
+                { method: "POST" }
+            );
+        },
+        async getPlaylistTracks() {
+            console.log("getting more tracks");
+            const offset =
+                this.playlistIndex >= this.totalPlaylistTracks ? 0 : this.playlistIndex;
+            const res = await fetch(
+                `/api/playlists/info/${this.selectedPlaylistId}/tracks?offset=${offset}`
+            ).then(async (r) => r.json());
+            this.playlistTracks = res.tracks.items.map((r) => r.track.id);
+            this.playlistIndex = offset;
+            this.totalPlaylistTracks = res.tracks.total;
+            this.playlistLimit = res.tracks.limit;
+        },
     },
-    async addNextTrackToQueue() {
-      console.log(
-        this.playlistIndex + 1,
-        this.playlistTracks.length,
-        this.playlistLimit
-      );
-      this.playlistIndex++;
-      if (
-        this.playlistIndex % this.playlistLimit === 0 ||
-        this.playlistIndex >= this.totalPlaylistTracks
-      )
-        await this.getPlaylistTracks();
-      await fetch(
-        `/api/spotify/addToQueue/spotify:track:${
-          this.playlistTracks[this.playlistIndex % this.playlistLimit]
-        }`,
-        { method: "POST" }
-      );
+    async mounted() {
+        if (!this.$store.state.displayName) {
+            this.$router.push({ name: "Login" });
+        }
+        if (this.$store.state.spotifyPlayer) {
+            try {
+                this.$store.state.spotifyPlayer.connect();
+            } catch (e) {
+                console.log(e);
+            }
+        }
     },
-    async getPlaylistTracks() {
-      console.log("getting more tracks");
-      const offset =
-        this.playlistIndex >= this.totalPlaylistTracks ? 0 : this.playlistIndex;
-      const res = await fetch(
-        `/api/playlists/info/${this.selectedPlaylistId}/tracks?offset=${offset}`
-      ).then(async (r) => r.json());
-      this.playlistTracks = res.tracks.items.map((r) => r.track.id);
-      this.playlistIndex = offset;
-      this.totalPlaylistTracks = res.tracks.total;
-      this.playlistLimit = res.tracks.limit;
-    },
-  },
-  async mounted() {
-    if (!this.$store.state.displayName) {
-      this.$router.push({ name: "Login" });
-    }
-    if (this.$store.state.spotifyPlayer) {
-      try {
-        this.$store.state.spotifyPlayer.connect();
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  },
-  async beforeUnmount() {
-    try {
-      this.$store.commit("forceDisconnect");
-    } catch (e) {
-      console.log(e);
-    }
-  },
-};
+    async beforeUnmount() {
+            try {
+                this.$store.commit("forceDisconnect");
+            } catch (e) {
+                console.log(e);
+            }
+        },
+    };
 </script>
 
 <style scoped>
-
-/* main {
-    line-height: 1.2;
-} */
 
 .selector {
     display: flex;
@@ -379,7 +402,7 @@ export default {
 }
 
 .right {
-  width: 140px;
+    width: 140px;
 }
 
 .right>input {
@@ -395,14 +418,14 @@ export default {
 }
 
 .bottomDiv {
-  width: 100vw;
-  position: fixed;
-  bottom: 0;
-  padding: 20px 0px;
+    width: 100vw;
+    position: fixed;
+    bottom: 0;
+    padding: 20px 0px;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .controls {
@@ -437,15 +460,15 @@ export default {
 }
 
 .prevButton:hover {
-  background-color: #3f3b4c;
+    background-color: #3f3b4c;
 }
 
 .nextButton:hover {
-  background-color: #3f3b4c;
+    background-color: #3f3b4c;
 }
 
 .trackInfo {
-  padding: 20px;
+    padding: 20px;
 }
 
 .time {
@@ -459,7 +482,6 @@ export default {
 
 .carousel {
     width: 540px;
-    /* max-width: fit-content; */
 }
 
 .placeholder {
