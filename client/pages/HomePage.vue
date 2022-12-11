@@ -1,7 +1,7 @@
 <template>
     <main class="center">
-        <div class="wh50b">{{ $store.state.displayName }},</div>
-        <div class="gr30">
+        <div class="wh40b">{{ $store.state.displayName }},</div>
+        <div class="gr24">
             <span v-if="sessionState === SessionState.BEFORE">Start a focus session</span>
             <span v-else-if="sessionState === SessionState.FOCUS">You're doing great!</span>
             <span v-else-if="sessionState === SessionState.BREAK">Take a break!</span>
@@ -11,21 +11,36 @@
         <div v-if="sessionState === SessionState.BEFORE" class="center" >
             <div class="selector">
                 <div class="selectorItem">
-                    <div class="left gr20">Focus Time</div>
-                    <div class="right gr20">
-                        <input v-model="focusTime" /> min
+                    <div class="siNormal">
+                        <div class="left gr20">Focus Time</div>
+                        <div class="right gr20">
+                            <input v-model.number="focusTime" /> min
+                        </div>
+                    </div>
+                    <div class="badInput gr12" v-if="!focusTimeIsValid">
+                        Please enter a number between 0-999.
                     </div>
                 </div>
                 <div class="selectorItem">
-                    <div class="left gr20">Break Time</div>
-                    <div class="right gr20">
-                        <input v-model="breakTime" /> min
+                    <div class="siNormal">
+                        <div class="left gr20">Break Time</div>
+                        <div class="right gr20">
+                            <input v-model.number="breakTime" /> min
+                        </div>
+                    </div>
+                    <div class="badInput gr12" v-if="!breakTimeIsValid">
+                        Please enter a number between 0-999.
                     </div>
                 </div>
                 <div class="selectorItem">
-                    <div class="left gr20">Intervals</div>
-                    <div class="right gr20">
-                        <input v-model="intervals" /> times
+                    <div class="siNormal">
+                        <div class="left gr20">Intervals</div>
+                        <div class="right gr20">
+                            <input v-model.number="intervals" /> times
+                        </div>
+                    </div>
+                    <div class="badInput gr12" v-if="!intervalsIsValid">
+                        Please enter an integer between 1-20.
                     </div>
                 </div>
             </div>
@@ -78,7 +93,7 @@
             </div>
 
             <div class="bottomDiv">
-                <button @click="startSession" class="controlButton pButton" :disabled="$store.state.myLikedPlaylists.length === 0">
+                <button @click="startSession" class="controlButton pButton" :disabled="$store.state.myLikedPlaylists.length === 0 || !this.submitIsValid">
                     <img src="../public/play.svg">
                 </button>
             </div>
@@ -90,7 +105,7 @@
             <div class="progressbar">
                 <div class="pbItem" v-for="i in (intervals - currInterval)"></div>
                 <div class="pbItem pbActive" v-if="sessionState === SessionState.FOCUS"></div>
-                <div class="pbItem pbDone" v-else></div>
+                <div class="pbItem" v-else></div>
                 <div class="pbItem pbDone" v-for="i in (currInterval - 1)"></div>
             </div>
 
@@ -121,9 +136,9 @@
 
         <div v-else class="center">
             <div class="gr20 topStats">
-                You completed <span class="wh20b">{{ currInterval - 1}}</span> intervals of <span class="wh20b">{{ focusTime }}</span> minutes each.
+                You completed <span class="wh20b">{{ currInterval - 1}}</span> interval<span v-if="currInterval !== 2">s</span> of <span class="wh20b">{{ focusTime }}</span> minutes each.
             </div>
-            <div class="wh100b focusTimeText">{{ (currInterval - 1) * focusTime }}</div>
+            <div class="wh100b focusTimeText">{{ Math.round((currInterval - 1) * focusTime) }}</div>
             <div class="gr20 bottomStats">minutes focused.</div>
             <button class="button" @click="backToHome">
                 <span class="wh20b">Back To Home</span>
@@ -177,6 +192,18 @@ export default {
             const sec = Math.round(this.timestamp % 60);
             return sec < 10 ? `0${sec}` : `${sec}`;
         },
+        focusTimeIsValid() {
+            return typeof this.focusTime === 'number' && this.focusTime > 0 && this.focusTime < 999;
+        },
+        breakTimeIsValid() {
+            return typeof this.breakTime === 'number' && this.breakTime > 0 && this.breakTime < 999;
+        },
+        intervalsIsValid() {
+            return typeof this.intervals === 'number' && Number.isInteger(this.intervals) && this.intervals > 0 && this.intervals < 21;
+        },
+        submitIsValid() {
+            return this.focusTimeIsValid && this.breakTimeIsValid && this.intervalsIsValid;
+        }
     },
     methods: {
         onActive(splide, slide) {
@@ -227,17 +254,17 @@ export default {
                     if (this.timestamp <= 0) {
                         this.clearTimer();
                         this.timestamp = null;
-                        if (this.currInterval >= this.intervals) {
+                        if (this.currInterval >= this.intervals && this.sessionState === SessionState.FOCUS) {
                             this.currInterval++;
                             this.endSession();
                             return;
                         }
                         if (this.sessionState === SessionState.BREAK) {
-                            this.currInterval++;
                             this.startMusic();
                             this.sessionState = SessionState.FOCUS;
                         } 
                         else {
+                            this.currInterval++;
                             this.pauseMusic();
                             this.sessionState = SessionState.BREAK;
                         }
@@ -314,15 +341,21 @@ export default {
 }
 
 .selectorItem {
-    height: 60px;
     width: 360px;
-    padding: 0px 20px;
+    padding: 10px 20px;
     background-color: #373544;
     border-radius: 25px;
 
+}
+
+.siNormal {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.badInput {
+    margin-top: 4px;
 }
 
 .right {
