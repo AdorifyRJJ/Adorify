@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="gr16 oneFourth">{{ this.track.album.name }}</div>
-            <div class="gr16 oneFourth end">{{ this.track.duration_ms }}</div>
+            <div class="gr16 oneFourth end">{{ this.duration }}</div>
         </div>
     </div>
 </template>
@@ -27,6 +27,25 @@
 export default {
     name: "TrackItem",
     props: ["track"],
+    computed: {
+        getSec() {
+            const sec = Math.floor((this.track.duration_ms / 1000) % 60);
+            return sec < 10 ? `0${sec}` : `${sec}`;
+        },
+        getMin() {
+            const min = Math.floor((this.track.duration_ms / 60 / 1000) % 60);
+            return min < 10 ? `0${min}` : `${min}`;
+        },
+        getHr() {
+            const hr = Math.floor((this.track.duration_ms / 3600 / 1000) % 24);
+            return hr < 10 ? `0${hr}` : `${hr}`;
+        },
+        duration() {
+            return this.getHr === "00"
+                ? this.getMin + ":" + this.getSec
+                : this.getHr + ":" + this.getMin + ":" + this.getSec;
+        },
+    },
 };
 </script>
 

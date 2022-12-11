@@ -240,6 +240,7 @@ export default {
     align-self: center;
     width: 29px;
     height: 29px;
+    margin-left: 30px;
 }
 
 .image {
