@@ -1,13 +1,13 @@
-import type {HydratedDocument, Types} from 'mongoose';
-import PlaylistModel from '../playlist/model';
+import type { HydratedDocument, Types } from 'mongoose';
 import PlaylistCollection from '../playlist/collection';
-import type {PopulatedUser, User} from './model';
+import type { PopulatedUser, User } from './model';
 import UserModel from './model';
 
 class UserCollection {
-  static async addOne(username: string): Promise<HydratedDocument<User>> {
+  static async addOne(username: string, displayName: string): Promise<HydratedDocument<User>> {
     const user = new UserModel({
       username: username,
+      displayName: displayName,
       likedPlaylistIds: [],
     });
     await user.save();
@@ -15,11 +15,18 @@ class UserCollection {
   }
 
   static async findOneByUsername(username: string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({username: username});
+    return UserModel.findOne({ username: username });
   }
 
+  static async updateDisplayName(username: string, displayName: string): Promise<void> {
+    const user = await UserModel.findOne({ username: username });
+    user.displayName = displayName;
+    await user.save();
+  }
+
+
   static async findOneByUsernameAndPopulate(username: string): Promise<HydratedDocument<PopulatedUser>> {
-    return await UserModel.findOne({username: username}).populate('likedPlaylists');
+    return await UserModel.findOne({ username: username }).populate('likedPlaylists');
   }
 
   // static async addToLikedPlaylists(username: string, playlist: Types.ObjectId | String): Promise<HydratedDocument<User>> {
@@ -39,13 +46,13 @@ class UserCollection {
   // }
 
   static async inLikedPlaylists(username: string, spotifyId: string): Promise<boolean> {
-    const user = await UserModel.findOne({username: username});
+    const user = await UserModel.findOne({ username: username });
     const playlist = await PlaylistCollection.findOneBySpotifyId(spotifyId);
     return playlist ? user.likedPlaylistIds.indexOf(spotifyId) !== -1 : false;
   }
 
   static async toggleLikedPlaylists(username: string, spotifyId: string): Promise<boolean> {
-    const user = await UserModel.findOne({username: username});
+    const user = await UserModel.findOne({ username: username });
     const idx = user.likedPlaylistIds.indexOf(spotifyId);
     if (idx === -1) {
       user.likedPlaylistIds.push(spotifyId);
@@ -60,7 +67,7 @@ class UserCollection {
   }
 
   static async deleteOne(username: string): Promise<boolean> {
-    const user = await UserModel.deleteOne({username: username});
+    const user = await UserModel.deleteOne({ username: username });
     await PlaylistCollection.deleteAllByOwner(username);
     return user !== null;
   }
