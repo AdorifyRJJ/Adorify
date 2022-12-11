@@ -17,7 +17,7 @@ export default {
     props: ["playlist", "isSelected"],
     computed: {
         image() {
-            return this.playlist.image?.url;
+            return this.playlist.image;
         },
         playlistName() {
             return this.playlist.name;

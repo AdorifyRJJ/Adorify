@@ -159,7 +159,7 @@ router.get(
     [
         userValidator.isUserLoggedIn,
         userValidator.validAccessToken,
-        util.refreshIfNeeded,
+        //util.refreshIfNeeded,
     ],
     async function (req: Request, res: Response) {
         try {
@@ -189,7 +189,7 @@ router.get(
     [
         userValidator.isUserLoggedIn,
         userValidator.validAccessToken,
-        util.refreshIfNeeded,
+        //util.refreshIfNeeded,
     ],
     async (req: Request, res: Response) => {
         const playbackSpotifyApi = new SpotifyWebApi({
@@ -215,7 +215,7 @@ router.get(
     [
         userValidator.isUserLoggedIn,
         userValidator.validAccessToken,
-        util.refreshIfNeeded,
+        //util.refreshIfNeeded,
     ],
     async function (req: Request, res: Response) {
         try {
@@ -243,7 +243,7 @@ router.get(
     [
         userValidator.isUserLoggedIn,
         userValidator.validAccessToken,
-        util.refreshIfNeeded,
+        //util.refreshIfNeeded,
     ],
     async function (req: Request, res: Response) {
         try {
@@ -271,7 +271,7 @@ router.post(
     [
         userValidator.isUserLoggedIn,
         userValidator.validAccessToken,
-        util.refreshIfNeeded,
+        //util.refreshIfNeeded,
     ],
     async function (req: Request, res: Response) {
         try {
@@ -299,7 +299,7 @@ router.post(
     [
         userValidator.isUserLoggedIn,
         userValidator.validAccessToken,
-        util.refreshIfNeeded,
+        //util.refreshIfNeeded,
     ],
     async function (req: Request, res: Response) {
         try {
@@ -327,7 +327,7 @@ router.post(
     [
         userValidator.isUserLoggedIn,
         userValidator.validAccessToken,
-        util.refreshIfNeeded,
+        //util.refreshIfNeeded,
     ],
     async function (req: Request, res: Response) {
         try {
@@ -355,7 +355,7 @@ router.post(
     [
         userValidator.isUserLoggedIn,
         userValidator.validAccessToken,
-        util.refreshIfNeeded,
+        //util.refreshIfNeeded,
     ],
     async function (req: Request, res: Response) {
         try {

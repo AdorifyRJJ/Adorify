@@ -5,12 +5,20 @@
         <div class="btn-div">
             <div class="btn-group">
                 <button
+                    :class="{
+                        selectedBtn: viewingMine,
+                        unselectedBtn: !viewingMine,
+                    }"
                     class="btn-group-button btn-width-210"
                     @click="getMyPlaylists"
                 >
                     <span class="wh20n">My Spotify Library</span>
                 </button>
                 <button
+                    :class="{
+                        selectedBtn: !viewingMine,
+                        unselectedBtn: viewingMine,
+                    }"
                     class="btn-group-button btn-width-210"
                     @click="getPublicPlaylists"
                 >
@@ -18,7 +26,7 @@
                 </button>
             </div>
 
-            <div v-if="!loading && !viewingMine" class="bgroup2">
+            <div v-if="!viewingMine" class="bgroup2">
                 <button class="dropdown" @click="getMostLiked">
                     Most liked
                 </button>
@@ -99,11 +107,11 @@ export default {
             this.setLoading(false);
         },
         async getMyPlaylists() {
+            this.currPlaylistsName = "mine";
             this.setLoading(true);
             const url = `/api/playlists/mine?offset=0`;
             const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
-            this.currPlaylistsName = "mine";
             console.log("my spotify playlists", this.currPlaylists);
             this.setLoading(false);
         },
@@ -113,27 +121,30 @@ export default {
             }
         },
         async getMostLiked() {
+            this.currPlaylistsName = "mostLiked";
             this.setLoading(true);
             const url = `/api/playlists/mostLiked?offset=0`;
             const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
-            this.currPlaylistsName = "mostLiked";
+
             this.setLoading(false);
         },
         async getMostUsed() {
+            this.currPlaylistsName = "mostUsed";
             this.setLoading(true);
             const url = `/api/playlists/mostUsed?offset=0`;
             const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
-            this.currPlaylistsName = "mostUsed";
+
             this.setLoading(false);
         },
         async getMostProductive() {
+            this.currPlaylistsName = "mostProductive";
             this.setLoading(true);
             const url = `/api/playlists/mostProductive?offset=0`;
             const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
-            this.currPlaylistsName = "mostProductive";
+
             this.setLoading(false);
         },
     },
@@ -244,5 +255,13 @@ export default {
     padding: 10px;
     border: solid;
     cursor: pointer;
+}
+
+.selectedBtn {
+    background-color: #6c4eb3;
+}
+
+.unselectedBtn {
+    background-color: #373544;
 }
 </style>

@@ -4,7 +4,7 @@
         <div v-if="$store.state.myLikedPlaylists.length">
             <div
                 class="item wh20n truncate1line"
-                @click="openPlaylist(playlist.id)"
+                @click="openPlaylist(playlist)"
                 :key="i"
                 v-for="(playlist, i) in $store.state.myLikedPlaylists"
             >
@@ -19,11 +19,15 @@
 export default {
     name: "MyLikedPlaylists",
     methods: {
-        openPlaylist(id) {
+        openPlaylist(playlist) {
             this.$router.push({
                 name: "PlaylistInfoPage",
                 params: {
-                    spotifyId: id,
+                    spotifyId: playlist.id,
+                    name: playlist.name,
+                    owner: playlist.owner,
+                    image: playlist.image,
+                    isLiked: playlist.isLiked,
                 },
             });
         },
