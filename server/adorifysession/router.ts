@@ -2,81 +2,12 @@ import type { Request, Response } from 'express';
 import express from 'express';
 import AdorifySessionCollection from './collection';
 import * as userValidator from '../user/middleware';
-import * as spotifyUtil from '../spotify/util';
-
-import SpotifyWebApi from 'spotify-web-api-node';
 
 
 import dotenv from 'dotenv';
 dotenv.config({});
 
 const router = express.Router();
-
-router.post(
-  '/testadd',
-  [
-    userValidator.isUserLoggedIn,
-  ],
-  async (req: Request, res: Response) => {
-    const as = await AdorifySessionCollection.testAddOne('testuser 3',
-      req.body.length,
-      req.body.spotifyId,
-      req.body.startTime,
-      req.body.completed,
-      req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 4',
-      req.body.length,
-      req.body.spotifyId,
-      req.body.startTime,
-      req.body.completed,
-      req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 5',
-      req.body.length,
-      req.body.spotifyId,
-      req.body.startTime,
-      req.body.completed,
-      req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 6',
-      req.body.length,
-      req.body.spotifyId,
-      req.body.startTime,
-      req.body.completed,
-      req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 7',
-      req.body.length,
-      req.body.spotifyId,
-      req.body.startTime,
-      req.body.completed,
-      req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 8',
-      req.body.length,
-      req.body.spotifyId,
-      req.body.startTime,
-      req.body.completed,
-      req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 9',
-      req.body.length,
-      req.body.spotifyId,
-      req.body.startTime,
-      req.body.completed,
-      req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 10',
-      req.body.length,
-      req.body.spotifyId,
-      req.body.startTime,
-      req.body.completed,
-      req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 11',
-      req.body.length,
-      req.body.spotifyId,
-      req.body.startTime,
-      req.body.completed,
-      req.body.initializedSessions);
-    res.status(200).json({
-      message: 'Adorify Session created successfully.',
-    });
-  }
-)
 
 // POST /api/adorifySession
 

@@ -1,21 +1,8 @@
 import { HydratedDocument, Types } from "mongoose";
 import AdorifySessionModel, { AdorifySession } from "./model";
-import { StudyDate, PlaylistDate, Stats, Period, generateLast30Days } from './util';
+import { PlaylistDate, generateLast30Days } from './util';
 
 class AdorifySessionCollection {
-
-  static async testAddOne(username: string, length: number, spotifyId: string, startTime: Date, completed: number, initializedSessions: number): Promise<HydratedDocument<AdorifySession>> {
-    const as = new AdorifySessionModel({
-      username: username,
-      spotifyPlaylistId: spotifyId,
-      length: length,
-      startTime: startTime,
-      completed: completed,
-      initializedSessions: initializedSessions,
-    });
-    await as.save();
-    return as;
-  }
 
   static async addOne(username: string, length: number, spotifyId: string, initializedSessions: number): Promise<HydratedDocument<AdorifySession>> {
     const date = new Date();
@@ -137,7 +124,7 @@ class AdorifySessionCollection {
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
 
-    const findUser = (obj: {_id: string, focusTime: number}) => username === obj._id;
+    const findUser = (obj: { _id: string, focusTime: number }) => username === obj._id;
 
     const leaderboardWeek = (await AdorifySessionModel.aggregate([
       {

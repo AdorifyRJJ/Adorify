@@ -1,23 +1,6 @@
-export type StudyDate = {
-    date: Date,
-    studyTime: number,
-}
-
 export type PlaylistDate = {
     _id: string,
     plays: number,
-}
-
-export enum Stats {
-    TIME = "Time",
-    SESSION = "Sessions",
-    COMPLETED = "Completed",
-}
-
-export enum Period {
-    WEEK = "Week",
-    MONTH = "Month",
-    ALLTIME = "AllTime",
 }
 
 export const generateLast30Days = (): Array<Date> => {
