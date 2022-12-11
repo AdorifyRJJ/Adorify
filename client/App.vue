@@ -144,6 +144,11 @@ main {
     font-size: 20px;
     font-weight: bold;
 }
+.wh30b {
+    color: #ffffff;
+    font-size: 30px;
+    font-weight: bold;
+}
 
 .wh40b {
     color: #ffffff;
@@ -215,7 +220,6 @@ main {
     height: 44px;
     border-radius: 0px;
     border-width: 0;
-    /* border-right: 10px, solid, #6c4eb3; */
 }
 .btn-group {
     margin: 18px 0;

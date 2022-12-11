@@ -32,6 +32,10 @@ export default {
                 name: "PlaylistInfoPage",
                 params: {
                     spotifyId: this.playlist.id,
+                    name: this.playlist.name,
+                    owner: this.playlist.owner.display_name,
+                    image: this.playlist.images[0]?.url,
+                    isLiked: this.playlist.isLiked,
                 },
             });
         },

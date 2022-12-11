@@ -18,7 +18,7 @@ const routes = [
   { path: '/profile', name: 'Profile', component: ProfilePage },
   { path: '/leaderboard', name: 'Leaderboard', component: LeaderboardPage },
   { path: '/playlists', name: 'Playlists', component: PlaylistsPage },
-  { path: '/playlists/info/:spotifyId', name: 'PlaylistInfoPage', component: PlaylistInfoPage },
+  { path: '/playlists/info/:spotifyId', name: 'PlaylistInfoPage', component: PlaylistInfoPage, props: true},
   { path: '/callback', name: 'Callback', component: CallbackPage },
   { path: '*', name: 'Not Found', component: NotFound }
 ];
