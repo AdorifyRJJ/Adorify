@@ -5,7 +5,6 @@
     <!-- <router-link to="/login">
             <button>Log Out</button>
         </router-link> -->
-
     <button @click="logout">Log Out</button>
     <div v-if="$store.state.displayName">
       <img

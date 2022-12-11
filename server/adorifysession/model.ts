@@ -4,10 +4,11 @@ import {Schema, model} from 'mongoose';
 export type AdorifySession = {
   _id: Types.ObjectId;
   username: string;
-  playlist: string;
+  spotifyPlaylistId: string;
   length: number;
   startTime: Date;
-  completed: boolean;
+  completed: number;
+  initializedSessions: number;
 };
 
 const AdorifySessionSchema = new Schema({
@@ -15,7 +16,7 @@ const AdorifySessionSchema = new Schema({
     type: String,
     required: true
   },
-  playlist: {
+  spotifyPlaylistId: {
     type: String,
     required: true
   },
@@ -28,9 +29,13 @@ const AdorifySessionSchema = new Schema({
     required: true
   },
   completed: {
-    type: Boolean,
+    type: Number,
     required: true
   },
+  initializedSessions: {
+    type: Number,
+    required: true,
+  }
 });
 
 AdorifySessionSchema.virtual('playlist', {
