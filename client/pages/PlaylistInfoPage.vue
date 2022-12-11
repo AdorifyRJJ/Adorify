@@ -23,18 +23,28 @@
                     </div>
                 </div>
             </div>
-            <div class="tracks">
-                <TrackItem
-                    :key="i"
-                    v-for="(track, i) in tracks.items"
-                    :track="track.track"
-                />
+            <div v-if="loading" class="lds-ring">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
             </div>
-            <div>
-                <button v-if="tracks.previous" @click="prevPage">
-                    prev page
-                </button>
-                <button v-if="tracks.next" @click="nextPage">next page</button>
+            <div v-else>
+                <div class="tracks">
+                    <TrackItem
+                        :key="i"
+                        v-for="(track, i) in tracks.items"
+                        :track="track.track"
+                    />
+                </div>
+                <div>
+                    <button v-if="tracks.previous" @click="prevPage">
+                        prev page
+                    </button>
+                    <button v-if="tracks.next" @click="nextPage">
+                        next page
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -47,14 +57,12 @@ import LikeButton from "../components/common/LikeButton.vue";
 export default {
     components: { MyLikedPlaylists, TrackItem, LikeButton },
     name: "PlaylistInfoPage",
+    props: ["name", "owner", "image", "isLiked"],
     data() {
         return {
             spotifyId: this.$route.params.spotifyId,
-            name: null,
-            owner: null,
-            image: null,
-            isLiked: null,
             tracks: [],
+            loading: true,
         };
     },
     computed: {
@@ -65,20 +73,42 @@ export default {
             return this.tracks.offset;
         },
     },
+    watch: {
+        async "$route.params.spotifyId"(newId, oldId) {
+            console.log("new id", newId);
+            await this.getTracks(newId);
+        },
+    },
     methods: {
+        setLoading(loading) {
+            this.loading = loading;
+        },
         async prevPage() {
+            this.setLoading(true);
             const newOffset = this.offset - this.limit;
             const url = `/api/playlists/info/${this.spotifyId}/tracks?offset=${newOffset}`;
             const res = await fetch(url).then(async (r) => r.json());
             this.tracks = res.tracks;
+            this.setLoading(false);
         },
         async nextPage() {
+            this.setLoading(true);
             const newOffset = this.offset + this.limit;
             console.log(newOffset);
             const url = `/api/playlists/info/${this.spotifyId}/tracks?offset=${newOffset}`;
             const res = await fetch(url).then(async (r) => r.json());
             console.log("next page playlist info", res);
             this.tracks = res.tracks;
+            this.setLoading(false);
+        },
+        async getTracks(spotifyId) {
+            this.setLoading(true);
+            const url = `/api/playlists/info/${spotifyId}`;
+            const res = await fetch(url).then(async (r) => r.json());
+            // console.log("playlist info", res);
+            this.tracks = res.playlistInfo.tracks;
+            // console.log("init playlist info", res);
+            this.setLoading(false);
         },
         exit() {
             this.$router.back();
@@ -88,15 +118,8 @@ export default {
         if (!this.$store.state.displayName) {
             this.$router.push({ name: "Login" });
         }
-        const url = `/api/playlists/info/${this.spotifyId}`;
-        const res = await fetch(url).then(async (r) => r.json());
-        console.log("playlist info", res);
-        this.name = res.playlistInfo.name;
-        this.owner = res.playlistInfo.owner.display_name;
-        this.isLiked = res.isLiked;
-        this.tracks = res.playlistInfo.tracks;
-        this.image = res.playlistInfo.images[0]?.url;
-        console.log("init playlist info", res);
+
+        await this.getTracks(this.spotifyId);
     },
     async beforeCreate() {
         if (this.$store.state.connected) {
@@ -107,6 +130,43 @@ export default {
 </script>
 
 <style scoped>
+.lds-ring {
+    display: flex;
+    align-self: center;
+    padding-top: 30%;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+.lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 8px solid #fff;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #fff transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 .page {
     display: flex;
     flex-direction: row;
@@ -186,6 +246,7 @@ export default {
     border-radius: 10px;
     object-fit: cover;
     box-shadow: 0px 4px 10px 4px rgba(0, 0, 0, 0.25);
+    z-index: 1;
 }
 
 .tracks {
