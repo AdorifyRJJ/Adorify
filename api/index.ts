@@ -12,6 +12,7 @@ import { userRouter } from '../server/user/router';
 import { playlistRouter } from '../server/playlist/router';
 import { spotifyRouter } from '../server/spotify/router';
 import MongoStore from 'connect-mongo';
+import { adorifySessionRouter } from 'server/adorifysession/router';
 
 // Load environmental variables
 dotenv.config({});
@@ -76,6 +77,7 @@ app.use(userValidator.isCurrentSessionUserExists);
 app.use('/api/users', userRouter);
 app.use('/api/spotify', spotifyRouter);
 app.use('/api/playlists', playlistRouter);
+app.use('/api/adorifySession', adorifySessionRouter);
 
 // Catch all the other routes and display error message
 app.all('*', (req: Request, res: Response) => {

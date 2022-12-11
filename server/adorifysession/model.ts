@@ -4,7 +4,7 @@ import {Schema, model} from 'mongoose';
 export type AdorifySession = {
   _id: Types.ObjectId;
   username: string;
-  playlist: string;
+  spotifyPlaylistId: string;
   length: number;
   startTime: Date;
   completed: boolean;
@@ -15,7 +15,7 @@ const AdorifySessionSchema = new Schema({
     type: String,
     required: true
   },
-  playlist: {
+  spotifyPlaylistId: {
     type: String,
     required: true
   },
