@@ -5,12 +5,14 @@ import { Playlist } from '../playlist/model';
 export type User = {
   _id: Types.ObjectId;
   username: string;
+  displayName: string;
   likedPlaylistIds: Array<string>;
 };
 
 export type PopulatedUser = {
   _id: Types.ObjectId;
   username: string;
+  displayName: string;
   likedPlaylistIds: Array<string>;
   likedPlaylists: Array<Playlist>;
 };
@@ -20,6 +22,10 @@ const UserSchema = new Schema({
     type: String,
     unique: true,
     required: true
+  },
+  displayName: {
+    type: String,
+    required: true,
   },
   likedPlaylistIds: {
     type: [String],

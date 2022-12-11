@@ -118,7 +118,7 @@ router.get(
 
             const user = await UserCollection.findOneByUsername(me.body.id);
             if (!user)
-                await UserCollection.addOne(me.body.id);
+                await UserCollection.addOne(me.body.id, me.body.display_name);
             req.session.username = me.body.id;
             res.status(200).json({ me: me.body, accessToken: req.session.accessToken, expiryTime: req.session.expiryTime });
         } catch (e: any) {
@@ -146,6 +146,8 @@ router.get(
             });
             meSpotifyApi.setAccessToken(req.session.accessToken);
             const me = await meSpotifyApi.getMe();
+            const userObj = await UserCollection.findOneByUsername(me.body.id);
+            if (userObj.displayName !== me.body.display_name) await UserCollection.updateDisplayName(me.body.id, me.body.display_name);
             res.status(200).json({ me: me.body, accessToken: req.session.accessToken, expiryTime: req.session.expiryTime });
         } catch (e: any) {
             console.log(e)
