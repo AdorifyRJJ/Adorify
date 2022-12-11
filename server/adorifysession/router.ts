@@ -12,6 +12,72 @@ dotenv.config({});
 
 const router = express.Router();
 
+router.post(
+  '/testadd',
+  [
+    userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response) => {
+    const as = await AdorifySessionCollection.testAddOne('testuser 3',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 4',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 5',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 6',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 7',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 8',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 9',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 10',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 11',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed,
+      req.body.initializedSessions);
+    res.status(200).json({
+      message: 'Adorify Session created successfully.',
+    });
+  }
+)
+
 // POST /api/adorifySession
 
 router.post(
@@ -20,7 +86,7 @@ router.post(
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
-    const as = await AdorifySessionCollection.addOne(req.session.username, req.body.length, req.body.spotifyId);
+    const as = await AdorifySessionCollection.addOne(req.session.username, req.body.length, req.body.spotifyId, req.body.initializedSessions);
     res.status(200).json({
       message: 'Adorify Session created successfully.',
       asID: as._id
@@ -50,14 +116,20 @@ router.get(
   [
     userValidator.isUserLoggedIn,
     userValidator.validAccessToken,
-    spotifyUtil.refreshIfNeeded,
   ],
   async (req: Request, res: Response) => {
-    const totalTime = AdorifySessionCollection.getTotalTimeByUsername(req.session.username);
-    const completed = AdorifySessionCollection.getTotalCompletedByUsername(req.session.username);
-    const totalSessions = AdorifySessionCollection.getTotalSessionsByUsername(req.session.username);
-    const mostPlayed = AdorifySessionCollection.getMostPlayedByUsername(req.session.username);
-    const studyTime = AdorifySessionCollection.getStudyTimeByUsername(req.session.username);
+    const totalTime = await AdorifySessionCollection.getTotalTimeByUsername(req.session.username);
+    const completed = await AdorifySessionCollection.getTotalCompletedByUsername(req.session.username);
+    const totalSessions = await AdorifySessionCollection.getTotalSessionsByUsername(req.session.username);
+
+    const mostPlayed = await AdorifySessionCollection.getMostPlayedByUsername(req.session.username);
+    const studyTime = await AdorifySessionCollection.getStudyTimeByUsername(req.session.username);
+    const studyTimeArr = [...Object.entries(studyTime)].splice(0, 28).reverse();
+    const studyTimeModified = [];
+
+    for (const tuple of studyTimeArr) {
+      studyTimeModified.push(tuple[1]);
+    }
 
     res.status(200).json({
       message: 'Here are the user stats.',
@@ -65,7 +137,7 @@ router.get(
       completed: completed,
       totalSessions: totalSessions,
       mostPlayed: mostPlayed,
-      studyTime: studyTime,
+      studyTime: studyTimeModified,
     });
   }
 )
@@ -78,15 +150,12 @@ router.get(
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
-
-    const topUsers = AdorifySessionCollection.getTopTenUsers();
-    const userRanks = AdorifySessionCollection.getRankingByUsername(req.session.username);
-
+    const ranks = await AdorifySessionCollection.getRanking(req.session.username);
 
     res.status(200).json({
       message: 'Here is the leaderboard.',
-      topUsers: topUsers,
-      userRanks: userRanks,
+      topUsers: ranks.topUsers,
+      userRanks: ranks.userRank,
     });
   }
 )

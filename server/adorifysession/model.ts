@@ -7,7 +7,8 @@ export type AdorifySession = {
   spotifyPlaylistId: string;
   length: number;
   startTime: Date;
-  completed: boolean;
+  completed: number;
+  initializedSessions: number;
 };
 
 const AdorifySessionSchema = new Schema({
@@ -28,9 +29,13 @@ const AdorifySessionSchema = new Schema({
     required: true
   },
   completed: {
-    type: Boolean,
+    type: Number,
     required: true
   },
+  initializedSessions: {
+    type: Number,
+    required: true,
+  }
 });
 
 AdorifySessionSchema.virtual('playlist', {

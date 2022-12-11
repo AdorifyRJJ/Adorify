@@ -12,7 +12,7 @@ import { userRouter } from '../server/user/router';
 import { playlistRouter } from '../server/playlist/router';
 import { spotifyRouter } from '../server/spotify/router';
 import MongoStore from 'connect-mongo';
-import { adorifySessionRouter } from 'server/adorifysession/router';
+import { adorifySessionRouter } from '../server/adorifysession/router';
 
 // Load environmental variables
 dotenv.config({});
