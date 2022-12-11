@@ -5,7 +5,7 @@
             <span v-if="sessionState === SessionState.BEFORE">Start a focus session</span>
             <span v-else-if="sessionState === SessionState.FOCUS">You're doing great!</span>
             <span v-else-if="sessionState === SessionState.BREAK">Take a break!</span>
-            <span v-else>Great work!</span>
+            <span v-else>Study session complete!</span>
         </div>
 
         <div v-if="sessionState === SessionState.BEFORE" class="center" >
@@ -42,7 +42,7 @@
 
                 <Splide v-else-if="$store.state.myLikedPlaylists.length === 1" @splide:active="onActive"
                     @splide:click="onClick"
-                    :options="{ arrows: false, perPage: 1, padding: '40px', speed: 100, slideFocus: true, cloneStatus: false, drag: false, }">
+                    :options="{ arrows: false, perPage: 1, padding: '60px', speed: 100, slideFocus: true, cloneStatus: false, drag: false, }">
                     <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
                         <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
                         </HomePlaylistCard>
@@ -51,7 +51,7 @@
 
                 <Splide v-else-if="$store.state.myLikedPlaylists.length === 2" @splide:active="onActive"
                     @splide:click="onClick"
-                    :options="{ arrows: false, perPage: 2, padding: '40px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false, }">
+                    :options="{ arrows: false, perPage: 2, padding: '60px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false, }">
                     <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
                         <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
                         </HomePlaylistCard>
@@ -60,7 +60,7 @@
 
                 <Splide v-else-if="$store.state.myLikedPlaylists.length === 3" @splide:active="onActive"
                     @splide:click="onClick"
-                    :options="{ arrows: false, perPage: 3, padding: '40px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false }">
+                    :options="{ arrows: false, perPage: 3, padding: '60px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false }">
                     <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
                         <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
                         </HomePlaylistCard>
@@ -69,21 +69,11 @@
 
                 <Splide v-else @splide:active="onActive"
                     @splide:click="onClick"
-                    :options="{ type: 'loop', rewind: true, perPage: 3, padding: '40px', speed: 100, slideFocus: true, focus: 'center', cloneStatus: false, }">
+                    :options="{ type: 'loop', rewind: true, perPage: 3, padding: '60px', speed: 100, slideFocus: true, focus: 'center', cloneStatus: false, }">
                     <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
                         <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
                         </HomePlaylistCard>
                     </SplideSlide>
-                    <!-- <SplideSlide>
-                        <div class="placeholder center">
-                            <div class="placeholderInner center">
-                                <img src="../public/play.svg">
-                                <div class="placeholderText">
-                                    Like playlists to start session.
-                                </div>
-                            </div>
-                        </div>
-                    </SplideSlide> -->
                 </Splide>
             </div>
 
@@ -96,7 +86,14 @@
 
         <div v-else-if="sessionState !== SessionState.AFTER" class="center" >
             <div class="wh100b time">{{ getTime }}</div>
-            <div class="wh20b intervals">{{ currInterval }} / {{ intervals }}</div>
+            <!-- <div class="wh20b intervals">{{ currInterval }} / {{ intervals }}</div> -->
+            <div class="progressbar">
+                <div class="pbItem" v-for="i in (intervals - currInterval)"></div>
+                <div class="pbItem pbActive" v-if="sessionState === SessionState.FOCUS"></div>
+                <div class="pbItem pbDone" v-else></div>
+                <div class="pbItem pbDone" v-for="i in (currInterval - 1)"></div>
+            </div>
+
             <button class="button" @click="endSession">
                 <span class="wh20b">End Session</span>
             </button>
@@ -122,7 +119,12 @@
             </div>
         </div>
 
-        <div v-else>
+        <div v-else class="center">
+            <div class="gr20 topStats">
+                You completed <span class="wh20b">{{ currInterval - 1}}</span> intervals of <span class="wh20b">{{ focusTime }}</span> minutes each.
+            </div>
+            <div class="wh100b focusTimeText">{{ (currInterval - 1) * focusTime }}</div>
+            <div class="gr20 bottomStats">minutes focused.</div>
             <button class="button" @click="backToHome">
                 <span class="wh20b">Back To Home</span>
             </button>
@@ -147,26 +149,6 @@ export default {
     name: "HomePage",
     data() {
         return {
-            // player: undefined,
-            // player_device_id: undefined,
-            // playing: false,
-            // focusTime: 25,
-            // breakTime: 5,
-            // intervals: 2,
-            // selectedIndex: null,
-            // sessionStarted: false,
-            // focusing: false,
-            // currInterval: 1,
-            // timerActive: false,
-            // timestamp: null,
-            // timerId: null,
-            // currTrackTitle: "",
-            // currTrackArtist: "",
-            // trackTimerId: null,
-            // playlistTracks: null,
-            // totalPlaylistTracks: 1,
-            // playlistIndex: 0,
-            // playlistLimit: 100,
             sessionState: SessionState.BEFORE,
             SessionState,
             selectedIndex: null,
@@ -246,6 +228,7 @@ export default {
                         this.clearTimer();
                         this.timestamp = null;
                         if (this.currInterval >= this.intervals) {
+                            this.currInterval++;
                             this.endSession();
                             return;
                         }
@@ -297,192 +280,6 @@ export default {
         async backToHome() {
             this.sessionState = SessionState.BEFORE;
         }
-
-
-
-
-
-
-        // async playMusic() {
-        //     if (this.$store.state.deviceId) {
-        //         const playback = await fetch(
-        //             `/api/spotify/play?deviceId=${this.$store.state.deviceId}`
-        //         );
-        //         if (playback.ok) {
-        //             this.playing = true;
-        //         }
-        //     }
-        // },
-        // async pauseMusic() {
-        //     if (this.$store.state.deviceId) {
-        //         const playback = await fetch(
-        //             `/api/spotify/pause?deviceId=${this.$store.state.deviceId}`
-        //         );
-        //         if (playback.ok) {
-        //             this.playing = false;
-        //         }
-        //     }
-        // },
-        // clearTimer() {
-        //     if (this.timerId) {
-        //         clearInterval(this.timerId);
-        //     }
-        // },
-        // clearTrackTimer() {
-        //     if (this.trackTimerId) {
-        //         clearTimeout(this.trackTimerId);
-        //     }
-        // },
-        // async startTimer() {
-        //     this.timerActive = true;
-        //     this.timestamp =
-        //         this.timestamp ??
-        //         (this.focusing ? this.focusTime * 60 : this.breakTime * 60);
-        //     this.timerId = setInterval(() => {
-        //         if (this.timerActive) {
-        //             this.timestamp--;
-        //             if (this.timestamp <= 0) {
-        //                 this.clearTimer();
-        //                 this.timestamp = null;
-        //                 if (this.currInterval >= this.intervals) {
-        //                     this.endSession();
-        //                     return;
-        //                 }
-        //                 if (!this.focusing) {
-        //                     this.currInterval++;
-        //                     this.playMusic();
-        //                 } else {
-        //                     this.pauseMusic();
-        //                 }
-        //                 this.focusing = !this.focusing;
-        //                 this.startTimer();
-        //             }
-        //         }
-        //     }, 1000);
-        //     if (this.focusing) await this.playMusic();
-        //     // await this.getCurrTrack();
-        // },
-        // async pauseTimer() {
-        //     this.timerActive = false;
-        //     this.clearTimer();
-        //     this.clearTrackTimer();
-        //     await this.pauseMusic();
-        // },
-        // async startSession() {
-        //     // api call POST /api/adorifySession
-        //     if (this.selectedPlaylistId && this.$store.state.connected) {
-        //         this.focusing = true;
-        //         this.sessionStarted = true;
-        //         this.playlistIndex = 0;
-        //         console.log("session started");
-        //         // console.log(await fetch(`/api/playlists/mine?offset=0`).then(async r => r.json()));
-        //         // console.log(await fetch(`/api/playlists/info/2E97C5dfeyPyCgTr6ntCpA`).then(async r=> r.json()))
-        //         // await fetch(`/api/spotify/skipQueue`, {method: 'POST'});
-        //         await this.getPlaylistTracks();
-        //         await fetch(
-        //             `/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex]
-        //             }`,
-        //             { method: "POST" }
-        //         );
-        //         await fetch(`/api/spotify/next`, { method: "POST" });
-        //         // await fetch(`/api/spotify/addToQueue/spotify:playlist:2E97C5dfeyPyCgTr6ntCpA`, {method: 'POST'});
-
-        //         await this.startTimer();
-        //     }
-        // },
-        // async endSession() {
-        //     // api call PUT /api/adorifySession/:asID
-        //     await this.pauseTimer();
-        //     this.timestamp = null;
-        //     if (this.currInterval >= this.intervals) {
-        //         this.endSession();
-        //         return;
-        //     }
-        // },
-        // async playPrev() {
-        //     if (this.timerActive) {
-        //         console.log("play prev song");
-        //         await fetch(`/api/spotify/previous`, { method: "POST" });
-        //         await new Promise((f) => setTimeout(f, 500));
-        //         await this.getCurrTrack();
-        //     }
-        // },
-        // async playNext() {
-        //     if (this.timerActive) {
-        //         console.log("play next song");
-        //         await this.addNextTrackToQueue();
-        //         await new Promise((f) => setTimeout(f, 200));
-        //         await fetch(`/api/spotify/next`, { method: "POST" });
-        //         await new Promise((f) => setTimeout(f, 500));
-        //         await this.getCurrTrack();
-        //     }
-        // },
-        // async togglePlay() {
-        //     console.log("toggle timer and song");
-        //     if (this.timerActive) {
-        //         await this.pauseTimer();
-        //     } else {
-        //         await this.startTimer();
-        //     }
-        // },
-        
-        // async getCurrTrack() {
-        //     this.clearTrackTimer();
-        //     const res = await fetch(`/api/spotify/getCurrentTrack`).then(async (r) =>
-        //         r.json()
-        //     );
-        //     this.currTrackTitle = res.track.item.name;
-        //     this.currTrackArtist = res.track.item.artists
-        //         .map((a) => a.name)
-        //         .join(" ");
-        //     const timeout = res.track.item.duration_ms - res.track.progress_ms;
-        //     console.log(timeout);
-        //     // const timeout = res.track.item.duration_ms - (new Date().getTime() - res.track.timestamp + res.track.progress_ms) + 1000;
-        //     // console.log(res.track.item.duration_ms, new Date().getTime(), res.track.timestamp, res.track.progress_ms)
-        //     if (timeout > 5000) {
-        //         this.clearTrackTimer();
-        //         this.trackTimerId = setTimeout(async () => {
-        //             await this.addNextTrackToQueue();
-        //             await new Promise((f) => setTimeout(f, 500));
-        //             await this.getCurrTrack();
-        //         }, timeout - 500);
-        //     } else {
-        //         this.clearTrackTimer();
-        //         this.trackTimerId = setTimeout(async () => {
-        //             await this.getCurrTrack();
-        //         }, timeout);
-        //     }
-        // },
-        // async addNextTrackToQueue() {
-        //     console.log(
-        //         this.playlistIndex + 1,
-        //         this.playlistTracks.length,
-        //         this.playlistLimit
-        //     );
-        //     this.playlistIndex++;
-        //     if (
-        //         this.playlistIndex % this.playlistLimit === 0 ||
-        //         this.playlistIndex >= this.totalPlaylistTracks
-        //     )
-        //         await this.getPlaylistTracks();
-        //     await fetch(
-        //         `/api/spotify/addToQueue/spotify:track:${this.playlistTracks[this.playlistIndex % this.playlistLimit]
-        //         }`,
-        //         { method: "POST" }
-        //     );
-        // },
-        // async getPlaylistTracks() {
-        //     console.log("getting more tracks");
-        //     const offset =
-        //         this.playlistIndex >= this.totalPlaylistTracks ? 0 : this.playlistIndex;
-        //     const res = await fetch(
-        //         `/api/playlists/info/${this.selectedPlaylistId}/tracks?offset=${offset}`
-        //     ).then(async (r) => r.json());
-        //     this.playlistTracks = res.tracks.items.map((r) => r.track.id);
-        //     this.playlistIndex = offset;
-        //     this.totalPlaylistTracks = res.tracks.total;
-        //     this.playlistLimit = res.tracks.limit;
-        // },
     },
     async mounted() {
         if (!this.$store.state.displayName) {
@@ -512,8 +309,8 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding-top: 30px;
-    padding-bottom: 20px;
+    margin-top: 30px;
+    margin-bottom: 20px;
 }
 
 .selectorItem {
@@ -570,6 +367,7 @@ export default {
 .pButton {
     background-color: #664eff;
     filter: drop-shadow(0px 0px 10px #664eff);
+    /* animation: buttonGlow 2s ease-in-out infinite alternate; */
 }
 
 .prevButton {
@@ -603,16 +401,64 @@ export default {
 }
 
 .time {
-    padding-top: 40px;
+    margin-top: 40px;
 }
 
-.intervals {
+/* .intervals {
     padding-top: 20px;
     padding-bottom: 10px;
+} */
+
+.progressbar {
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 40px;
+}
+
+.pbItem:first-child {
+    margin-left: 0;
+}
+
+.pbItem:first-child:after {
+    content: none;
+}
+
+.pbItem {
+    float: left;
+    position: relative;
+    height: 16px;
+    width: 16px;
+    border-radius: 8px;
+    background-color: #664EFF;
+    margin-left: 20px;
+}
+
+.pbItem:after {
+    content: '';
+    position: absolute;
+    height: 1px;
+    width: 20px;
+    background: #664EFF;
+    top: 8px;
+    left: -20px;
+}
+
+.pbDone {
+    background-color: #373544;
+}
+
+.pbDone:after {
+    background: #373544;
+}
+
+.pbActive {
+    background-color: transparent;
+    outline: 3px solid #664EFF;
+    z-index: 1;
 }
 
 .carousel {
-    width: 540px;
+    width: 600px;
 }
 
 .placeholder {
@@ -635,7 +481,38 @@ export default {
 }
 
 .placeholderText {
-    padding-top: 4px;
+    margin-top: 4px;
     text-align: center;
 }
+
+.topStats {
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+.focusTimeText {
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+.bottomStats {
+    margin-bottom: 60px;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 20px #664eff;
+    }
+    to {
+        text-shadow: 0 0 30px #7c68ff, 0 0 10px #9281ff;
+    }
+}
+
+/* @keyframes buttonGlow {
+    from {
+        box-shadow: 0 0 10px #664eff;
+    }
+    to {
+        box-shadow: 0 0 20px #7c68ff, 0 0 5px #9281ff;
+    }
+} */
 </style>

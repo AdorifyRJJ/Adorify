@@ -43,7 +43,8 @@ export default {
 }
 
 .playlistInfo {
-    margin-top: 8px;
+    margin-top: 12px;
+    gap: 2px;
 }
 
 .trunc {
