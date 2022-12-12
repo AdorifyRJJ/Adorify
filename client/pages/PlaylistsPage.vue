@@ -27,8 +27,10 @@ export default {
 
 <style scoped>
 .page {
+    height: 100%;
     display: flex;
     flex-direction: row;
+    justify-content: center;
     color: white;
 }
 </style>
