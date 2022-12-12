@@ -17,55 +17,61 @@ router.post(
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
-    const as = await AdorifySessionCollection.testAddOne('testuser 3',
+    // const as = await AdorifySessionCollection.testAddOne(req.session.username,
+    //   req.body.length,
+    //   req.body.spotifyId,
+    //   req.body.startTime,
+    //   req.body.completed+17,
+    //   req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('oldtestuser 3',
       req.body.length,
       req.body.spotifyId,
       req.body.startTime,
       req.body.completed+3,
       req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 4',
+    await AdorifySessionCollection.testAddOne('oldtestuser 4',
       req.body.length,
       req.body.spotifyId,
       req.body.startTime,
       req.body.completed+4,
       req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 5',
+    await AdorifySessionCollection.testAddOne('oldtestuser 5',
       req.body.length,
       req.body.spotifyId,
       req.body.startTime,
       req.body.completed+5,
       req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 6',
+    await AdorifySessionCollection.testAddOne('oldtestuser 6',
       req.body.length,
       req.body.spotifyId,
       req.body.startTime,
       req.body.completed+6,
       req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 7',
+    await AdorifySessionCollection.testAddOne('oldtestuser 7',
       req.body.length,
       req.body.spotifyId,
       req.body.startTime,
       req.body.completed+7,
       req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 8',
+    await AdorifySessionCollection.testAddOne('oldtestuser 8',
       req.body.length,
       req.body.spotifyId,
       req.body.startTime,
       req.body.completed+8,
       req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 9',
+    await AdorifySessionCollection.testAddOne('oldtestuser 9',
       req.body.length,
       req.body.spotifyId,
       req.body.startTime,
       req.body.completed+9,
       req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 10',
+    await AdorifySessionCollection.testAddOne('oldtestuser 10',
       req.body.length,
       req.body.spotifyId,
       req.body.startTime,
       req.body.completed+10,
       req.body.initializedSessions);
-    await AdorifySessionCollection.testAddOne('testuser 11',
+    await AdorifySessionCollection.testAddOne('oldtestuser 11',
       req.body.length,
       req.body.spotifyId,
       req.body.startTime,
@@ -120,8 +126,7 @@ router.get(
     const totalSessions = await AdorifySessionCollection.getTotalSessionsByUsername(req.session.username);
 
     const mostPlayed = await AdorifySessionCollection.getMostPlayedByUsername(req.session.username);
-    const studyTime = await AdorifySessionCollection.getStudyTimeByUsername(req.session.username);
-    const studyTimeArr = [...Object.entries(studyTime)].splice(0, 28).reverse();
+    const studyTimeArr = await AdorifySessionCollection.getStudyTimeByUsername(req.session.username);
     const studyTimeModified = [];
 
     for (const tuple of studyTimeArr) {

@@ -37,10 +37,11 @@ export default {
     // api call GET /api/adorifySession/leaderboard
 
     async testadd() {
+      return;
       const lastYear = new Date();
       lastYear.setFullYear(lastYear.getFullYear() - 1);
       const lastWeek = new Date();
-      lastWeek.setDate(lastWeek.getDate() - 7);
+      lastWeek.setDate(lastWeek.getDate() - 6);
       const lastMonth = new Date();
       lastMonth.setMonth(lastMonth.getMonth() - 1);
       lastMonth.setDate(lastMonth.getDate() + 2);
@@ -53,7 +54,7 @@ export default {
         body: JSON.stringify({
           length: 3,
           spotifyId: "monthanOtherUser",
-          startTime: lastMonth,
+          startTime: lastYear,
           completed: 20,
           initializedSessions: 4,
         }),
@@ -84,6 +85,9 @@ export default {
     if (this.$store.state.connected) {
       this.$store.commit("forceDisconnect");
     }
+    const test = await fetch("/api/adorifySession/stats");
+    const testJson = await test.json();
+    console.log(testJson)
     const leaderboard = await fetch("/api/adorifySession/leaderboard");
     const leaderboardJson = await leaderboard.json();
     this.allLeaderboards = leaderboardJson.topUsers;
