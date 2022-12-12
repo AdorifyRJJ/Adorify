@@ -64,9 +64,10 @@
 
 <script>
 import PlaylistCard from "../components/Playlists/PlaylistCard.vue";
+import ButtonGroup from "../components/common/ButtonGroup.vue";
 
 export default {
-    components: { PlaylistCard },
+    components: { PlaylistCard, ButtonGroup },
     name: "ExplorePlaylists",
     data() {
         return {
