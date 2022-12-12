@@ -15,6 +15,7 @@ export default {
     name: "App",
     components: { NavBar },
     async beforeCreate() {
+        this.$store.commit("setConnected", false);
         const myData = this.$route.query.code
             ? await fetch(
                   `/api/spotify/initializeAuth?code=${this.$route.query.code}`
@@ -54,12 +55,12 @@ export default {
                 });
 
                 player.addListener("ready", async ({ device_id }) => {
-                    console.log("Ready with Device ID", device_id);
                     await fetch(`/api/spotify/transfer?deviceId=${device_id}`);
                     await fetch(`/api/spotify/pause?deviceId=${device_id}`);
                     this.$store.commit("setSpotifyPlayer", player);
                     this.$store.commit("setDeviceId", device_id);
                     this.$store.commit("setConnected", true);
+                    console.log("Ready with Device ID", device_id);
                 });
 
                 player.addListener("not_ready", ({ device_id }) => {
