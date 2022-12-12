@@ -93,7 +93,7 @@
             </div>
 
             <div class="bottomDiv">
-                <button @click="startSession" class="controlButton pButton" :disabled="$store.state.myLikedPlaylists.length === 0 || !this.submitIsValid">
+                <button @click="startSession" class="controlButton pButton" :disabled="$store.state.myLikedPlaylists.length === 0 || !submitIsValid || !$store.state.connected || $store.state.spoitfyPlayer === null">
                     <img src="../public/play.svg">
                 </button>
             </div>
