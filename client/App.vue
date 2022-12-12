@@ -47,8 +47,6 @@ export default {
                     volume: 0.5,
                 });
                 player.addListener("ready", async ({ device_id }) => {
-                    await fetch(`/api/spotify/transfer?deviceId=${device_id}`);
-                    await fetch(`/api/spotify/pause?deviceId=${device_id}`);
                     this.$store.commit("setSpotifyPlayer", player);
                     this.$store.commit("setDeviceId", device_id);
                     this.$store.commit("setConnected", true);
