@@ -2,46 +2,77 @@
   <div>
     <h1>Leaderboard Page</h1>
     <h3>Focus Time Leaderboard</h3>
-    <div>
-      <button @click="getThisWeek">This Week</button>
-      <button @click="getThisMonth">This Month</button>
-      <button @click="getAllTime">All Time</button>
+    <button @click="testadd">test add</button>
+    <div v-if="leaderboard">
+      <div>
+        <button @click="getThisWeek">This Week</button>
+        <button @click="getThisMonth">This Month</button>
+        <button @click="getAllTime">All Time</button>
+      </div>
+      <UserItem
+        :key="i"
+        v-for="(user, i) in leaderboard"
+        :rank="i + 1"
+        :user="user"
+      ></UserItem>
     </div>
-    <UserItem
-      :key="i"
-      v-for="(user, i) in leaderboard"
-      :rank="i + 1"
-      :user="user"
-    ></UserItem>
   </div>
 </template>
 
 <script>
 import UserItem from "../components/Leaderboard/UserItem.vue";
-import {
-  leaderboardByWeek,
-  leaderboardByMonth,
-  leaderboardByAllTime,
-} from "../dummyData.js";
 
 export default {
   components: { UserItem },
   name: "LeaderboardPage",
   data() {
     return {
-      leaderboard: leaderboardByWeek,
+      leaderboard: undefined,
+      allLeaderboards: undefined,
+      userRank: undefined,
+      allUserRanks: undefined,
     };
   },
   methods: {
     // api call GET /api/adorifySession/leaderboard
+
+    async testadd() {
+      const lastYear = new Date();
+      lastYear.setFullYear(lastYear.getFullYear() - 1);
+      const lastWeek = new Date();
+      lastWeek.setDate(lastWeek.getDate() - 7);
+      const lastMonth = new Date();
+      lastMonth.setMonth(lastMonth.getMonth() - 1);
+      lastMonth.setDate(lastMonth.getDate() + 2);
+      const today = new Date();
+      const testDate = new Date();
+      testDate.setDate(testDate.getDate() - 5);
+      const data = await fetch("/api/adorifySession/testadd", {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify({
+          length: 3,
+          spotifyId: "monthanOtherUser",
+          startTime: lastMonth,
+          completed: 20,
+          initializedSessions: 4,
+        }),
+      });
+      const dataJson = await data.json();
+      console.log(dataJson);
+    },
+
     getThisWeek() {
-      this.leaderboard = leaderboardByWeek;
+      this.leaderboard = this.allLeaderboards?.week;
+      this.userRank = this.allUserRanks?.week;
     },
     getThisMonth() {
-      this.leaderboard = leaderboardByMonth;
+      this.leaderboard = this.allLeaderboards?.month;
+      this.userRank = this.allUserRanks?.month;
     },
     getAllTime() {
-      this.leaderboard = leaderboardByAllTime;
+      this.leaderboard = this.allLeaderboards?.allTime;
+      this.userRank = this.allUserRanks?.allTime;
     },
   },
   async mounted() {
@@ -53,7 +84,12 @@ export default {
     if (this.$store.state.connected) {
       this.$store.commit("forceDisconnect");
     }
-  }
+    const leaderboard = await fetch("/api/adorifySession/leaderboard");
+    const leaderboardJson = await leaderboard.json();
+    this.allLeaderboards = leaderboardJson.topUsers;
+    this.allUserRanks = leaderboardJson.userRank;
+    this.getThisWeek();
+  },
 };
 </script>
 

@@ -12,6 +12,72 @@ const router = express.Router();
 // POST /api/adorifySession
 
 router.post(
+  '/testadd',
+  [
+    userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response) => {
+    const as = await AdorifySessionCollection.testAddOne('testuser 3',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed+3,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 4',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed+4,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 5',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed+5,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 6',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed+6,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 7',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed+7,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 8',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed+8,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 9',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed+9,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 10',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed+10,
+      req.body.initializedSessions);
+    await AdorifySessionCollection.testAddOne('testuser 11',
+      req.body.length,
+      req.body.spotifyId,
+      req.body.startTime,
+      req.body.completed+11,
+      req.body.initializedSessions);
+    res.status(200).json({
+      message: 'Adorify Session created successfully.',
+    });
+  }
+)
+
+router.post(
   '/',
   [
     userValidator.isUserLoggedIn,
@@ -73,7 +139,7 @@ router.get(
   }
 )
 
-// GET /api/adorifySesion/leaderboard
+// GET /api/adorifySession/leaderboard
 
 router.get(
   '/leaderboard',
