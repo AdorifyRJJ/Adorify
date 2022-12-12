@@ -60,8 +60,7 @@ export default {
                 });
                 player.connect();
             };
-            if (this.$route.query.code)
-               this.$router.push({ name: "Home" });
+            if (this.$route.query.code) this.$router.push({ name: "Home" });
         } else {
             await fetch(`/api/spotify/logout`);
             this.$store.commit("resetStore");
@@ -206,6 +205,7 @@ main {
     color: #ffffff;
     background-color: #373544;
     height: 44px;
+    padding: 0 28px;
     border-radius: 0px;
     border-width: 0;
 }

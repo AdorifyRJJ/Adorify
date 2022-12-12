@@ -44,18 +44,12 @@
                 </div>
             </div>
         </div>
-        <!-- :class="{ selectedBtn: isSelected, unselectedBtn: !isSelected }" -->
-        <div class="btn-group marginy-32">
-            <button class="btn-group-button btn-width-150" @click="getThisWeek">
-                <span class="wh20n">This Week</span>
-            </button>
-            <button
-                class="btn-group-button btn-width-150"
-                @click="getThisMonth"
-            >
-                <span class="wh20n">This Month</span>
-            </button>
-        </div>
+        <ButtonGroup
+            :titles="btnGroupTitles"
+            :initIdx="selectIdx"
+            @selectIdx="setSelectIdx"
+            class="marginy-32"
+        />
         <div class="bottomUserStats">
             <div class="mostPlayed">
                 <div class="wh30b marginb-14">Most Played</div>
@@ -78,27 +72,42 @@
 </template>
 
 <script>
+import ButtonGroup from "../components/common/ButtonGroup.vue";
+
 export default {
+    components: { ButtonGroup },
     name: "ProfilePage",
     data() {
         return {
-            viewingWeek: true,
+            btnGroupTitles: ["This Week", "This Month"],
+            selectIdx: 0,
+            mostPlayed: [],
             _mostPlayedWeek: [],
             _mostPlayedMonth: [],
             sessionInfo: null,
             totalTime: null,
-            mostPlayed: [],
             graph: "graph1 uwu",
         };
     },
-    methods: {
-        getThisWeek() {
-            this.graph = "graph1 uwu";
-            this.mostPlayed = [...this._mostPlayedWeek];
+    computed: {},
+    watch: {
+        selectIdx: {
+            immediate: true,
+            handler(newIdx, oldIdx) {
+                console.log(newIdx);
+                if (newIdx === 0) {
+                    this.graph = "graph1 uwu";
+                    this.mostPlayed = this._mostPlayedWeek;
+                } else if (newIdx === 1) {
+                    this.graph = "graph2 UWU";
+                    this.mostPlayed = this._mostPlayedMonth;
+                }
+            },
         },
-        getThisMonth() {
-            this.graph = "graph2 UWU";
-            this.mostPlayed = [...this._mostPlayedMonth];
+    },
+    methods: {
+        setSelectIdx(i) {
+            this.selectIdx = i;
         },
         async logout() {
             await fetch(`/api/spotify/logout`);
@@ -114,6 +123,7 @@ export default {
             r.json()
         );
 
+        // calculate total time
         const _totalTime = res.totalTime;
         let min = Math.floor(_totalTime % 60);
         min = min < 10 ? `0${min}` : `${min}`;
@@ -123,13 +133,13 @@ export default {
         const completedSessions = res.completed;
         const totalSessions = res.totalSessions;
 
+        // calculate session info
         this.sessionInfo = `${completedSessions}/${totalSessions} (${(
             completedSessions / totalSessions
         ).toFixed(1)}%)`;
 
         this._mostPlayedWeek = res.mostPlayed.week;
         this._mostPlayedMonth = res.mostPlayed.month;
-        this.mostPlayed = [...this._mostPlayedWeek];
         console.log("stats", res);
     },
 };
