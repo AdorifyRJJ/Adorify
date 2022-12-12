@@ -38,23 +38,18 @@
                 <div class="bottomDiv">
                     <div class="wh40b">{{ $store.state.displayName }}</div>
                     <div class="completionInfo">
-                        <div class="pill wh20n">xxxhr xxmin</div>
-                        <div class="pill wh20n">xxx/xxx (xx.x%)</div>
+                        <div class="pill wh20n">{{ this.totalTime }}</div>
+                        <div class="pill wh20n">{{ this.sessionInfo }}</div>
                     </div>
                 </div>
             </div>
         </div>
-
+        <!-- :class="{ selectedBtn: isSelected, unselectedBtn: !isSelected }" -->
         <div class="btn-group marginy-32">
-            <button
-                :class="{ selectedBtn: isSelected, unselectedBtn: !isSelected }"
-                class="btn-group-button btn-width-150"
-                @click="getThisWeek"
-            >
+            <button class="btn-group-button btn-width-150" @click="getThisWeek">
                 <span class="wh20n">This Week</span>
             </button>
             <button
-                :class="{ selectedBtn: isSelected, unselectedBtn: !isSelected }"
                 class="btn-group-button btn-width-150"
                 @click="getThisMonth"
             >
@@ -67,7 +62,7 @@
                 <div class="">
                     <div
                         :key="i"
-                        v-for="(playlist, i) in $store.state.myLikedPlaylists"
+                        v-for="(playlist, i) in mostPlayed"
                         class="item wh20n truncate1line"
                     >
                         {{ playlist.name }}
@@ -76,7 +71,7 @@
             </div>
             <div>
                 <div class="wh30b marginb-14">Productivity</div>
-                <div>{{ this.stats }}</div>
+                <div>{{ this.graph }}</div>
             </div>
         </div>
     </div>
@@ -87,19 +82,23 @@ export default {
     name: "ProfilePage",
     data() {
         return {
-            stats: "graph1 uwu",
+            viewingWeek: true,
+            _mostPlayedWeek: [],
+            _mostPlayedMonth: [],
+            sessionInfo: null,
+            totalTime: null,
+            mostPlayed: [],
+            graph: "graph1 uwu",
         };
     },
     methods: {
-        // api call GET /api/adorifySession/stats
         getThisWeek() {
-            this.stats = "graph1 uwu";
+            this.graph = "graph1 uwu";
+            this.mostPlayed = [...this._mostPlayedWeek];
         },
         getThisMonth() {
-            this.stats = "graph2 UWU";
-        },
-        getAllTime() {
-            this.stats = "graph3 .w.";
+            this.graph = "graph2 UWU";
+            this.mostPlayed = [...this._mostPlayedMonth];
         },
         async logout() {
             await fetch(`/api/spotify/logout`);
@@ -111,6 +110,27 @@ export default {
         if (this.$store.state.connected) {
             this.$store.commit("forceDisconnect");
         }
+        const res = await fetch("/api/adorifySession/stats").then(async (r) =>
+            r.json()
+        );
+
+        const _totalTime = res.totalTime;
+        let min = Math.floor(_totalTime % 60);
+        min = min < 10 ? `0${min}` : `${min}`;
+        const hr = Math.floor(_totalTime / 60);
+        this.totalTime = `${hr}hr ${min}min`;
+
+        const completedSessions = res.completed;
+        const totalSessions = res.totalSessions;
+
+        this.sessionInfo = `${completedSessions}/${totalSessions} (${(
+            completedSessions / totalSessions
+        ).toFixed(1)}%)`;
+
+        this._mostPlayedWeek = res.mostPlayed.week;
+        this._mostPlayedMonth = res.mostPlayed.month;
+        this.mostPlayed = [...this._mostPlayedWeek];
+        console.log("stats", res);
     },
 };
 </script>
