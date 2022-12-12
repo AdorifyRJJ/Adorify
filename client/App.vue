@@ -3,7 +3,9 @@
         <header v-if="$store.state.displayName">
             <NavBar />
         </header>
-        <router-view />
+        <div id="remainingContent">
+            <router-view />
+        </div>
     </div>
 </template>
 
@@ -103,20 +105,52 @@ export default {
     /* width: 100vw; */
     height: 100vh;
 }
+
 ::-webkit-scrollbar {
-    width: 0; /* Remove scrollbar space */
-    background: transparent; /* Optional: just make scrollbar invisible */
+    width: 0; 
+    background: transparent;
 }
+
+.scrollable {
+    height: 100%;
+    overflow: auto;
+    visibility: hidden;
+}
+
+.scrollable-content, .scrollable:hover, .scrollable:focus {
+    visibility: visible;
+}
+
+
+/* ::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+} */
+ 
+/* ::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+} */
+
 body {
-    height: 100vh;
-    flex-direction: column;
-    display: flex;
     padding: 0;
     margin: 0;
     font-size: 1.2em;
 }
+#remainingContent {
+    width: 100%;
+    position: absolute;
+    top: 66px;
+    bottom: 0;
+}
 main {
-    padding: 0 5em 5em;
+    padding: 0 30px;
 }
 .wh12b {
     color: #ffffff;
