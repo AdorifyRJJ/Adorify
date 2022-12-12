@@ -114,7 +114,7 @@ const store = new Vuex.Store({
           state.refreshTimeout = setTimeout(async () => {
             store.commit("scheduleRefresh");
           }, timeFromNowMS);
-          return;zs
+          return;
         }
       } else {
         await fetch(`/api/spotify/logout`);
