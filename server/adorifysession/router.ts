@@ -193,7 +193,7 @@ router.get(
     res.status(200).json({
       message: 'Here is the leaderboard.',
       topUsers: ranks.topUsers,
-      userRanks: ranks.userRank,
+      userRanks: ranks.userInfo,
     });
   }
 )

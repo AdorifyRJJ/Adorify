@@ -129,7 +129,7 @@ class AdorifySessionCollection {
 
   }
 
-  static async getRanking(username: string): Promise<{ topUsers: { week: Array<string>, month: Array<string>, allTime: Array<string> }, userRank: { week: number, month: number, allTime: number } }> {
+  static async getRanking(username: string): Promise<{ topUsers: { week: Array<string>, month: Array<string>, allTime: Array<string> }, userInfo: { week: {rank: number, focusTime: number}, month: {rank: number, focusTime: number}, allTime: {rank: number, focusTime: number} }}> {
     //split into week, month, and alltime* arrays
     //for all users, their stat is f(stat, time interval). compute this and return.
     const lastWeek = new Date();
@@ -234,8 +234,11 @@ class AdorifySessionCollection {
     ]))
 
     const userWeekRank = leaderboardWeek?.findIndex(findUser)
+    const userWeekFocusTime = leaderboardWeek[userWeekRank]?.focusTime ?? 0;
     const userMonthRank = leaderboardMonth?.findIndex(findUser)
+    const userMonthFocusTime = leaderboardMonth[userMonthRank]?.focusTime ?? 0;
     const userAllRank = leaderboardAll?.findIndex(findUser)
+    const userAllFocusTime = leaderboardAll[userAllRank]?.focusTime ?? 0;
 
     const finalLeaderboardWeek = leaderboardWeek?.splice(0, 10)
     const finalLeaderboardMonth = leaderboardMonth?.splice(0, 10)
@@ -246,10 +249,19 @@ class AdorifySessionCollection {
         week: finalLeaderboardWeek,
         month: finalLeaderboardMonth,
         allTime: finalLeaderboardAll
-      }, userRank: {
-        week: userWeekRank,
-        month: userMonthRank,
-        allTime: userAllRank
+      }, userInfo: {
+        week: {
+          rank: userWeekRank,
+          focusTime: userWeekFocusTime
+        },
+        month: {
+          rank: userMonthRank,
+          focusTime: userMonthFocusTime
+        },
+        allTime: {
+          rank: userAllRank,
+          focusTime: userAllFocusTime
+        }
       }
     }
 

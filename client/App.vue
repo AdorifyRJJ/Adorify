@@ -49,8 +49,6 @@ export default {
                     volume: 0.5,
                 });
                 player.addListener("ready", async ({ device_id }) => {
-                    await fetch(`/api/spotify/transfer?deviceId=${device_id}`);
-                    await fetch(`/api/spotify/pause?deviceId=${device_id}`);
                     this.$store.commit("setSpotifyPlayer", player);
                     this.$store.commit("setDeviceId", device_id);
                     this.$store.commit("setConnected", true);
@@ -62,8 +60,7 @@ export default {
                 });
                 player.connect();
             };
-            if (this.$route.query.code)
-               this.$router.push({ name: "Home" });
+            if (this.$route.query.code) this.$router.push({ name: "Home" });
         } else {
             await fetch(`/api/spotify/logout`);
             this.$store.commit("resetStore");
@@ -220,6 +217,11 @@ main {
     color: #a9a9a9;
     font-size: 30px;
 }
+.gr26b {
+    color: #a9a9a9;
+    font-size: 26px;
+    font-weight: bold;
+}
 .center {
     display: flex;
     flex-direction: column;
@@ -240,6 +242,7 @@ main {
     color: #ffffff;
     background-color: #373544;
     height: 44px;
+    padding: 0 28px;
     border-radius: 0px;
     border-width: 0;
 }

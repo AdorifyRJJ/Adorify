@@ -104,7 +104,7 @@ const store = new Vuex.Store({
             store.commit("scheduleRefresh");
             return;
           } else {
-            console.log(accessTokenJson.error)
+            console.log(accessTokenJson.message)
             await fetch(`/api/spotify/logout`);
             store.commit("resetStore");
             if (router.history.current.name !== 'Login') router.push({ name: 'Login' });
