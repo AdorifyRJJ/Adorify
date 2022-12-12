@@ -2,7 +2,6 @@
   <div>
     <h1>Leaderboard Page</h1>
     <h3>Focus Time Leaderboard</h3>
-    <button @click="testadd">test add</button>
     <div v-if="leaderboard">
       <div>
         <button @click="getThisWeek">This Week</button>
@@ -53,8 +52,8 @@ export default {
         method: "POST",
         body: JSON.stringify({
           length: 3,
-          spotifyId: "monthanOtherUser",
-          startTime: lastYear,
+          spotifyId: "this field doesnt mattter",
+          startTime: today,
           completed: 20,
           initializedSessions: 4,
         }),
@@ -85,11 +84,12 @@ export default {
     if (this.$store.state.connected) {
       this.$store.commit("forceDisconnect");
     }
-    const test = await fetch("/api/adorifySession/stats");
-    const testJson = await test.json();
-    console.log(testJson)
+    // const test = await fetch("/api/adorifySession/stats");
+    // const testJson = await test.json();
+    // console.log(testJson)
     const leaderboard = await fetch("/api/adorifySession/leaderboard");
     const leaderboardJson = await leaderboard.json();
+    console.log(leaderboardJson.topUsers)
     this.allLeaderboards = leaderboardJson.topUsers;
     this.allUserRanks = leaderboardJson.userRank;
     this.getThisWeek();

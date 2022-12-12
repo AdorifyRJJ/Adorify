@@ -7,7 +7,7 @@ class AdorifySessionCollection {
   static async testAddOne(username: string, length: number, spotifyId: string, startTime: Date, completed: number, initializedSessions: number): Promise<HydratedDocument<AdorifySession>> {
     const as = new AdorifySessionModel({
       username: username,
-      spotifyPlaylistId: spotifyId,
+      spotifyPlaylistId: "2E97C5dfeyPyCgTr6ntCpA",
       length: length,
       startTime: startTime,
       completed: completed,
@@ -144,14 +144,32 @@ class AdorifySessionCollection {
         $match: { startTime: { $gte: lastWeek } }
       },
       {
-        $project: { username: 1, imgURL: 1, time: { $multiply: ["$length", "$completed"] } }
+        $project: { username: 1, time: { $multiply: ["$length", "$completed"] }, data: 1 }
       },
       {
         $group: { _id: "$username", focusTime: { $sum: "$time" } }
       },
       {
         $sort: { focusTime: -1 }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "username",
+          as: "fromItems"
+        }
+      },
+      {
+        $replaceRoot: { newRoot: { $mergeObjects: [{ $arrayElemAt: ["$fromItems", 0] }, "$$ROOT"] } }
+      },
+      {
+        $project: { fromItems: 0 }
+      },
+      {
+        $project: { displayName: 1, imgURL: 1, focusTime: 1 }
       }
+
     ]))
 
     const leaderboardMonth = (await AdorifySessionModel.aggregate([
@@ -166,6 +184,23 @@ class AdorifySessionCollection {
       },
       {
         $sort: { focusTime: -1 }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "username",
+          as: "fromItems"
+        }
+      },
+      {
+        $replaceRoot: { newRoot: { $mergeObjects: [{ $arrayElemAt: ["$fromItems", 0] }, "$$ROOT"] } }
+      },
+      {
+        $project: { fromItems: 0 }
+      },
+      {
+        $project: { displayName: 1, imgURL: 1, focusTime: 1 }
       }
     ]))
 
@@ -178,6 +213,23 @@ class AdorifySessionCollection {
       },
       {
         $sort: { focusTime: -1 }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "username",
+          as: "fromItems"
+        }
+      },
+      {
+        $replaceRoot: { newRoot: { $mergeObjects: [{ $arrayElemAt: ["$fromItems", 0] }, "$$ROOT"] } }
+      },
+      {
+        $project: { fromItems: 0 }
+      },
+      {
+        $project: { displayName: 1, imgURL: 1, focusTime: 1 }
       }
     ]))
 
