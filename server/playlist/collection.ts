@@ -6,7 +6,7 @@ class PlaylistCollection {
   static async addOne(spotifyId: string, owner: string, isPublic: boolean): Promise<HydratedDocument<Playlist>> {
     const playlist = new PlaylistModel({
       spotifyId: spotifyId,
-      numLikes: 0,
+      numLikes: 1,
       numUsed: 0,
       numCompleted: 0,
       owner: owner,

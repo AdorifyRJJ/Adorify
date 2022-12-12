@@ -38,8 +38,28 @@
                 <div class="bottomDiv">
                     <div class="wh40b">{{ $store.state.displayName }}</div>
                     <div class="completionInfo">
-                        <div class="pill wh20n">{{ this.totalTime }}</div>
-                        <div class="pill wh20n">{{ this.sessionInfo }}</div>
+                        <div class="pill wh20n">
+                            <div v-if="loading" class="lds-ring">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                            <div v-else>
+                                {{ this.totalTime }}
+                            </div>
+                        </div>
+                        <div class="pill wh20n">
+                            <div v-if="loading" class="lds-ring">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                            <div v-else>
+                                {{ this.sessionInfo }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -87,6 +107,7 @@ export default {
             sessionInfo: null,
             totalTime: null,
             graph: "graph1 uwu",
+            loading: true,
         };
     },
     computed: {},
@@ -123,6 +144,7 @@ export default {
         },
     },
     async beforeCreate() {
+        this.loading = true;
         if (this.$store.state.connected) {
             this.$store.commit("forceDisconnect");
         }
@@ -143,11 +165,12 @@ export default {
         // calculate session info
         this.sessionInfo = `${completedSessions}/${totalSessions} (${(
             completedSessions / totalSessions
-        ).toFixed(1)}%)`;
+        ).toFixed(1)*100}%)`;
 
         this._mostPlayedWeek = res.mostPlayed.week;
         this._mostPlayedMonth = res.mostPlayed.month;
         this.updateContent(this.selectIdx);
+        this.loading = false;
         console.log("stats", res);
     },
 };
@@ -237,5 +260,43 @@ export default {
 .item {
     padding: 8px 0;
     /* width: 280px; */
+}
+
+.lds-ring {
+    display: flex;
+    align-self: center;
+    /* padding-top: 10%; */
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+.lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    margin: 2px;
+    border: 8px solid #fff;
+    border-radius: 80%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #fff transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>
