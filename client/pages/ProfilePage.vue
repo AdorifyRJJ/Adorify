@@ -47,7 +47,7 @@
         <ButtonGroup
             :titles="btnGroupTitles"
             :initIdx="selectIdx"
-            @selectIdx="setSelectIdx"
+            @selectIdx="updateContent"
             class="marginy-32"
         />
         <div class="bottomUserStats">
@@ -90,24 +90,31 @@ export default {
         };
     },
     computed: {},
-    watch: {
-        selectIdx: {
-            immediate: true,
-            handler(newIdx, oldIdx) {
-                console.log(newIdx);
-                if (newIdx === 0) {
-                    this.graph = "graph1 uwu";
-                    this.mostPlayed = this._mostPlayedWeek;
-                } else if (newIdx === 1) {
-                    this.graph = "graph2 UWU";
-                    this.mostPlayed = this._mostPlayedMonth;
-                }
-            },
-        },
-    },
+    // watch: {
+    //     selectIdx: {
+    //         immediate: true,
+    //         handler(newIdx, oldIdx) {
+    //             console.log(newIdx);
+    //             if (newIdx === 0) {
+    //                 this.graph = "graph1 uwu";
+    //                 this.mostPlayed = this._mostPlayedWeek;
+    //             } else if (newIdx === 1) {
+    //                 this.graph = "graph2 UWU";
+    //                 this.mostPlayed = this._mostPlayedMonth;
+    //             }
+    //         },
+    //     },
+    // },
     methods: {
-        setSelectIdx(i) {
+        updateContent(i) {
             this.selectIdx = i;
+            if (i === 0) {
+                this.graph = "graph1 uwu";
+                this.mostPlayed = this._mostPlayedWeek;
+            } else if (i === 1) {
+                this.graph = "graph2 UWU";
+                this.mostPlayed = this._mostPlayedMonth;
+            }
         },
         async logout() {
             await fetch(`/api/spotify/logout`);
@@ -140,6 +147,7 @@ export default {
 
         this._mostPlayedWeek = res.mostPlayed.week;
         this._mostPlayedMonth = res.mostPlayed.month;
+        this.updateContent(this.selectIdx);
         console.log("stats", res);
     },
 };
@@ -220,20 +228,14 @@ export default {
 .btn-width-150 {
     width: 150px;
 }
-.selectedBtn {
-    background-color: #6c4eb3;
-}
-
-.unselectedBtn {
-    background-color: #373544;
-}
 
 .mostPlayed {
     padding-left: 28px;
+    width: 280px;
 }
 
 .item {
     padding: 8px 0;
-    width: 280px;
+    /* width: 280px; */
 }
 </style>
