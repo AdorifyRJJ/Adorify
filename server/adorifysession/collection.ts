@@ -144,7 +144,7 @@ class AdorifySessionCollection {
         $match: { startTime: { $gte: lastWeek } }
       },
       {
-        $project: { username: 1, time: { $multiply: ["$length", "$completed"] } }
+        $project: { username: 1, imgURL: 1, time: { $multiply: ["$length", "$completed"] } }
       },
       {
         $group: { _id: "$username", focusTime: { $sum: "$time" } }
@@ -159,7 +159,7 @@ class AdorifySessionCollection {
         $match: { startTime: { $gte: lastMonth } }
       },
       {
-        $project: { username: 1, time: { $multiply: ["$length", "$completed"] } }
+        $project: { username: 1, imgURL: 1, time: { $multiply: ["$length", "$completed"] } }
       },
       {
         $group: { _id: "$username", focusTime: { $sum: "$time" } }
@@ -171,7 +171,7 @@ class AdorifySessionCollection {
 
     const leaderboardAll = (await AdorifySessionModel.aggregate([
       {
-        $project: { username: 1, time: { $multiply: ["$length", "$completed"] } }
+        $project: { username: 1, imgURL: 1, time: { $multiply: ["$length", "$completed"] } }
       },
       {
         $group: { _id: "$username", focusTime: { $sum: "$time" } }
@@ -828,6 +828,7 @@ class AdorifySessionCollection {
       return [...Object.entries(studyTimeMonth[0])].splice(0, 28).reverse();
     }
     return []
+
 
   }
 

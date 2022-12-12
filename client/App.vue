@@ -82,6 +82,13 @@ export default {
 </script>
 
 <style>
+/* @font-face {
+    font-family: "AdorifyF";
+    src: url("./public/fonts/AdorifyF/AvenirNextLTPro-UltLt.otf");
+    font-weight: 100;
+    font-style: normal;
+} */
+
 @font-face {
     font-family: "AdorifyF";
     src: url("./public/fonts/AdorifyF/AvenirNextLTPro-Regular.otf");
@@ -133,6 +140,12 @@ main {
     padding: 0 5em 5em;
 }
 
+.wh12b {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+}
+
 .wh16b {
     color: #ffffff;
     font-size: 16px;
@@ -180,6 +193,11 @@ main {
     font-weight: normal;
 }
 
+.gr12 {
+    color: #a9a9a9;
+    font-size: 12px;
+}
+
 .gr16 {
     color: #a9a9a9;
     font-size: 16px;
@@ -188,6 +206,11 @@ main {
 .gr20 {
     color: #a9a9a9;
     font-size: 20px;
+}
+
+.gr24 {
+    color: #a9a9a9;
+    font-size: 24px;
 }
 
 .gr30 {
