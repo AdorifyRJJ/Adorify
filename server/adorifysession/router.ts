@@ -23,7 +23,7 @@ router.post(
       req.body.length,
       req.body.spotifyId,
       req.body.startTime,
-      req.body.completed+17,
+      req.body.completed,
       req.body.initializedSessions);
     // await AdorifySessionCollection.testAddOne('oldtestuser 3',
     //   req.body.length,

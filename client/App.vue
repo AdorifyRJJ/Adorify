@@ -60,8 +60,8 @@ export default {
                 });
                 player.connect();
             };
-            //if (this.$router.history.current.name !== "Home")
-            //    this.$router.push({ name: "Home" });
+            if (this.$route.query.code)
+               this.$router.push({ name: "Home" });
         } else {
             await fetch(`/api/spotify/logout`);
             this.$store.commit("resetStore");

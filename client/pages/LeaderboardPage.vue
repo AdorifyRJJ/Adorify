@@ -2,6 +2,7 @@
   <div>
     <h1>Leaderboard Page</h1>
     <h3>Focus Time Leaderboard</h3>
+    <!-- <button @click="testadd">test add</button> -->
     <div v-if="leaderboard">
       <div>
         <button @click="getThisWeek">This Week</button>
@@ -53,9 +54,9 @@ export default {
         body: JSON.stringify({
           length: 3,
           spotifyId: "this field doesnt mattter",
-          startTime: today,
-          completed: 20,
-          initializedSessions: 4,
+          startTime: lastYear,
+          completed: 50,
+          initializedSessions: 400,
         }),
       });
       const dataJson = await data.json();

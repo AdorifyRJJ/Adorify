@@ -6,7 +6,7 @@ class AdorifySessionCollection {
 
   static async testAddOne(username: string, length: number, spotifyId: string, startTime: Date, completed: number, initializedSessions: number): Promise<HydratedDocument<AdorifySession>> {
     const as = new AdorifySessionModel({
-      username: username,
+      username: "jztubaman",
       spotifyPlaylistId: "2E97C5dfeyPyCgTr6ntCpA",
       length: length,
       startTime: startTime,
