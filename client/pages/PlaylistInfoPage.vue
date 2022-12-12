@@ -18,6 +18,9 @@
                         <LikeButton
                             class="likeBtn"
                             :spotifyId="spotifyId"
+                            :image="image"
+                            :name="name"
+                            :owner="owner"
                             :isLiked="isLiked"
                         />
                     </div>
@@ -75,7 +78,6 @@ export default {
     },
     watch: {
         async "$route.params.spotifyId"(newId, oldId) {
-            console.log("new id", newId);
             await this.getTracks(newId);
         },
     },
@@ -94,10 +96,8 @@ export default {
         async nextPage() {
             this.setLoading(true);
             const newOffset = this.offset + this.limit;
-            console.log(newOffset);
             const url = `/api/playlists/info/${this.spotifyId}/tracks?offset=${newOffset}`;
             const res = await fetch(url).then(async (r) => r.json());
-            console.log("next page playlist info", res);
             this.tracks = res.tracks;
             this.setLoading(false);
         },
@@ -105,9 +105,7 @@ export default {
             this.setLoading(true);
             const url = `/api/playlists/info/${spotifyId}`;
             const res = await fetch(url).then(async (r) => r.json());
-            // console.log("playlist info", res);
             this.tracks = res.playlistInfo.tracks;
-            // console.log("init playlist info", res);
             this.setLoading(false);
         },
         exit() {
