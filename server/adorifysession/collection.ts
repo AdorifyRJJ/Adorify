@@ -4,6 +4,19 @@ import { PlaylistDate, generateLast30Days } from './util';
 
 class AdorifySessionCollection {
 
+  static async testAddOne(username: string, length: number, spotifyId: string, startTime: Date, completed: number, initializedSessions: number): Promise<HydratedDocument<AdorifySession>> {
+    const as = new AdorifySessionModel({
+      username: username,
+      spotifyPlaylistId: spotifyId,
+      length: length,
+      startTime: startTime,
+      completed: completed,
+      initializedSessions: initializedSessions,
+    });
+    await as.save();
+    return as;
+  }
+
   static async addOne(username: string, length: number, spotifyId: string, initializedSessions: number): Promise<HydratedDocument<AdorifySession>> {
     const date = new Date();
     const as = new AdorifySessionModel({
@@ -35,7 +48,7 @@ class AdorifySessionCollection {
       {
         $group: { _id: "$username", totalTime: { $sum: "$total" } }
       }
-    ]))[0].totalTime;
+    ]))[0]?.totalTime;
   }
 
   static async getTotalCompletedByUsername(username: string): Promise<number> {
@@ -46,7 +59,7 @@ class AdorifySessionCollection {
       {
         $group: { _id: "$username", totalCompleted: { $sum: "$completed" } }
       }
-    ]))[0].totalCompleted;
+    ]))[0]?.totalCompleted;
   }
 
   static async getTotalSessionsByUsername(username: string): Promise<number> {
@@ -57,7 +70,7 @@ class AdorifySessionCollection {
       {
         $group: { _id: "$username", totalSessions: { $sum: "$initializedSessions" } }
       }
-    ]))[0].totalSessions;
+    ]))[0]?.totalSessions;
   }
 
   static async getMostPlayedByUsername(username: string): Promise<{ week: Array<PlaylistDate>, month: Array<PlaylistDate>/*, allTime: Array<PlaylistDate>*/ }> {
@@ -81,7 +94,7 @@ class AdorifySessionCollection {
       {
         $sort: { plays: -1 }
       }
-    ])).slice(0, 10);
+    ]))?.slice(0, 10);
 
     const mostPlayedMonth = (await AdorifySessionModel.aggregate([
       {
@@ -93,7 +106,7 @@ class AdorifySessionCollection {
       {
         $sort: { plays: -1 }
       }
-    ])).slice(0, 10);
+    ]))?.slice(0, 10);
 
     // const mostPlayedAll = (await AdorifySessionModel.aggregate([
     //   {
@@ -105,7 +118,7 @@ class AdorifySessionCollection {
     //   {
     //     $sort: { plays: -1 }
     //   }
-    // ])).slice(0, 10);
+    // ]))?.slice(0, 10);
 
     return {
       week: mostPlayedWeek,
@@ -168,13 +181,13 @@ class AdorifySessionCollection {
       }
     ]))
 
-    const userWeekRank = leaderboardWeek.findIndex(findUser)
-    const userMonthRank = leaderboardMonth.findIndex(findUser)
-    const userAllRank = leaderboardAll.findIndex(findUser)
+    const userWeekRank = leaderboardWeek?.findIndex(findUser)
+    const userMonthRank = leaderboardMonth?.findIndex(findUser)
+    const userAllRank = leaderboardAll?.findIndex(findUser)
 
-    const finalLeaderboardWeek = leaderboardWeek.splice(0, 10)
-    const finalLeaderboardMonth = leaderboardMonth.splice(0, 10)
-    const finalLeaderboardAll = leaderboardAll.splice(0, 10)
+    const finalLeaderboardWeek = leaderboardWeek?.splice(0, 10)
+    const finalLeaderboardMonth = leaderboardMonth?.splice(0, 10)
+    const finalLeaderboardAll = leaderboardAll?.splice(0, 10)
 
     return {
       topUsers: {
@@ -810,7 +823,11 @@ class AdorifySessionCollection {
         }
       },
     ]));
-    return [...Object.entries(studyTimeMonth[0])].splice(0, 28).reverse();
+
+    if (studyTimeMonth[0]) {
+      return [...Object.entries(studyTimeMonth[0])].splice(0, 28).reverse();
+    }
+    return []
 
 
   }
