@@ -210,7 +210,6 @@ main {
     border-width: 0;
 }
 .btn-group {
-    margin: 18px 0;
     display: flex;
 }
 .btn-group > .btn-group-button {

@@ -3,7 +3,7 @@
         <div class="wh40b">Find playlists</div>
 
         <div class="btn-div">
-            <div class="btn-group">
+            <div class="btn-group marginy-18">
                 <button
                     :class="{
                         selectedBtn: viewingMine,
@@ -249,6 +249,10 @@ export default {
 
 .bgroup2 {
     display: flex;
+}
+
+.marginy-18 {
+    margin: 18px 0;
 }
 
 .dropdown {
