@@ -47,8 +47,7 @@ export default {
 }
 .item {
     text-align: right;
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding: 8px 0;
     cursor: pointer;
     width: 300px;
 }

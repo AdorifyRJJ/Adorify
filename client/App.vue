@@ -35,7 +35,7 @@ export default {
                 clientId: process.env.ID,
             });
 
-      await spotifyApi.setAccessToken(allDataJson.accessToken);
+            await spotifyApi.setAccessToken(allDataJson.accessToken);
 
             this.$store.commit("setSpotifyApi", spotifyApi);
 
@@ -246,7 +246,6 @@ main {
     border-width: 0;
 }
 .btn-group {
-    margin: 18px 0;
     display: flex;
 }
 
