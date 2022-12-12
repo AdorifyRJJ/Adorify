@@ -52,6 +52,7 @@ export default {
 <style scoped>
 .item {
     display: flex;
+
     height: 48px;
 }
 
