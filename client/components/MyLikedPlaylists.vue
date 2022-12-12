@@ -32,7 +32,9 @@ export default {
             });
         },
     },
-    async mounted() {},
+    async beforeMount() {
+        this.$store.commit("refreshLikedPlaylists");
+    },
 };
 </script>
 

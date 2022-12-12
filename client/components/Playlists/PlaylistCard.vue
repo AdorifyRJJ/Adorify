@@ -3,6 +3,9 @@
         <LikeButton
             class="likeBtn"
             :spotifyId="this.playlist.id"
+            :image="this.playlist.images[0]?.url"
+            :name="this.playlist.name"
+            :owner="this.playlist.owner.display_name"
             :isLiked="this.playlist.isLiked"
         />
         <div class="cardContent" @click="openPlaylist">

@@ -112,7 +112,6 @@ export default {
             const url = `/api/playlists/mine?offset=0`;
             const res = await fetch(url).then(async (r) => r.json());
             this.currPlaylists = res;
-            console.log("my spotify playlists", this.currPlaylists);
             this.setLoading(false);
         },
         async getPublicPlaylists() {
@@ -151,10 +150,6 @@ export default {
     async mounted() {
         // initial api call GET public playlists by likes
         await this.getMyPlaylists();
-        console.log("public playlists by likes", this.currPlaylists);
-
-        // this.$store.commit("setMySpotifyPlaylists", mySpotifyPlaylists);
-        // this.$store.commit("setPublicPlaylists", publicPlaylists);
     },
 };
 </script>
