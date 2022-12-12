@@ -6,6 +6,7 @@ export type User = {
   _id: Types.ObjectId;
   username: string;
   displayName: string;
+  imgURL: string;
   likedPlaylistIds: Array<string>;
 };
 
@@ -13,6 +14,7 @@ export type PopulatedUser = {
   _id: Types.ObjectId;
   username: string;
   displayName: string;
+  imgURL: string;
   likedPlaylistIds: Array<string>;
   likedPlaylists: Array<Playlist>;
 };
@@ -31,6 +33,10 @@ const UserSchema = new Schema({
     type: [String],
     required: true
   },
+  imgURL: {
+    type: String,
+    required: true,
+  }
 });
 
 UserSchema.virtual('likedPlaylists', {

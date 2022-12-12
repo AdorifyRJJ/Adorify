@@ -54,8 +54,7 @@ router.get(
     const totalSessions = await AdorifySessionCollection.getTotalSessionsByUsername(req.session.username);
 
     const mostPlayed = await AdorifySessionCollection.getMostPlayedByUsername(req.session.username);
-    const studyTime = await AdorifySessionCollection.getStudyTimeByUsername(req.session.username);
-    const studyTimeArr = [...Object.entries(studyTime)].splice(0, 28).reverse();
+    const studyTimeArr = await AdorifySessionCollection.getStudyTimeByUsername(req.session.username);
     const studyTimeModified = [];
 
     for (const tuple of studyTimeArr) {

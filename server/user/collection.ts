@@ -4,10 +4,11 @@ import type { PopulatedUser, User } from './model';
 import UserModel from './model';
 
 class UserCollection {
-  static async addOne(username: string, displayName: string): Promise<HydratedDocument<User>> {
+  static async addOne(username: string, displayName: string, imgURL: string): Promise<HydratedDocument<User>> {
     const user = new UserModel({
       username: username,
       displayName: displayName,
+      imgURL: imgURL,
       likedPlaylistIds: [],
     });
     await user.save();
@@ -21,6 +22,12 @@ class UserCollection {
   static async updateDisplayName(username: string, displayName: string): Promise<void> {
     const user = await UserModel.findOne({ username: username });
     user.displayName = displayName;
+    await user.save();
+  }
+
+  static async updateImgURL(username: string, imgURL: string): Promise<void> {
+    const user = await UserModel.findOne({ username: username });
+    user.imgURL = imgURL;
     await user.save();
   }
 

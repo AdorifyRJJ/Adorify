@@ -131,7 +131,7 @@ class AdorifySessionCollection {
         $match: { startTime: { $gte: lastWeek } }
       },
       {
-        $project: { username: 1, time: { $multiply: ["$length", "$completed"] } }
+        $project: { username: 1, imgURL: 1, time: { $multiply: ["$length", "$completed"] } }
       },
       {
         $group: { _id: "$username", focusTime: { $sum: "$time" } }
@@ -146,7 +146,7 @@ class AdorifySessionCollection {
         $match: { startTime: { $gte: lastMonth } }
       },
       {
-        $project: { username: 1, time: { $multiply: ["$length", "$completed"] } }
+        $project: { username: 1, imgURL: 1, time: { $multiply: ["$length", "$completed"] } }
       },
       {
         $group: { _id: "$username", focusTime: { $sum: "$time" } }
@@ -158,7 +158,7 @@ class AdorifySessionCollection {
 
     const leaderboardAll = (await AdorifySessionModel.aggregate([
       {
-        $project: { username: 1, time: { $multiply: ["$length", "$completed"] } }
+        $project: { username: 1, imgURL: 1, time: { $multiply: ["$length", "$completed"] } }
       },
       {
         $group: { _id: "$username", focusTime: { $sum: "$time" } }
@@ -191,38 +191,7 @@ class AdorifySessionCollection {
 
   }
 
-  static async getStudyTimeByUsername(username: string): Promise<
-    {
-      0: number,
-      1: number,
-      2: number,
-      3: number,
-      4: number,
-      5: number,
-      6: number,
-      7: number,
-      8: number,
-      9: number,
-      10: number,
-      11: number,
-      12: number,
-      13: number,
-      14: number,
-      15: number,
-      16: number,
-      17: number,
-      18: number,
-      19: number,
-      20: number,
-      21: number,
-      22: number,
-      23: number,
-      24: number,
-      25: number,
-      26: number,
-      27: number,
-      _id: string,
-    }> {
+  static async getStudyTimeByUsername(username: string): Promise<Array<[string, unknown]>> {
     //find in as model by username, filter by date.
     //call helper function to split into week, month, and alltime* arrays
     //combine and convert to studydate
@@ -841,8 +810,7 @@ class AdorifySessionCollection {
         }
       },
     ]));
-
-    return studyTimeMonth[0];
+    return [...Object.entries(studyTimeMonth[0])].splice(0, 28).reverse();
 
 
   }
