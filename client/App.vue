@@ -185,6 +185,11 @@ main {
     color: #a9a9a9;
     font-size: 30px;
 }
+.gr26b {
+    color: #a9a9a9;
+    font-size: 26px;
+    font-weight: bold;
+}
 .center {
     display: flex;
     flex-direction: column;
