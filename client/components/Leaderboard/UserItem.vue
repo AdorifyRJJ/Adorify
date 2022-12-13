@@ -1,5 +1,5 @@
 <template>
-    <div class="item" :class="user.displayName === $store.state.username ? 'me' : ''">
+    <div class="item" :class="isMe ? 'me' : ''">
         <div class="gr26b margin-r-46">{{ this.rank }}</div>
         <img :src="this.user.imgURL" class="image" width="50" height="50" />
         <div class="rightDiv">
@@ -13,7 +13,7 @@
 import { formatHrFromSec, formatMinFromSec } from "../../utils.js";
 export default {
     name: "UserItem",
-    props: ["rank", "user"],
+    props: ["rank", "user", "isMe"],
     computed: {
         focusTime() {
             const focusTime_sec = this.user.focusTime * 60;
@@ -32,7 +32,7 @@ export default {
 .item {
     display: flex;
     align-items: center;
-    padding: 4px 8px;
+    padding: 4px 16px;
 }
 
 .image {

@@ -1,7 +1,7 @@
 <template>
     <div @click="toggleLike">
-        <img v-if="isLiked" src="../../public/filledHeart.svg" />
-        <img v-else src="../../public/heart.svg" />
+        <img v-if="isLiked" src="../../public/images/filledHeart.svg" />
+        <img v-else src="../../public/images/heart.svg" />
     </div>
 </template>
 
@@ -30,7 +30,7 @@ export default {
                 `/api/playlists/${this.spotifyId}`,
                 options
             ).then(async (r) => r.json());
-            this.isLiked = res.isLiked;
+            // this.isLiked = res.isLiked;
         },
     },
 };

@@ -6,7 +6,7 @@
                 <div class="wh20n">+</div>
                 <div class="wh40n">Spotify</div>
                 <div class="wh20n">=</div>
-                <img src="adorify_logo_full.svg" height="72" width="auto" />
+                <img src="../public/images/adorify_logo_full.svg" height="72" width="auto" />
             </div>
             <button class="button margin-y-14 width-500" @click="login">
                 <span class="wh20b">Log in with Spotify</span>

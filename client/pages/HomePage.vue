@@ -49,7 +49,7 @@
                 <div class="carousel">
                     <div v-if="$store.state.myLikedPlaylists.length === 0" class="placeholder center">
                         <router-link to="playlists" class="placeholderInner center">
-                            <img src="../public/add.svg">
+                            <img src="../public/images/add.svg">
                             <div class="gr16 placeholderText">
                                 Add playlists to start session
                             </div>
@@ -95,19 +95,19 @@
 
                 <div class="bottomDiv">
                     <button @click="startSession" class="controlButton pButton" :disabled="$store.state.myLikedPlaylists.length === 0 || !submitIsValid || !$store.state.connected || $store.state.spoitfyPlayer === null">
-                        <img src="../public/play.svg">
+                        <img src="../public/images/play.svg">
                     </button>
                 </div>
             </div>
 
             <div v-else-if="sessionState !== SessionState.AFTER" class="center" >
                 <div class="wh100b time">{{ getTime }}</div>
-                <!-- <div class="wh20b intervals">{{ currInterval }} / {{ intervals }}</div> -->
                 <div class="progressbar">
-                    <div class="pbItem" v-for="i in (intervals - currInterval)" :key="i"></div>
+                    <!-- don't add key rn as it breaks it -->
+                    <div class="pbItem" v-for="i in (currInterval - 1)"></div>
                     <div class="pbItem pbActive" v-if="sessionState === SessionState.FOCUS"></div>
-                    <div class="pbItem" v-else></div>
-                    <div class="pbItem pbDone" v-for="i in (currInterval - 1)" :key="i"></div>
+                    <div class="pbItem pbNotDone" v-else></div>
+                    <div class="pbItem pbNotDone" v-for="i in (intervals - currInterval)"></div>
                 </div>
 
                 <button class="button" @click="endSession">
@@ -122,14 +122,14 @@
 
                     <div class="controls">
                         <button v-if="timerActive && sessionState !== SessionState.BREAK" @click="playPrev" class="controlButton prevButton">
-                            <img src="../public/prev.svg">
+                            <img src="../public/images/prev.svg">
                         </button>
                         <button @click="togglePlay" class="controlButton pButton" :disabled="sessionState === SessionState.BREAK">
-                            <img v-if="timerActive && sessionState !== SessionState.BREAK" src="../public/pause.svg">
-                            <img v-else src="../public/play.svg">
+                            <img v-if="timerActive && sessionState !== SessionState.BREAK" src="../public/images/pause.svg">
+                            <img v-else src="../public/images/play.svg">
                         </button>
                         <button v-if="timerActive && sessionState !== SessionState.BREAK" @click="playNext" class="controlButton nextButton">
-                            <img src="../public/forward.svg">
+                            <img src="../public/images/forward.svg">
                         </button>
                     </div>
                 </div>
@@ -189,10 +189,18 @@ export default {
     },
     computed: {
         getTime() {
+            if (this.getHr)
+                return this.getHr + ":" + this.getMin + ":" + this.getSec;
             return this.getMin + ":" + this.getSec;
         },
+        getHr() {
+            const hr = Math.round(Math.floor(this.timestamp / 60 / 60));
+            if (hr === 0)
+                return '';
+            return hr < 10 ? `0${hr}` : `${hr}`;
+        },
         getMin() {
-            const min = Math.round(Math.floor(this.timestamp / 60));
+            const min = Math.round(Math.floor((this.timestamp / 60) % 60));
             return min < 10 ? `0${min}` : `${min}`;
         },
         getSec() {
@@ -236,7 +244,6 @@ export default {
                 duration,
                 track_window: { current_track }
             }) => {
-                console.log(current_track)
                 this.currTrackTitle = current_track.name;
                 this.currTrackArtist = current_track.artists.map((a) => a.name).join(" ");
                 console.log('pos', position)
@@ -541,11 +548,11 @@ export default {
     left: -20px;
 }
 
-.pbDone {
+.pbNotDone {
     background-color: #373544;
 }
 
-.pbDone:after {
+.pbNotDone:after {
     background: #373544;
 }
 

@@ -79,12 +79,6 @@ router.get(
       message: 'Retrieved succesfully.',
       ...myPlaylists.body,
       items: await Promise.all(myPlaylists.body.items.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
-      // href: myPlaylists.body.href,
-      // limit: myPlaylists.body.limit,
-      // next: myPlaylists.body.next,
-      // previous: myPlaylists.body.previous,
-      // total: myPlaylists.body.total,
-      // offset: myPlaylists.body.offset,
     });
   }
 )
@@ -197,7 +191,9 @@ router.get(
     });
     spotifyApi.setAccessToken(req.session.accessToken);
 
-    const playlists = await PlaylistCollection.findMostLikes();
+    const offset = parseInt(req.query.offset as string)
+
+    const playlists = await PlaylistCollection.findMostLikes(offset);
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
 
     for (const p of playlists) {
@@ -207,9 +203,14 @@ router.get(
       else
         console.log('Failed to retrieve', playlistInfo.body);
     }
+    console.log(await PlaylistCollection.countTotal())
     res.status(200).json({
       message: 'Retrieved successfully.',
       items: await Promise.all(playlistInfos.map((p: SpotifyApi.PlaylistObjectSimplified) => util.constructShallowPlaylistResponse(req.session.username, p))),
+      limit: 6,
+      offset: offset,
+      next: offset + 6 < await PlaylistCollection.countTotal(),
+      previous: offset > 0,
     });
   }
 )
@@ -230,7 +231,9 @@ router.get(
     });
     spotifyApi.setAccessToken(req.session.accessToken);
 
-    const playlists = await PlaylistCollection.findMostUsed();
+    const offset = parseInt(req.query.offset as string)
+
+    const playlists = await PlaylistCollection.findMostUsed(offset);
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
 
     for (const p of playlists) {
@@ -240,9 +243,14 @@ router.get(
       else
         console.log('Failed to retrieve', playlistInfo.body);
     }
+    console.log(await PlaylistCollection.countTotal())
     res.status(200).json({
       message: 'Retrieved successfully.',
       items: await Promise.all(playlistInfos.map((p: SpotifyApi.PlaylistObjectSimplified) => util.constructShallowPlaylistResponse(req.session.username, p))),
+      limit: 6,
+      offset: offset,
+      next: offset + 6 < await PlaylistCollection.countTotal(),
+      previous: offset > 0,
     });
   }
 )
@@ -263,7 +271,9 @@ router.get(
     });
     spotifyApi.setAccessToken(req.session.accessToken);
 
-    const playlists = await PlaylistCollection.findMostProductive();
+    const offset = parseInt(req.query.offset as string)
+
+    const playlists = await PlaylistCollection.findMostProductive(offset);
     const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
 
     for (const p of playlists) {
@@ -273,9 +283,14 @@ router.get(
       else
         console.log('Failed to retrieve', playlistInfo.body);
     }
+    console.log(await PlaylistCollection.countTotal())
     res.status(200).json({
       message: 'Retrieved successfully.',
       items: await Promise.all(playlistInfos.map((p: SpotifyApi.PlaylistObjectSimplified) => util.constructShallowPlaylistResponse(req.session.username, p))),
+      limit: 6,
+      offset: offset,
+      next: offset + 6 < await PlaylistCollection.countTotal(),
+      previous: offset > 0,
     });
   }
 )

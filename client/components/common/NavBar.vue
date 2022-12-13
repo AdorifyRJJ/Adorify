@@ -2,7 +2,7 @@
     <nav>
         <div class="left">
             <router-link to="/">
-                <img src="adorify_logo_full.svg">
+                <img src="../../public/images/adorify_logo_full.svg">
             </router-link>
         </div>
         <div class="right">

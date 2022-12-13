@@ -91,7 +91,7 @@ export default {
 
 .end {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
 }
 .image {
     object-fit: cover;
