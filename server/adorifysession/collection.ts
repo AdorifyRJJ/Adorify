@@ -31,9 +31,9 @@ class AdorifySessionCollection {
     return as;
   }
 
-  static async endOne(id: Types.ObjectId | string): Promise<void> {
+  static async incrementAS(id: Types.ObjectId | string, completed: number): Promise<void> {
     const as = await AdorifySessionModel.findOne({ _id: id });
-    as.completed = as.completed + 1;
+    as.completed = completed;
     await as.save();
   }
 

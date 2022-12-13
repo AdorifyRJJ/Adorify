@@ -104,10 +104,10 @@
                 <div class="wh100b time">{{ getTime }}</div>
                 <!-- <div class="wh20b intervals">{{ currInterval }} / {{ intervals }}</div> -->
                 <div class="progressbar">
-                    <div class="pbItem" v-for="i in (intervals - currInterval)"></div>
+                    <div class="pbItem" v-for="i in (intervals - currInterval)" :key="i"></div>
                     <div class="pbItem pbActive" v-if="sessionState === SessionState.FOCUS"></div>
                     <div class="pbItem" v-else></div>
-                    <div class="pbItem pbDone" v-for="i in (currInterval - 1)"></div>
+                    <div class="pbItem pbDone" v-for="i in (currInterval - 1)" :key="i"></div>
                 </div>
 
                 <button class="button" @click="endSession">
@@ -146,6 +146,7 @@
                 </button>
             </div>
         </div>
+        <div id="snackbar">{{ errorText }}</div>
     </main>
 </template>
 
@@ -179,6 +180,9 @@ export default {
             timerActive: false,
             timerId: null,
             timestamp: null,
+
+            asID: null,
+            errorText: "",
             
         };
     },
@@ -208,6 +212,14 @@ export default {
         }
     },
     methods: {
+        async displayError() {
+            const x = document.getElementById("snackbar");
+            x.className = "show";
+            setTimeout(function(){ 
+                x.className = x.className.replace("show", "");
+                this.errorText = "";
+            }, 3000);
+        },
         onActive(splide, slide) {
             this.selectedIndex = slide.index;
         },
@@ -218,7 +230,7 @@ export default {
         async startSession() {
             this.currInterval = 1;
             this.sessionState = SessionState.FOCUS;
-            this.$store.state.spotifyPlayer.addListener('player_state_changed', ({
+            this.$store.state.spotifyPlayer.addListener('player_state_changed', async ({
                 position,
                 duration,
                 track_window: { current_track }
@@ -226,11 +238,32 @@ export default {
                 console.log(current_track)
                 this.currTrackTitle = current_track.name;
                 this.currTrackArtist = current_track.artists.map((a) => a.name).join(" ");
+                const anotherRes = await this.handleSpotifyResponse(this.$store.state.spotifyApi.setRepeat('context'))
+                if (!anotherRes.expected){
+                    this.errorText = "Spotify Repeat Error: " + anotherRes.data;
+                    this.displayError();
+                    return;
+                }
             });
-            await this.$store.state.spotifyApi.play({
+            const res = await this.handleSpotifyResponse(this.$store.state.spotifyApi.play({
                 device_id: this.$store.state.deviceId, 
                 context_uri: `spotify:playlist:${this.$store.state.myLikedPlaylists[this.selectedIndex].id}`,
+            }));
+            if (!res.expected){
+                this.errorText = "Spotify Play Error: " + res.data;
+                this.displayError();
+                return;
+            }
+            const as = await fetch("/api/adorifySession/", {
+                headers: { "Content-Type": "application/json" },
+                method: "POST",
+                body: JSON.stringify({
+                    length: this.focusTime,
+                    spotifyId: this.$store.state.myLikedPlaylists[this.selectedIndex].id,
+                    initializedSessions: this.intervals,
+                }),
             });
+            this.asID = (await as.json()).asID;
             await this.startTimer();
         },
         async endSession() {
@@ -250,7 +283,7 @@ export default {
             this.timestamp =
                 this.timestamp ??
                 (this.sessionState === SessionState.FOCUS ? this.focusTime * 60 : this.breakTime * 60);
-            this.timerId = setInterval(() => {
+            this.timerId = setInterval(async () => {
                 if (this.timerActive) {
                     this.timestamp--;
                     if (this.timestamp <= 0) {
@@ -258,6 +291,14 @@ export default {
                         this.timestamp = null;
                         if (this.currInterval >= this.intervals && this.sessionState === SessionState.FOCUS) {
                             this.currInterval++;
+                            await fetch(`/api/adorifySession/${this.asID}`, {
+                                headers: { "Content-Type": "application/json" },
+                                method: "PUT",
+                                body: JSON.stringify({
+                                    spotifyId: this.$store.state.myLikedPlaylists[this.selectedIndex].id,
+                                    completed: this.currInterval-1
+                                }),
+                            });
                             this.endSession();
                             return;
                         }
@@ -269,6 +310,14 @@ export default {
                             this.currInterval++;
                             this.pauseMusic();
                             this.sessionState = SessionState.BREAK;
+                            await fetch(`/api/adorifySession/${this.asID}`, {
+                                headers: { "Content-Type": "application/json" },
+                                method: "PUT",
+                                body: JSON.stringify({
+                                    spotifyId: this.$store.state.myLikedPlaylists[this.selectedIndex].id,
+                                    completed: this.currInterval-1
+                                }),
+                            });
                         }
                         this.startTimer();
                     }
@@ -287,24 +336,40 @@ export default {
                 clearInterval(this.timerId);
         },
         async startMusic() {
-            await this.$store.state.spotifyApi.play({
+            const res = await this.handleSpotifyResponse(this.$store.state.spotifyApi.play({
                 device_id: this.$store.state.deviceId, 
-            });
+            }));
+            if (!res.expected){
+                this.errorText = "Spotify Play Error: " + res.data;
+                this.displayError();
+            }
         },
         async pauseMusic() {
-            await this.$store.state.spotifyApi.pause({
+            const res = await this.handleSpotifyResponse(this.$store.state.spotifyApi.pause({
                 device_id: this.$store.state.deviceId, 
-            });
+            }));
+            if (!res.expected){
+                this.errorText = "Spotify Pause Error: " + res.data;
+                this.displayError();
+            }
         },
         async playPrev() {
-            await this.$store.state.spotifyApi.skipToPrevious({
+            const res = await this.handleSpotifyResponse(this.$store.state.spotifyApi.skipToPrevious({
                 device_id: this.$store.state.deviceId, 
-            });
+            }));
+            if (!res.expected){
+                this.errorText = "Spotify Previous Error: " + res.data;
+                this.displayError();
+            }
         },
         async playNext() {
-            await this.$store.state.spotifyApi.skipToNext({
+            const res = await this.handleSpotifyResponse(this.$store.state.spotifyApi.skipToNext({
                 device_id: this.$store.state.deviceId, 
-            });
+            }));
+            if (!res.expected){
+                this.errorText = "Spotify Next Error: " + res.data;
+                this.displayError();
+            }
         },
         async backToHome() {
             this.sessionState = SessionState.BEFORE;
@@ -318,7 +383,7 @@ export default {
             try {
                 this.$store.state.spotifyPlayer.connect();
             } catch (e) {
-                console.log(e);
+                //console.log(e);
             }
         }
     },
@@ -326,7 +391,7 @@ export default {
             try {
                 this.$store.commit("forceDisconnect");
             } catch (e) {
-                console.log(e);
+                //console.log(e);
             }
         },
     };
@@ -550,4 +615,50 @@ export default {
         box-shadow: 0 0 20px #7c68ff, 0 0 5px #9281ff;
     }
 } */
+
+/* The snackbar - position it at the bottom and in the middle of the screen */
+#snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #333; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 1; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
 </style>
