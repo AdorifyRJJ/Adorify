@@ -150,8 +150,9 @@
                     <span class="wh20b">Back To Home</span>
                 </button>
             </div>
+            <div id="snackbar" class="center">{{ errorText }}</div>
         </div>
-        <div id="snackbar">{{ errorText }}</div>
+        
     </main>
 </template>
 
@@ -271,14 +272,8 @@ export default {
             if (!res.expected){
                 this.errorText = "Spotify Play Error: " + res.data;
                 this.displayError();
-                return;
             }
-            const anotherRes = await this.handleSpotifyResponse(this.$store.state.spotifyApi.setRepeat("context", {device_id: this.$store.state.deviceId}))
-            if (!anotherRes.expected){
-                this.errorText = "Spotify Repeat Error: " + anotherRes.data;
-                this.displayError();
-                return;
-            }
+            await this.handleSpotifyResponse(this.$store.state.spotifyApi.setRepeat("context", {device_id: this.$store.state.deviceId}))
             const as = await fetch("/api/adorifySession/", {
                 headers: { "Content-Type": "application/json" },
                 method: "POST",
@@ -348,8 +343,9 @@ export default {
                     }
                 }
             }, 1000);
-            if (this.sessionState === SessionState.FOCUS)
+            if (this.sessionState === SessionState.FOCUS){
                 await this.startMusic();
+            }
         },
         async pauseTimer() {
             this.timerActive = false;
@@ -649,8 +645,8 @@ export default {
 /* The snackbar - position it at the bottom and in the middle of the screen */
 #snackbar {
   visibility: hidden; /* Hidden by default. Visible on click */
-  min-width: 250px; /* Set a default minimum width */
-  margin-left: -125px; /* Divide value of min-width by 2 */
+  min-width: 250px; 
+  margin-left: -125px;
   background-color: #333; /* Black background color */
   color: #fff; /* White text color */
   text-align: center; /* Centered text */
@@ -658,7 +654,7 @@ export default {
   padding: 16px; /* Padding */
   position: fixed; /* Sit on top of the screen */
   z-index: 1; /* Add a z-index if needed */
-  left: 50%; /* Center the snackbar */
+  margin: 0 auto;
   bottom: 30px; /* 30px from the bottom */
 }
 
