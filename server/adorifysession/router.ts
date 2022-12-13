@@ -196,6 +196,7 @@ router.get(
       message: 'Here is the leaderboard.',
       topUsers: ranks.topUsers,
       userRanks: ranks.userInfo,
+      _id: req.session.username
     });
   }
 )

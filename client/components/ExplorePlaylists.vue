@@ -17,7 +17,7 @@
                     </button>
                 </div>
                 <div v-if="choosing" class="expanded">
-                    <div v-for="(option, i) in dropdownOptions" @click="toggleChoice(option)" class="choice wh16n">
+                    <div v-for="(option, i) in dropdownOptions" @click="toggleChoice(option)" :key="i" class="choice wh16n">
                         {{option}}
                     </div>
                 </div>
