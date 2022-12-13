@@ -29,7 +29,7 @@
             <div></div>
             <div></div>
         </div>
-        <div v-else class="scrollable">
+        <div v-else class="scrollable" id="playlistDiv">
             <div class="scrollable-content">
                 <div class="playlists">
                     <PlaylistCard
@@ -117,6 +117,8 @@ export default {
             }
         },
         async prevPage() {
+            const playlistWindow = document.getElementById("playlistDiv")
+            playlistWindow.scrollTo(0,0); 
             this.setLoading(true);
             this.resetController();
             const newOffset = this.offset - this.limit;
@@ -126,6 +128,8 @@ export default {
             this.setLoading(false);
         },
         async nextPage() {
+            const playlistWindow = document.getElementById("playlistDiv")
+            playlistWindow.scrollTo(0,0); 
             this.setLoading(true);
             this.resetController();
             const newOffset = this.offset + this.limit;
