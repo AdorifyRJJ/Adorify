@@ -49,14 +49,14 @@
                             :disabled="!tracks.previous"
                             @click="prevPage"
                         >
-                            <img src="images/pagePrev.svg" />
+                            <img src="../public/images/pagePrev.svg" />
                         </button>
                         <button
                             class="botButton next"
                             :disabled="!tracks.next"
                             @click="nextPage"
                         >
-                            <img src="images/pageNext.svg" />
+                            <img src="../public/images/pageNext.svg" />
                         </button>
                     </div>
                 </div>

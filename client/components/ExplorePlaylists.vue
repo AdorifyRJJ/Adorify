@@ -13,7 +13,7 @@
                 <div>
                     <button class="selected wh16n" @click="toggleChoosing">
                         <div class="selectedText">{{selected}}</div>
-                        <img src="images/dropdown.svg">
+                        <img src="dropdown.svg">
                     </button>
                 </div>
                 <div v-if="choosing" class="expanded">
@@ -40,10 +40,10 @@
                 </div>
                 <div class="botButtons">
                     <button class="botButton prev" :disabled="!currPlaylists.previous" @click="prevPage">
-                        <img src="images/pagePrev.svg">
+                        <img src="../public/images/pagePrev.svg">
                     </button>
                     <button class="botButton next" :disabled="!currPlaylists.next" @click="nextPage">
-                        <img src="images/pageNext.svg">
+                        <img src="../public/images/pageNext.svg">
                     </button>
                 </div>
             </div>

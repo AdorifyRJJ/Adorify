@@ -47,7 +47,7 @@
                             </div>
                             <div v-else class="pillInfo">
                                 {{ this.totalTime }}
-                                <img src="images/studyTime.svg">
+                                <img src="../public/images/studyTime.svg">
                             </div>
                         </div>
                         <div class="pill wh20n">
@@ -59,7 +59,7 @@
                             </div>
                             <div v-else class="pillInfo">
                                 {{ this.sessionInfo }}
-                                <img src="images/completed.svg">
+                                <img src="../public/images/completed.svg">
                             </div>
                         </div>
                     </div>

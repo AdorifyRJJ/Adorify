@@ -1,7 +1,7 @@
 <template>
     <div @click="toggleLike">
-        <img v-if="isLiked" src="images/filledHeart.svg" />
-        <img v-else src="images/heart.svg" />
+        <img v-if="isLiked" src="../../public/images/filledHeart.svg" />
+        <img v-else src="../../public/images/heart.svg" />
     </div>
 </template>
 
