@@ -93,17 +93,32 @@ export default {
             const today = new Date();
             const testDate = new Date();
             testDate.setDate(testDate.getDate() - 5);
+            const length = 3;
+            const completed = 50;
+            const initializedSessions = 400;
+            const spotifyId = "0Z0woTASJoPAOaSn5GLXpm"
+            if (completed > initializedSessions) return;
             const data = await fetch("/api/adorifySession/testadd", {
                 headers: { "Content-Type": "application/json" },
                 method: "POST",
                 body: JSON.stringify({
-                    length: 3,
-                    spotifyId: "this field doesnt mattter",
+                    length: length,
+                    spotifyId: spotifyId,
                     startTime: lastYear,
-                    completed: 50,
-                    initializedSessions: 400,
+                    completed: completed,
+                    initializedSessions: initializedSessions,
                 }),
             });
+            for (let i = 0; i < completed; i++){
+                await fetch(`/api/adorifySession/${data.asID}`, {
+                    headers: { "Content-Type": "application/json" },
+                    method: "PUT",
+                    body: JSON.stringify({
+                        spotifyId: spotifyId,
+                        completed: i+1
+                    }),
+                });
+            }
             const dataJson = await data.json();
             console.log(dataJson);
         },
