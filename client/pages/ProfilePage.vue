@@ -163,9 +163,11 @@ export default {
         const totalSessions = res.totalSessions;
 
         // calculate session info
-        this.sessionInfo = `${completedSessions}/${totalSessions} (${
-            (completedSessions / totalSessions).toFixed(1) * 100
-        }%)`;
+        this.sessionInfo =
+            totalSessions === 0
+                ? "0%"
+                : `${completedSessions}/${totalSessions} 
+                (${(completedSessions / totalSessions).toFixed(1) * 100}%)`;
 
         this._mostPlayedWeek = res.mostPlayed.week;
         this._mostPlayedMonth = res.mostPlayed.month;
