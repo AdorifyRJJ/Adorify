@@ -231,12 +231,24 @@ main {
     font-weight: bold;
 }
 
+.margin-b-8 {
+    margin-bottom: 8px;
+}
+
+.margin-b-10 {
+    margin-bottom: 10px;
+}
+
 .margin-b-18 {
     margin-bottom: 18px;
 }
 
 .margin-b-30 {
     margin-bottom: 30px;
+}
+
+.margin-y-30 {
+    margin: 30px 0;
 }
 
 .center {

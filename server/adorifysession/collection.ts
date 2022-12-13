@@ -37,6 +37,10 @@ class AdorifySessionCollection {
     await as.save();
   }
 
+  static async deleteAllByUser(user: string): Promise<void> {
+    await AdorifySessionModel.deleteMany({ username: user });
+  }
+
   static async getTotalTimeByUsername(username: string): Promise<number> {
     return (await AdorifySessionModel.aggregate([
       {
