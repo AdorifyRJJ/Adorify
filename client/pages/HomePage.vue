@@ -45,7 +45,7 @@
                         </div>
                     </div>
                 </div>
-
+                    
                 <div class="carousel">
                     <div v-if="$store.state.myLikedPlaylists.length === 0" class="placeholder center">
                         <router-link to="playlists" class="placeholderInner center">
