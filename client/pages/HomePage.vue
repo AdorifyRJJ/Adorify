@@ -230,7 +230,7 @@ export default {
         async startSession() {
             this.currInterval = 1;
             this.sessionState = SessionState.FOCUS;
-            this.$store.state.spotifyPlayer.addListener('player_state_changed', ({
+            this.$store.state.spotifyPlayer.addListener('player_state_changed', async ({
                 position,
                 duration,
                 track_window: { current_track }
@@ -238,19 +238,19 @@ export default {
                 console.log(current_track)
                 this.currTrackTitle = current_track.name;
                 this.currTrackArtist = current_track.artists.map((a) => a.name).join(" ");
+                const anotherRes = await this.handleSpotifyResponse(this.$store.state.spotifyApi.setRepeat('context'))
+                if (!anotherRes.expected){
+                    this.errorText = "Spotify Repeat Error: " + anotherRes.data;
+                    this.displayError();
+                    return;
+                }
             });
             const res = await this.handleSpotifyResponse(this.$store.state.spotifyApi.play({
                 device_id: this.$store.state.deviceId, 
                 context_uri: `spotify:playlist:${this.$store.state.myLikedPlaylists[this.selectedIndex].id}`,
             }));
             if (!res.expected){
-                this.errorText = "Spotify Error: " + res.data;
-                this.displayError();
-                return;
-            }
-            const anotherRes = await this.handleSpotifyResponse(this.$store.state.spotifyApi.setRepeat('context'))
-            if (!anotherRes.expected){
-                this.errorText = "Spotify Error: " + anotherRes.data;
+                this.errorText = "Spotify Play Error: " + res.data;
                 this.displayError();
                 return;
             }
@@ -340,7 +340,7 @@ export default {
                 device_id: this.$store.state.deviceId, 
             }));
             if (!res.expected){
-                this.errorText = "Spotify Error: " + res.data;
+                this.errorText = "Spotify Play Error: " + res.data;
                 this.displayError();
             }
         },
@@ -349,7 +349,7 @@ export default {
                 device_id: this.$store.state.deviceId, 
             }));
             if (!res.expected){
-                this.errorText = "Spotify Error: " + res.data;
+                this.errorText = "Spotify Pause Error: " + res.data;
                 this.displayError();
             }
         },
@@ -358,7 +358,7 @@ export default {
                 device_id: this.$store.state.deviceId, 
             }));
             if (!res.expected){
-                this.errorText = "Spotify Error: " + res.data;
+                this.errorText = "Spotify Previous Error: " + res.data;
                 this.displayError();
             }
         },
@@ -367,7 +367,7 @@ export default {
                 device_id: this.$store.state.deviceId, 
             }));
             if (!res.expected){
-                this.errorText = "Spotify Error: " + res.data;
+                this.errorText = "Spotify Next Error: " + res.data;
                 this.displayError();
             }
         },
