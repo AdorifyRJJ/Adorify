@@ -24,4 +24,17 @@ function formatHrFromSec(sec, padding = false) {
         return hr > 9 ? hr.toString() : "0" + hr.toString();
     }
 }
-export { formatSecFromSec, formatMinFromSec, formatHrFromSec };
+
+function getLastXDates(numDays) {
+    const nums = Array.from(Array(numDays).keys());
+    const today = new Date();
+    return nums
+        .map((num) =>
+            new Date(
+                new Date().setDate(today.getDate() - num)
+            ).toLocaleDateString()
+        )
+        .reverse();
+}
+
+export { formatSecFromSec, formatMinFromSec, formatHrFromSec, getLastXDates };

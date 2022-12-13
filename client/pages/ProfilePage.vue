@@ -88,8 +88,7 @@
                 </div>
             </div>
             <div class="productivity">
-                <div class="wh30b marginb-14">Productivity</div>
-                <!-- <div class="chart">{{ this.graph }}</div> -->
+                <div class="wh30b marginb-14 paddingl-10">Productivity</div>
                 <LineChartGenerator
                     class="chart"
                     :chart-options="options"
@@ -116,11 +115,7 @@
 
 <script>
 import ButtonGroup from "../components/common/ButtonGroup.vue";
-import {
-    formatHrFromSec,
-    formatMinFromSec,
-    formatSecFromSec,
-} from "../utils.js";
+import { formatHrFromSec, formatMinFromSec, getLastXDates } from "../utils.js";
 
 import { Line as LineChartGenerator } from "vue-chartjs";
 import {
@@ -147,32 +142,6 @@ ChartJS.register(
 export default {
     components: { ButtonGroup, LineChartGenerator },
     name: "ProfilePage",
-    props: {
-        // chartId: {
-        //     type: String,
-        //     default: "line-chart",
-        // },
-        // datasetIdKey: {
-        //     type: String,
-        //     default: "label",
-        // },
-        // width: {
-        //     type: Number,
-        //     default: 400,
-        // },
-        // height: {
-        //     type: Number,
-        //     default: 400,
-        // },
-        // cssClasses: {
-        //     default: "",
-        //     type: String,
-        // },
-        // styles: {
-        //     type: Object,
-        //     default: () => {},
-        // },
-    },
     data() {
         return {
             btnGroupTitles: ["This Week", "This Month"],
@@ -186,16 +155,28 @@ export default {
             loading: true,
             deleting: false,
 
-            chartData: null,
+            chartData: {},
             options: {
-                plugins: { legend: { display: false } },
+                layout: {
+                    padding: { right: 10 },
+                },
+                plugins: {
+                    tooltip: {
+                        // callbacks: {
+                        //     label: function (context) {
+                        //         return context.dataset.data + " hr";
+                        //     },
+                        // },
+                    },
+                    legend: { display: false },
+                },
                 scales: {
                     y: {
                         ticks: {
+                            maxTicksLimit: 5,
                             font: {
                                 size: 18,
                                 weight: "normal",
-                                // family: "Avenir Next LT Pro",
                             },
                             padding: 10,
                             color: "#a9a9a9",
@@ -227,16 +208,43 @@ export default {
         };
     },
     computed: {},
-
     methods: {
         updateContent(i) {
             this.selectIdx = i;
             if (i === 0) {
-                this.graphData = this._lastWeekGraphData;
                 this.mostPlayed = this._mostPlayedWeek;
+                const labels = getLastXDates(7);
+                this.chartData = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Focus Time",
+                            data: this.studyTime.slice(-7),
+                            fill: true,
+                            borderColor: "#664EFF",
+                            backgroundColor: "#664EFF",
+                            borderWidth: 2,
+                            pointRadius: 10,
+                        },
+                    ],
+                };
             } else if (i === 1) {
-                this.graphData = this._lastMonthGraphData;
                 this.mostPlayed = this._mostPlayedMonth;
+                const labels = getLastXDates(28);
+                this.chartData = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Focus Time",
+                            data: this.studyTime,
+                            fill: true,
+                            borderColor: "#664EFF",
+                            backgroundColor: "#664EFF",
+                            borderWidth: 2,
+                            pointRadius: 4,
+                        },
+                    ],
+                };
             }
         },
         async logout() {
@@ -260,9 +268,6 @@ export default {
             this.$router.push({ name: "Login" });
         },
     },
-    // mounted() {
-    //     this.renderChart(this.chartData, this.options);
-    // },
     async beforeCreate() {
         this.loading = true;
         if (this.$store.state.connected) {
@@ -284,63 +289,17 @@ export default {
         this.sessionInfo =
             totalSessions === 0
                 ? "0%"
-                : `${completedSessions}/${totalSessions} 
+                : `${completedSessions}/${totalSessions}
                 (${((completedSessions / totalSessions) * 100).toFixed(1)}%)`;
 
         this._mostPlayedWeek = res.mostPlayed.week;
         this._mostPlayedMonth = res.mostPlayed.month;
-        this.studyTime = res.studyTime;
+        this.studyTime = res.studyTime.map(
+            (val) => Math.round((val / 60 + Number.EPSILON) * 1000) / 1000
+        );
         this.updateContent(this.selectIdx);
         this.loading = false;
         console.log("stats", res);
-
-        this.chartData = {
-            labels: [
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-                " ",
-            ],
-            datasets: [
-                {
-                    label: "Line Chart",
-                    data: this.studyTime,
-                    fill: true,
-                    borderColor: "#664EFF",
-                    backgroundColor: "#664EFF",
-                    borderWidth: 2,
-                    pointRadius: 10,
-                },
-            ],
-        };
-    },
-    mounted() {
-        // this.chartData.datasets[0].data = this._lastWeekGraphData;
-        console.log(this.chartData.datasets[0].data);
     },
 };
 </script>
@@ -402,6 +361,10 @@ export default {
 
 .marginb-14 {
     margin-bottom: 14px;
+}
+
+.paddingl-10 {
+    padding-left: 10px;
 }
 
 .completionInfo {
