@@ -102,12 +102,12 @@
 
             <div v-else-if="sessionState !== SessionState.AFTER" class="center" >
                 <div class="wh100b time">{{ getTime }}</div>
-                <!-- <div class="wh20b intervals">{{ currInterval }} / {{ intervals }}</div> -->
                 <div class="progressbar">
-                    <div class="pbItem" v-for="i in (intervals - currInterval)" :key="i"></div>
+                    <!-- don't add key rn as it breaks it -->
+                    <div class="pbItem" v-for="i in (currInterval - 1)"></div>
                     <div class="pbItem pbActive" v-if="sessionState === SessionState.FOCUS"></div>
-                    <div class="pbItem" v-else></div>
-                    <div class="pbItem pbDone" v-for="i in (currInterval - 1)" :key="i"></div>
+                    <div class="pbItem pbNotDone" v-else></div>
+                    <div class="pbItem pbNotDone" v-for="i in (intervals - currInterval)"></div>
                 </div>
 
                 <button class="button" @click="endSession">
@@ -188,10 +188,18 @@ export default {
     },
     computed: {
         getTime() {
+            if (this.getHr)
+                return this.getHr + ":" + this.getMin + ":" + this.getSec;
             return this.getMin + ":" + this.getSec;
         },
+        getHr() {
+            const hr = Math.round(Math.floor(this.timestamp / 60 / 60));
+            if (hr === 0)
+                return '';
+            return hr < 10 ? `0${hr}` : `${hr}`;
+        },
         getMin() {
-            const min = Math.round(Math.floor(this.timestamp / 60));
+            const min = Math.round(Math.floor((this.timestamp / 60) % 60));
             return min < 10 ? `0${min}` : `${min}`;
         },
         getSec() {
@@ -235,7 +243,6 @@ export default {
                 duration,
                 track_window: { current_track }
             }) => {
-                console.log(current_track)
                 this.currTrackTitle = current_track.name;
                 this.currTrackArtist = current_track.artists.map((a) => a.name).join(" ");
                 console.log('pos', position)
@@ -545,11 +552,11 @@ export default {
     left: -20px;
 }
 
-.pbDone {
+.pbNotDone {
     background-color: #373544;
 }
 
-.pbDone:after {
+.pbNotDone:after {
     background: #373544;
 }
 

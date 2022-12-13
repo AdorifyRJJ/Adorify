@@ -238,7 +238,7 @@ export default {
 .playlists {
     display: flex;
     flex-wrap: wrap;
-    justify-content: start;
+    justify-content: flex-start;
     column-gap: 40px;
     row-gap: 30px;
 }

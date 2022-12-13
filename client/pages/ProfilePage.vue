@@ -181,7 +181,7 @@ export default {
         const res = await fetch("/api/adorifySession/stats").then(async (r) =>
             r.json()
         );
-        console.log(res)
+        // console.log(res)
         // calculate total time
         const _totalTime = res.totalTime;
         const min = formatSecFromSec(_totalTime, true);
@@ -201,7 +201,7 @@ export default {
         this._mostPlayedMonth = res.mostPlayed.month;
         this.updateContent(this.selectIdx);
         this.loading = false;
-        console.log("stats", res);
+        // console.log("stats", res);
     },
 };
 </script>
@@ -244,7 +244,7 @@ export default {
 
 .topDiv {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     gap: 10px;
 }
 

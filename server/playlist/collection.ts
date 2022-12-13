@@ -28,15 +28,19 @@ class PlaylistCollection {
     await PlaylistModel.deleteMany({ owner: owner });
   }
 
-  static async findMostLikes(): Promise<Array<HydratedDocument<Playlist>>> {
-    return PlaylistModel.find({ isPublic: true }).sort({ numLikes: -1 }).limit(6);
+  static async countTotal(): Promise<number> {
+    return PlaylistModel.find({ isPublic: true }).count();
   }
 
-  static async findMostUsed(): Promise<Array<HydratedDocument<Playlist>>> {
-    return PlaylistModel.find({ isPublic: true }).sort({ numUsed: -1 }).limit(6);
+  static async findMostLikes(offset: number): Promise<Array<HydratedDocument<Playlist>>> {
+    return PlaylistModel.find({ isPublic: true }).sort({ numLikes: -1 }).skip(offset).limit(6);
   }
 
-  static async findMostProductive(): Promise<Array<HydratedDocument<Playlist>>> {
+  static async findMostUsed(offset: number): Promise<Array<HydratedDocument<Playlist>>> {
+    return PlaylistModel.find({ isPublic: true }).sort({ numUsed: -1 }).skip(offset).limit(6);
+  }
+
+  static async findMostProductive(offset: number): Promise<Array<HydratedDocument<Playlist>>> {
     // return playlists in order of (playlist.numCompleted/playlist.numUsed) iff playlist.numCompleted > THRESHOLD
     // return PlaylistModel.find({isPublic: true}).sort({numCompleted: -1}).limit(6);
     return PlaylistModel.aggregate([
@@ -59,7 +63,7 @@ class PlaylistCollection {
           }
         }
       },
-    ]).sort({ productivityRatio: -1 }).limit(6)
+    ]).sort({ productivityRatio: -1 }).skip(offset).limit(6)
   }
 
   static async addLike(spotifyId: string): Promise<void> {

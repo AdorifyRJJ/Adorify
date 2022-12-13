@@ -137,7 +137,7 @@ export default {
         const res = await fetch("/api/adorifySession/leaderboard").then(
             async (r) => r.json()
         );
-        console.log(res);
+        // console.log(res);
 
         this._weekLB = res.topUsers.week;
         this._monthLB = res.topUsers.month;

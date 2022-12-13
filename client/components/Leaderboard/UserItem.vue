@@ -32,7 +32,7 @@ export default {
 .item {
     display: flex;
     align-items: center;
-    padding: 4px 8px;
+    padding: 4px 16px;
 }
 
 .image {
