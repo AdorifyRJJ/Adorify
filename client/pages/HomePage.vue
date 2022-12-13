@@ -250,7 +250,7 @@ export default {
             }
             const anotherRes = await this.handleSpotifyResponse(this.$store.state.spotifyApi.setRepeat('context'))
             if (!anotherRes.expected){
-                this.errorText = "Spotify Error: " + anotherRes.data;
+                this.errorText = "Spotify Error: abc" + anotherRes.data;
                 this.displayError();
                 return;
             }
