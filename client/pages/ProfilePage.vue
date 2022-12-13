@@ -41,7 +41,7 @@
                     </div>
                     <div class="completionInfo">
                         <div class="pill wh20n">
-                            <div v-if="loading" class="lds-ring">
+                            <div v-if="loading" class="lds-ring-sm">
                                 <div></div>
                                 <div></div>
                                 <div></div>
@@ -53,7 +53,7 @@
                             </div>
                         </div>
                         <div class="pill wh20n">
-                            <div v-if="loading" class="lds-ring">
+                            <div v-if="loading" class="lds-ring-sm">
                                 <div></div>
                                 <div></div>
                                 <div></div>
@@ -74,7 +74,13 @@
             @selectIdx="updateContent"
             class="btn-width-140 margin-y-30"
         />
-        <div class="scrollable">
+        <div v-if="loading" class="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div v-else class="scrollable">
             <div class="bottomUserStats scrollable-content">
                 <div class="mostPlayed">
                     <div class="wh30b margin-b-10">Most Played</div>
@@ -89,7 +95,9 @@
                     </div>
                 </div>
                 <div class="productivity">
-                    <div class="wh30b margin-b-14 padding-l-10">Productivity</div>
+                    <div class="wh30b margin-b-14 padding-l-10">
+                        Productivity
+                    </div>
                     <LineChartGenerator
                         class="chart"
                         :chart-options="options"
@@ -163,13 +171,6 @@ export default {
                     padding: { right: 10 },
                 },
                 plugins: {
-                    tooltip: {
-                        // callbacks: {
-                        //     label: function (context) {
-                        //         return context.dataset.data + " hr";
-                        //     },
-                        // },
-                    },
                     legend: { display: false },
                 },
                 scales: {
@@ -425,7 +426,7 @@ export default {
     gap: 10px;
 }
 
-.lds-ring {
+.lds-ring-sm {
     display: flex;
     align-self: center;
     /* padding-top: 10%; */
@@ -433,7 +434,7 @@ export default {
     width: 20px;
     height: 20px;
 }
-.lds-ring div {
+.lds-ring-sm div {
     box-sizing: border-box;
     display: block;
     position: absolute;
@@ -442,6 +443,44 @@ export default {
     margin: 2px;
     border: 3px solid #fff;
     border-radius: 80%;
+    animation: lds-ring-sm 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #fff transparent transparent transparent;
+}
+.lds-ring-sm div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+.lds-ring-sm div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+.lds-ring-sm div:nth-child(3) {
+    animation-delay: -0.15s;
+}
+@keyframes lds-ring-sm {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.lds-ring {
+    display: flex;
+    align-self: center;
+    padding-top: 5%;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+.lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 8px solid #fff;
+    border-radius: 50%;
     animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
     border-color: #fff transparent transparent transparent;
 }
