@@ -169,9 +169,9 @@ router.get(
     console.log('totaltime', totalTime)
     res.status(200).json({
       message: 'Here are the user stats.',
-      totalTime: totalTime,
-      completed: completed,
-      totalSessions: totalSessions,
+      totalTime: totalTime ?? 0,
+      completed: completed ?? 0,
+      totalSessions: totalSessions ?? 0,
       mostPlayed: {
         week: finalMostPlayedWeek,
         month: finalMostPlayedMonth,

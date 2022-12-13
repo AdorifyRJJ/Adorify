@@ -4,15 +4,27 @@
         <img :src="this.user.imgURL" class="image" width="60" height="60" />
         <div class="rightDiv">
             <div class="wh20n">{{ this.user.displayName }}</div>
-            <div class="wh20n">{{ this.user.focusTime }}</div>
+            <div class="wh20n">{{ this.focusTime }}</div>
         </div>
     </div>
 </template>
 
 <script>
+import { formatHrFromSec, formatMinFromSec } from "../../utils.js";
 export default {
     name: "UserItem",
     props: ["rank", "user"],
+    computed: {
+        focusTime() {
+            const focusTime_sec = this.user.focusTime * 60;
+            return (
+                formatHrFromSec(focusTime_sec) +
+                "hr " +
+                formatMinFromSec(focusTime_sec, true) +
+                "min"
+            );
+        },
+    },
 };
 </script>
 

@@ -238,12 +238,8 @@ export default {
                 console.log(current_track)
                 this.currTrackTitle = current_track.name;
                 this.currTrackArtist = current_track.artists.map((a) => a.name).join(" ");
-                const anotherRes = await this.handleSpotifyResponse(this.$store.state.spotifyApi.setRepeat('context'))
-                if (!anotherRes.expected){
-                    this.errorText = "Spotify Repeat Error: " + anotherRes.data;
-                    this.displayError();
-                    return;
-                }
+                console.log('pos', position)
+                
             });
             const res = await this.handleSpotifyResponse(this.$store.state.spotifyApi.play({
                 device_id: this.$store.state.deviceId, 
@@ -251,6 +247,12 @@ export default {
             }));
             if (!res.expected){
                 this.errorText = "Spotify Play Error: " + res.data;
+                this.displayError();
+                return;
+            }
+            const anotherRes = await this.handleSpotifyResponse(this.$store.state.spotifyApi.setRepeat("context", {device_id: this.$store.state.deviceId}))
+            if (!anotherRes.expected){
+                this.errorText = "Spotify Repeat Error: " + anotherRes.data;
                 this.displayError();
                 return;
             }
