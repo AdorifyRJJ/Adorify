@@ -21,12 +21,14 @@
                     v-for="(user, i) in leaderboard"
                     :rank="i + 1"
                     :user="user"
+                    :isMe="user._id === username"
                 ></UserItem>
                 <div v-if="userRank.rank + 1 > 10">
                     <div class="sep"></div>
                     <UserItem
                         :rank="userRank.rank + 1"
                         :user="{imgURL: $store.state.imgURL, displayName: $store.state.displayName, focusTime: userRank.focusTime}"
+                        :isMe="true"
                     ></UserItem>
                 </div>
             </div>
@@ -54,6 +56,7 @@ export default {
 
             userRank: null,
             allUserRanks: null,
+            username: '',
 
             // leaderboard: undefined,
             // allLeaderboards: undefined,
@@ -141,6 +144,7 @@ export default {
         this._allTimeLB = res.topUsers.allTime;
         
         this.allUserRanks = res.userRanks;
+        this.username = res._id;
 
         this.updateContent(this.selectIdx);
         this.loading = false;
