@@ -7,47 +7,17 @@
                 :titles="btnGroupTitles"
                 :initIdx="selectIdx"
                 @selectIdx="updateContent"
-                class="btn-width-220 marginy-18"
+                class="btn-width-180"
             />
-            <!-- <div class="btn-group">
-                <button
-                    :class="{
-                        selectedBtn: viewingMine,
-                        unselectedBtn: !viewingMine,
-                    }"
-                    class="btn-group-button btn-width-210"
-                    @click="getMyPlaylists"
-                >
-                    <span class="wh20n">My Spotify Library</span>
-                </button>
-                <button
-                    :class="{
-                        selectedBtn: !viewingMine,
-                        unselectedBtn: viewingMine,
-                    }"
-                    class="btn-group-button btn-width-210"
-                    @click="getPublicPlaylists"
-                >
-                    <span class="wh20n">Public Library</span>
-                </button>
-            </div> -->
-
-            <!-- <div v-if="!viewingMine" class="bgroup2">
-                <button class="dropdown" @click="getMostLiked">
-                    Most liked
-                </button>
-                <button class="dropdown" @click="getMostUsed">Most Used</button>
-                <button class="dropdown" @click="getMostProductive">
-                    Most Productive
-                </button>
-            </div> -->
             <div v-if="!viewingMine" class="dropdown">
-                <div class="selected wh16n" @click="toggleChoosing">
-                    <div class="selectedText">{{selected}}</div>
-                    <img src="../public/pagePrev.svg">
+                <div>
+                    <button class="selected wh16n" @click="toggleChoosing">
+                        <div class="selectedText">{{selected}}</div>
+                        <img src="../public/dropdown.svg">
+                    </button>
                 </div>
                 <div v-if="choosing" class="expanded">
-                    <div v-for="(option, i) in dropdownOptions" @click="toggleChoice(option)" class="choice">
+                    <div v-for="(option, i) in dropdownOptions" @click="toggleChoice(option)" class="choice wh16n">
                         {{option}}
                     </div>
                 </div>
@@ -127,9 +97,18 @@ export default {
         toggleChoosing() {
             this.choosing = !this.choosing;
         },
-        toggleChoice(option) {
+        async toggleChoice(option) {
             this.selected = option;
             this.choosing = false;
+            if (option === 'Most Liked') {
+                await this.getMostLiked();
+            }
+            else if (option === 'Most Used') {
+                await this.getMostUsed();
+            }
+            else {
+                await this.getMostProductive();
+            }
         },
         async prevPage() {
             this.setLoading(true);
@@ -245,7 +224,7 @@ export default {
     flex-wrap: wrap;
     justify-content: start;
     column-gap: 40px;
-    row-gap: 32px;
+    row-gap: 30px;
 }
 
 @media (min-width: 1100px) {
@@ -308,19 +287,18 @@ export default {
     background-color: #373544;
     height: fit-content;
     border-radius: 22px;
-    position: relative;
 }
 
 .selected {
     height: 44px;
-    width: 150px;
+    width: 180px;
     border-radius: 22px;
     background-color: #664eff;
     padding: 0 16px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
+    border: none;
+
+    z-index: 5;
+    position: relative;
 
     display: flex;
     justify-content: space-between;
@@ -328,44 +306,38 @@ export default {
 }
 
 .expanded {
-    width: 150px;
+    width: 180px;
     display: flex;
     flex-direction: column;
+    position: absolute;
+    z-index: 3;
+    padding: 50px 0 6px 0;
+    cursor: pointer;
 
-    /* margin-top: -22px; */
-    /* background-color: #373544; */
+    margin-top: -44px;
+    border-radius: 22px;
+    background-color: #373544;
+    box-shadow: 0 0 10px black;
 }
 
 .choice {
-
+    padding: 6px 16px;
 }
 
-
-
 .btn-div {
+    margin-top: 18px;
+    margin-bottom: 30px;
+
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .btn-width-210 {
     width: 210px;
 }
 
-.bgroup2 {
-    display: flex;
-}
-
-.marginy-18 {
-    margin: 18px 0;
-}
-
-/* .dropdown {
-    padding: 10px;
-    border: solid;
-    cursor: pointer;
-} */
-
-.btn-width-220::v-deep .btn-group-button {
-    width: 220px;
+.btn-width-180::v-deep .btn-group-button {
+    width: 180px;
 }
 </style>
