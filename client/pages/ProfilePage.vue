@@ -175,6 +175,7 @@ export default {
                 },
                 scales: {
                     y: {
+                        beginAtZero: true,
                         ticks: {
                             maxTicksLimit: 5,
                             font: {
