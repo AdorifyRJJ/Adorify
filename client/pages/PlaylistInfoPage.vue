@@ -18,6 +18,7 @@
                             </div>
                         </div>
                         <LikeButton
+                            v-if="!loading"
                             class="likeBtn"
                             :spotifyId="spotifyId"
                             :image="image"
@@ -118,20 +119,24 @@ export default {
             const url = `/api/playlists/info/${spotifyId}`;
             const res = await fetch(url).then(async (r) => r.json());
             this.tracks = res.playlistInfo.tracks;
+            this.isLiked = res.isLiked;
+            this.owner = res.playlistInfo.owner.display_name;
+            this.image = res.playlistInfo.images[0]?.url;
+            this.name = res.playlistInfo.name;
             this.setLoading(false);
         },
         exit() {
             this.$router.push({ name: "Playlists" });
         },
     },
-    async mounted() {
+    async created() {
         if (!this.$store.state.displayName) {
             this.$router.push({ name: "Login" });
         }
 
         await this.getTracks(this.spotifyId);
     },
-    async beforeCreate() {
+    beforeCreate() {
         if (this.$store.state.connected) {
             this.$store.commit("forceDisconnect");
         }
