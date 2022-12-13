@@ -93,9 +93,9 @@ export default {
             const today = new Date();
             const testDate = new Date();
             testDate.setDate(testDate.getDate() - 5);
-            const length = 1;
+            const length = 2;
             const completed = 1;
-            const initializedSessions = 1;
+            const initializedSessions = 2;
             const spotifyId = "0Z0woTASJoPAOaSn5GLXpm"
             if (completed > initializedSessions) return;
             const data = await fetch("/api/adorifySession/testadd", {
@@ -104,7 +104,7 @@ export default {
                 body: JSON.stringify({
                     length: length,
                     spotifyId: spotifyId,
-                    startTime: today,
+                    startTime: lastMonth,
                     completed: completed,
                     initializedSessions: initializedSessions,
                 }),
