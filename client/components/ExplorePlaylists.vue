@@ -13,7 +13,7 @@
                 <div>
                     <button class="selected wh16n" @click="toggleChoosing">
                         <div class="selectedText">{{selected}}</div>
-                        <img src="dropdown.svg">
+                        <img src="../public/dropdown.svg">
                     </button>
                 </div>
                 <div v-if="choosing" class="expanded">
