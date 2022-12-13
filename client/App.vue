@@ -55,7 +55,7 @@ export default {
                     console.log("Ready with Device ID", device_id);
                     const res = await this.handleSpotifyResponse(this.$store.state.spotifyApi.setRepeat('context'))
                     if (!res.expected){
-                        this.errorText = "Spotify Repeat Error: " + anotherRes.data;
+                        this.errorText = "Spotify Repeat Error: " + res.data;
                         this.displayError();
                         return;
                     }
