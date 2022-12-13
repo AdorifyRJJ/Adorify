@@ -6,7 +6,7 @@ class PlaylistCollection {
   static async addOne(spotifyId: string, owner: string, isPublic: boolean): Promise<HydratedDocument<Playlist>> {
     const playlist = new PlaylistModel({
       spotifyId: spotifyId,
-      numLikes: 1,
+      numLikes: 0,
       numUsed: 0,
       numCompleted: 0,
       owner: owner,
@@ -55,16 +55,16 @@ class PlaylistCollection {
     await playlist.save();
   }
 
-  static async addUsed(spotifyId: string): Promise<void> {
+  static async addUsed(spotifyId: string, amount: number): Promise<void> {
     const playlist = await PlaylistModel.findOne({spotifyId: spotifyId});
-    playlist.numUsed++;
+    playlist.numUsed = playlist.numUsed + amount;
 
     await playlist.save();
   }
 
-  static async addCompleted(spotifyId: string): Promise<void> {
+  static async addCompleted(spotifyId: string, amount: number): Promise<void> {
     const playlist = await PlaylistModel.findOne({spotifyId: spotifyId});
-    playlist.numCompleted++;
+    playlist.numCompleted = playlist.numCompleted + amount;
 
     await playlist.save();
   }

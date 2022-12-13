@@ -13,7 +13,7 @@ Vue.mixin({
         }
       } catch (e) {
         return {
-          data: e.body,
+          data: e.body.error.message,
           expected: false,
         }
       }
