@@ -36,7 +36,9 @@
                     </button>
                 </div>
                 <div class="bottomDiv">
-                    <div class="wh40b margin-b-8">{{ $store.state.displayName }}</div>
+                    <div class="wh40b margin-b-8">
+                        {{ $store.state.displayName }}
+                    </div>
                     <div class="completionInfo">
                         <div class="pill wh20n">
                             <div v-if="loading" class="lds-ring">
@@ -47,7 +49,7 @@
                             </div>
                             <div v-else class="pillInfo">
                                 {{ this.totalTime }}
-                                <img src="../public/images/studyTime.svg">
+                                <img src="../public/images/studyTime.svg" />
                             </div>
                         </div>
                         <div class="pill wh20n">
@@ -59,7 +61,7 @@
                             </div>
                             <div v-else class="pillInfo">
                                 {{ this.sessionInfo }}
-                                <img src="../public/images/completed.svg">
+                                <img src="../public/images/completed.svg" />
                             </div>
                         </div>
                     </div>
@@ -92,7 +94,10 @@
         </div>
     </div>
     <div v-else class="deleteModal center">
-        <div class="modalText">Are you sure? This action will delete all data associated with your account.</div>
+        <div class="modalText">
+            Are you sure? This action will delete all data associated with your
+            account.
+        </div>
         <div class="modalButtons">
             <button class="button" @click="noDelete">
                 <span class="wh20b">No, don't delete</span>
@@ -106,7 +111,11 @@
 
 <script>
 import ButtonGroup from "../components/common/ButtonGroup.vue";
-import { formatHrFromSec, formatMinFromSec, formatSecFromSec } from "../utils.js";
+import {
+    formatHrFromSec,
+    formatMinFromSec,
+    formatSecFromSec,
+} from "../utils.js";
 
 export default {
     components: { ButtonGroup },
@@ -171,7 +180,7 @@ export default {
             await fetch(`/api/spotify/logout`);
             this.$store.commit("resetStore");
             this.$router.push({ name: "Login" });
-        }
+        },
     },
     async beforeCreate() {
         this.loading = true;
@@ -181,7 +190,7 @@ export default {
         const res = await fetch("/api/adorifySession/stats").then(async (r) =>
             r.json()
         );
-        console.log(res)
+        console.log(res);
         // calculate total time
         const _totalTime = res.totalTime;
         const min = formatSecFromSec(_totalTime, true);
@@ -195,7 +204,7 @@ export default {
             totalSessions === 0
                 ? "0%"
                 : `${completedSessions}/${totalSessions} 
-                (${(completedSessions / totalSessions * 100).toFixed(1)}%)`;
+                (${((completedSessions / totalSessions) * 100).toFixed(1)}%)`;
 
         this._mostPlayedWeek = res.mostPlayed.week;
         this._mostPlayedMonth = res.mostPlayed.month;
@@ -226,7 +235,6 @@ export default {
     height: 260px;
     width: 900px;
 }
-
 
 .bottomUserStats {
     display: flex;
