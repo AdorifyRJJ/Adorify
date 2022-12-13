@@ -68,7 +68,7 @@
             :titles="btnGroupTitles"
             :initIdx="selectIdx"
             @selectIdx="updateContent"
-            class="btn-width-150 marginy-32"
+            class="btn-width-140 marginy-32"
         />
         <div class="bottomUserStats">
             <div class="mostPlayed">
@@ -250,8 +250,8 @@ export default {
     height: 44px;
 }
 
-.btn-width-150::v-deep .btn-group-button {
-    width: 150px;
+.btn-width-140::v-deep .btn-group-button {
+    width: 140px;
 }
 
 .mostPlayed {

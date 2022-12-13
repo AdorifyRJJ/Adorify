@@ -10,7 +10,7 @@
             class="btn-group-button"
             @click="handleSelect(i)"
         >
-            <span class="wh20n">{{ title }}</span>
+            <span class="wh16n">{{ title }}</span>
         </button>
     </div>
 </template>
