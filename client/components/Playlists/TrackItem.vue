@@ -8,8 +8,8 @@
         />
         <div class="content">
             <div class="oneHalf">
-                <div class="wh16b">{{ this.track.name }}</div>
-                <div class="gr16">
+                <div class="wh16b truncate1line">{{ this.track.name }}</div>
+                <div class="gr16 truncate1line">
                     {{
                         this.track.artists
                             .map((artist) => artist.name)
@@ -17,8 +17,8 @@
                     }}
                 </div>
             </div>
-            <div class="gr16 oneFourth">{{ this.track.album.name }}</div>
-            <div class="gr16 oneFourth end">{{ this.duration }}</div>
+            <div class="truncate2lines gr16 oneFourth">{{ this.track.album.name }}</div>
+            <div class="truncate2lines gr16 oneFourth end">{{ this.duration }}</div>
         </div>
     </div>
 </template>

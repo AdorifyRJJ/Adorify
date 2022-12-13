@@ -31,6 +31,5 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    color: white;
 }
 </style>

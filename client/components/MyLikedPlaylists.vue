@@ -66,9 +66,6 @@ export default {
 }
 
 @media (min-width: 1200px) {
-    .item {
-        width: 200px;
-    }
 }
 
 @media (min-width: 1500px) {

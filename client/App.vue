@@ -128,9 +128,9 @@ export default {
 
 ::-webkit-scrollbar-track {
   background: #f1f1f1; 
-} */
+}
  
-/* ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: #888; 
 }
 
@@ -146,7 +146,7 @@ body {
 #remainingContent {
     width: 100%;
     position: absolute;
-    top: 66px;
+    top: 72px;
     bottom: 0;
 }
 main {
@@ -187,6 +187,13 @@ main {
     font-size: 100px;
     font-weight: bold;
 }
+
+.wh16n {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: normal;
+}
+
 .wh20n {
     color: #ffffff;
     font-size: 20px;

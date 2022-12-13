@@ -12,13 +12,11 @@
             <img
                 class="image"
                 :src="this.playlist.images[0]?.url"
-                height="240"
-                width="240"
+                height="200"
+                width="200"
             />
-            <div class="truncate2lines">
-                <div class="wh16b">{{ this.playlist.name }}</div>
-            </div>
-            <div class="gr16">{{ this.playlist.owner.display_name }}</div>
+            <div class="truncate1line wh16b playlistName">{{ this.playlist.name }}</div>
+            <div class="truncate1line gr16 ownerName">{{ this.playlist.owner.display_name }}</div>
         </div>
     </div>
 </template>
@@ -52,8 +50,7 @@ export default {
     flex-direction: column;
     align-self: center;
     position: relative;
-    width: 240px;
-    height: 320px;
+    width: 200px;
 }
 
 .card:hover {
@@ -64,8 +61,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    filter: brightness(90%);
+    filter: brightness(80%);
 }
 
 .cardContent:hover {
@@ -81,5 +77,16 @@ export default {
     margin: 16px;
     position: absolute;
     z-index: 1;
+    /* filter: drop-shadow(0px 0px 5px #664eff); */
+}
+
+.playlistName {
+    margin-top: 12px;
+    margin-bottom: 2px;
+    max-width: 200px;
+}
+
+.ownerName {
+    max-width: 200px
 }
 </style>

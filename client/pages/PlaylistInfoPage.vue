@@ -6,14 +6,14 @@
                 <img :src="image" class="image" height="186" width="186" />
                 <div class="rightContainer">
                     <div class="topDiv">
-                        <button class="backBtn wh20b" @click="exit">
+                        <button class="button wh20b" @click="exit">
                             Back
                         </button>
                     </div>
                     <div class="bottomDiv">
-                        <div>
-                            <div class="wh30b">{{ this.name }}</div>
-                            <div class="gr16">{{ this.owner }}</div>
+                        <div class="pInfo">
+                            <div class="wh30b truncate1line playlistName">{{ this.name }}</div>
+                            <div class="gr16 truncate1line ownerName">{{ this.owner }}</div>
                         </div>
                         <LikeButton
                             class="likeBtn"
@@ -32,21 +32,23 @@
                 <div></div>
                 <div></div>
             </div>
-            <div v-else>
-                <div class="tracks">
-                    <TrackItem
-                        :key="i"
-                        v-for="(track, i) in tracks.items"
-                        :track="track.track"
-                    />
-                </div>
-                <div>
-                    <button v-if="tracks.previous" @click="prevPage">
-                        prev page
-                    </button>
-                    <button v-if="tracks.next" @click="nextPage">
-                        next page
-                    </button>
+            <div v-else class="scrollable">
+                <div class="scrollable-content">
+                    <div class="tracks">
+                        <TrackItem
+                            :key="i"
+                            v-for="(track, i) in tracks.items"
+                            :track="track.track"
+                        />
+                    </div>
+                    <div class="botButtons">
+                        <button class="botButton prev" :disabled="!tracks.previous" @click="prevPage">
+                            <img src="../public/pagePrev.svg">
+                        </button>
+                        <button class="botButton next" :disabled="!tracks.next" @click="nextPage">
+                            <img src="../public/pageNext.svg">
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -168,61 +170,65 @@ export default {
 .page {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    height: 100%;
 }
 
 .infoSection {
     display: flex;
     flex-direction: column;
-    width: 520px;
+    width: 440px;
 }
 
-@media (min-width: 1500px) {
+@media (min-width: 1100px) {
     .infoSection {
-        width: 800px;
+        width: 680px;
     }
 }
 
-@media (min-width: 1800px) {
+@media (min-width: 1340px) {
     .infoSection {
-        width: 1080px;
+        width: 920px;
     }
 }
 
-@media (min-width: 2100px) {
+@media (min-width: 1620px) {
     .infoSection {
-        width: 1360px;
+        width: 1160px;
     }
 }
 
+@media (min-width: 1940px) {
+    .infoSection {
+        width: 1400px;
+    }
+}
 .playlistInfo {
     display: flex;
     /* outline: auto; */
     flex-direction: row;
-    height: 186px;
+    /* height: 186px; */
+    width: 100%;
+    margin-bottom: 30px;
 }
 
 .rightContainer {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-width: 0;
     width: 100%;
 }
 
 .topDiv {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
 }
 
-.backBtn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 50px;
-    width: 100px;
-    border: 0;
-    background-color: #6c4eb3;
-    border-radius: 20px;
+.pInfo {
+    min-width: 0;
 }
+
 .bottomDiv {
     display: flex;
     flex-direction: row;
@@ -238,7 +244,7 @@ export default {
     align-self: center;
     width: 29px;
     height: 29px;
-    margin-left: 30px;
+    margin-left: 20px;
 }
 
 .image {
@@ -249,11 +255,45 @@ export default {
 }
 
 .tracks {
-    margin-top: 50px;
     display: flex;
     flex-direction: column;
     row-gap: 16px;
-    height: 60vh;
-    overflow-y: scroll;
 }
+
+.playlistName {
+    max-width: 100%;
+}
+
+.botButtons {
+    display: flex;
+    margin-top: 32px;
+    margin-bottom: 10px;
+    gap: 16px;
+}
+
+.botButton {
+    padding: 2px 0 0 0;
+    height: 44px;
+    width: 44px;
+    border-radius: 22px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border: none;
+}
+
+.botButton:hover {
+    filter: opacity(70%);
+}
+
+.botButton:disabled {
+    filter: opacity(30%);
+}
+
+.prev {
+    padding-right: 4px;
+}
+
+.next {
+    padding-left: 4px;
+}
+
 </style>
