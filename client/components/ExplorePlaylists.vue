@@ -69,6 +69,8 @@ export default {
             choosing: false,
             selected: 'Most Liked',
             dropdownOptions: ['Most Liked', 'Most Used', 'Most Productive'],
+
+            controller: new AbortController(),
         };
     },
     computed: {
@@ -83,6 +85,10 @@ export default {
         },
     },
     methods: {
+        resetController() {
+            this.controller.abort();
+            this.controller = new AbortController();
+        },
         async updateContent(i) {
             this.selectedIdx = i;
             if (i === 0) {
@@ -112,25 +118,28 @@ export default {
         },
         async prevPage() {
             this.setLoading(true);
+            this.resetController();
             const newOffset = this.offset - this.limit;
             const url = `/api/playlists/${this.currPlaylistsName}?offset=${newOffset}`;
-            const res = await fetch(url).then(async (r) => r.json());
+            const res = await fetch(url, {signal: this.controller.signal}).then(async (r) => r.json());
             this.currPlaylists = res;
             this.setLoading(false);
         },
         async nextPage() {
             this.setLoading(true);
+            this.resetController();
             const newOffset = this.offset + this.limit;
             const url = `/api/playlists/${this.currPlaylistsName}?offset=${newOffset}`;
-            const res = await fetch(url).then(async (r) => r.json());
+            const res = await fetch(url, {signal: this.controller.signal}).then(async (r) => r.json());
             this.currPlaylists = res;
             this.setLoading(false);
         },
         async getMyPlaylists() {
             this.currPlaylistsName = "mine";
+            this.resetController();
             this.setLoading(true);
             const url = `/api/playlists/mine?offset=0`;
-            const res = await fetch(url).then(async (r) => r.json());
+            const res = await fetch(url, {signal: this.controller.signal}).then(async (r) => r.json());
             this.currPlaylists = res;
             this.setLoading(false);
         },
@@ -141,27 +150,30 @@ export default {
         },
         async getMostLiked() {
             this.currPlaylistsName = "mostLiked";
+            this.resetController();
             this.setLoading(true);
             const url = `/api/playlists/mostLiked?offset=0`;
-            const res = await fetch(url).then(async (r) => r.json());
+            const res = await fetch(url, {signal: this.controller.signal}).then(async (r) => r.json());
             this.currPlaylists = res;
 
             this.setLoading(false);
         },
         async getMostUsed() {
             this.currPlaylistsName = "mostUsed";
+            this.resetController();
             this.setLoading(true);
             const url = `/api/playlists/mostUsed?offset=0`;
-            const res = await fetch(url).then(async (r) => r.json());
+            const res = await fetch(url, {signal: this.controller.signal}).then(async (r) => r.json());
             this.currPlaylists = res;
 
             this.setLoading(false);
         },
         async getMostProductive() {
             this.currPlaylistsName = "mostProductive";
+            this.resetController();
             this.setLoading(true);
             const url = `/api/playlists/mostProductive?offset=0`;
-            const res = await fetch(url).then(async (r) => r.json());
+            const res = await fetch(url, {signal: this.controller.signal}).then(async (r) => r.json());
             this.currPlaylists = res;
 
             this.setLoading(false);

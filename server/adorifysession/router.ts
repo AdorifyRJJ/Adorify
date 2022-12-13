@@ -161,12 +161,13 @@ router.get(
     const finalMostPlayedMonth = await Promise.all(mostPlayedWeek.map((p: SpotifyApi.PlaylistObjectSimplified) => playlistUtil.constructShallowPlaylistResponse(req.session.username, p)))
 
     const studyTimeArr = await AdorifySessionCollection.getStudyTimeByUsername(req.session.username);
-    const studyTimeModified = [];
+    let studyTimeModified = [];
 
     for (const tuple of studyTimeArr) {
       studyTimeModified.push(tuple[1]);
     }
-    console.log('totaltime', totalTime)
+    if (studyTimeModified.length === 0) studyTimeModified = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
     res.status(200).json({
       message: 'Here are the user stats.',
       totalTime: totalTime ?? 0,

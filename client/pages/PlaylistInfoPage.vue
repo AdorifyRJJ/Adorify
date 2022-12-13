@@ -6,14 +6,16 @@
                 <img :src="image" class="image" height="186" width="186" />
                 <div class="rightContainer">
                     <div class="topDiv">
-                        <button class="button wh20b" @click="exit">
-                            Back
-                        </button>
+                        <button class="button wh20b" @click="exit">Back</button>
                     </div>
                     <div class="bottomDiv">
                         <div class="pInfo">
-                            <div class="wh30b truncate1line playlistName">{{ this.name }}</div>
-                            <div class="gr16 truncate1line ownerName">{{ this.owner }}</div>
+                            <div class="wh30b truncate1line playlistName">
+                                {{ this.name }}
+                            </div>
+                            <div class="gr16 truncate1line ownerName">
+                                {{ this.owner }}
+                            </div>
                         </div>
                         <LikeButton
                             class="likeBtn"
@@ -42,11 +44,19 @@
                         />
                     </div>
                     <div class="botButtons">
-                        <button class="botButton prev" :disabled="!tracks.previous" @click="prevPage">
-                            <img src="../public/pagePrev.svg">
+                        <button
+                            class="botButton prev"
+                            :disabled="!tracks.previous"
+                            @click="prevPage"
+                        >
+                            <img src="../public/pagePrev.svg" />
                         </button>
-                        <button class="botButton next" :disabled="!tracks.next" @click="nextPage">
-                            <img src="../public/pageNext.svg">
+                        <button
+                            class="botButton next"
+                            :disabled="!tracks.next"
+                            @click="nextPage"
+                        >
+                            <img src="../public/pageNext.svg" />
                         </button>
                     </div>
                 </div>
@@ -111,7 +121,7 @@ export default {
             this.setLoading(false);
         },
         exit() {
-            this.$router.back();
+            this.$router.push({ name: "Playlists" });
         },
     },
     async mounted() {
@@ -296,5 +306,4 @@ export default {
 .next {
     padding-left: 4px;
 }
-
 </style>
