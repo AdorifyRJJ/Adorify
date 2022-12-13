@@ -72,28 +72,30 @@
             :titles="btnGroupTitles"
             :initIdx="selectIdx"
             @selectIdx="updateContent"
-            class="btn-width-140 margin-b-30 margin-t-18"
+            class="btn-width-140 margin-y-30"
         />
-        <div class="bottomUserStats">
-            <div class="mostPlayed">
-                <div class="wh30b margin-b-10">Most Played</div>
-                <div class="">
-                    <div
-                        :key="i"
-                        v-for="(playlist, i) in mostPlayed"
-                        class="item gr20 truncate1line"
-                    >
-                        {{ playlist.name }}
+        <div class="scrollable">
+            <div class="bottomUserStats scrollable-content">
+                <div class="mostPlayed">
+                    <div class="wh30b margin-b-10">Most Played</div>
+                    <div class="">
+                        <div
+                            :key="i"
+                            v-for="(playlist, i) in mostPlayed"
+                            class="item gr20 truncate1line"
+                        >
+                            {{ playlist.name }}
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="productivity">
-                <div class="wh30b margin-b-14 padding-l-10">Productivity</div>
-                <LineChartGenerator
-                    class="chart"
-                    :chart-options="options"
-                    :chart-data="chartData"
-                />
+                <div class="productivity">
+                    <div class="wh30b margin-b-14 padding-l-10">Productivity</div>
+                    <LineChartGenerator
+                        class="chart"
+                        :chart-options="options"
+                        :chart-data="chartData"
+                    />
+                </div>
             </div>
         </div>
     </div>
@@ -309,6 +311,8 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    height: 100%;
 }
 
 .image {
