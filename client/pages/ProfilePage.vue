@@ -106,7 +106,7 @@
 
 <script>
 import ButtonGroup from "../components/common/ButtonGroup.vue";
-import { formatHrFromSec, formatMinFromSec } from "../utils.js";
+import { formatHrFromSec, formatMinFromSec, formatSecFromSec } from "../utils.js";
 
 export default {
     components: { ButtonGroup },
@@ -181,11 +181,11 @@ export default {
         const res = await fetch("/api/adorifySession/stats").then(async (r) =>
             r.json()
         );
-
+        console.log(res)
         // calculate total time
         const _totalTime = res.totalTime;
-        const min = formatMinFromSec(_totalTime, true);
-        const hr = formatHrFromSec(_totalTime);
+        const min = formatSecFromSec(_totalTime, true);
+        const hr = formatMinFromSec(_totalTime);
         this.totalTime = `${hr}hr ${min}min`;
 
         // calculate session info
