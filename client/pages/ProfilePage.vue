@@ -93,6 +93,7 @@
 
 <script>
 import ButtonGroup from "../components/common/ButtonGroup.vue";
+import { formatHrFromSec, formatMinFromSec } from "../utils.js";
 
 export default {
     components: { ButtonGroup },
@@ -154,15 +155,13 @@ export default {
 
         // calculate total time
         const _totalTime = res.totalTime;
-        let min = Math.floor(_totalTime % 60);
-        min = min < 10 ? `0${min}` : `${min}`;
-        const hr = Math.floor(_totalTime / 60);
+        const min = formatMinFromSec(_totalTime, true);
+        const hr = formatHrFromSec(_totalTime);
         this.totalTime = `${hr}hr ${min}min`;
 
+        // calculate session info
         const completedSessions = res.completed;
         const totalSessions = res.totalSessions;
-
-        // calculate session info
         this.sessionInfo =
             totalSessions === 0
                 ? "0%"
