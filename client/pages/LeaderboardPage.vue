@@ -6,6 +6,7 @@
             :titles="btnGroupTitles"
             :initIdx="selectIdx"
             @selectIdx="updateContent"
+            class="btn-width-180"
         />
         <!-- <div>{{ this.content }}</div> -->
         <!-- <div v-if="leaderboard"> -->
@@ -157,6 +158,10 @@ export default {
     height: 60vh;
     width: 700px;
     overflow-y: scroll;
+}
+
+.btn-width-180::v-deep .btn-group-button {
+    width: 180px;
 }
 
 .lds-ring {

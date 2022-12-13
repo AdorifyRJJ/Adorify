@@ -107,7 +107,7 @@ export default {
 }
 
 ::-webkit-scrollbar {
-    width: 0; 
+    width: 0;
     background: transparent;
 }
 
@@ -117,10 +117,11 @@ export default {
     visibility: hidden;
 }
 
-.scrollable-content, .scrollable:hover, .scrollable:focus {
+.scrollable-content,
+.scrollable:hover,
+.scrollable:focus {
     visibility: visible;
 }
-
 
 /* ::-webkit-scrollbar {
     width: 10px;
@@ -128,9 +129,9 @@ export default {
 
 ::-webkit-scrollbar-track {
   background: #f1f1f1; 
-} */
+}
  
-/* ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: #888; 
 }
 
@@ -146,7 +147,7 @@ body {
 #remainingContent {
     width: 100%;
     position: absolute;
-    top: 66px;
+    top: 72px;
     bottom: 0;
 }
 main {
@@ -187,6 +188,13 @@ main {
     font-size: 100px;
     font-weight: bold;
 }
+
+.wh16n {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: normal;
+}
+
 .wh20n {
     color: #ffffff;
     font-size: 20px;
@@ -242,9 +250,10 @@ main {
     color: #ffffff;
     background-color: #373544;
     height: 44px;
-    padding: 0 28px;
     border-radius: 0px;
     border-width: 0;
+    white-space: nowrap;
+    text-align: center;
 }
 .btn-group {
     display: flex;

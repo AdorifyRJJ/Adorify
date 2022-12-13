@@ -3,7 +3,13 @@
         <div class="wh40b">Find playlists</div>
 
         <div class="btn-div">
-            <div class="btn-group marginy-18">
+            <ButtonGroup
+                :titles="btnGroupTitles"
+                :initIdx="selectIdx"
+                @selectIdx="updateContent"
+                class="btn-width-220 marginy-18"
+            />
+            <!-- <div class="btn-group">
                 <button
                     :class="{
                         selectedBtn: viewingMine,
@@ -24,9 +30,9 @@
                 >
                     <span class="wh20n">Public Library</span>
                 </button>
-            </div>
+            </div> -->
 
-            <div v-if="!viewingMine" class="bgroup2">
+            <!-- <div v-if="!viewingMine" class="bgroup2">
                 <button class="dropdown" @click="getMostLiked">
                     Most liked
                 </button>
@@ -34,6 +40,17 @@
                 <button class="dropdown" @click="getMostProductive">
                     Most Productive
                 </button>
+            </div> -->
+            <div v-if="!viewingMine" class="dropdown">
+                <div class="selected wh16n" @click="toggleChoosing">
+                    <div class="selectedText">{{selected}}</div>
+                    <img src="../public/pagePrev.svg">
+                </div>
+                <div v-if="choosing" class="expanded">
+                    <div v-for="(option, i) in dropdownOptions" @click="toggleChoice(option)" class="choice">
+                        {{option}}
+                    </div>
+                </div>
             </div>
         </div>
         <div v-if="loading" class="lds-ring">
@@ -42,21 +59,23 @@
             <div></div>
             <div></div>
         </div>
-        <div v-else>
-            <div class="playlists">
-                <PlaylistCard
-                    :key="i"
-                    v-for="(playlist, i) in currPlaylists.items"
-                    :playlist="playlist"
-                ></PlaylistCard>
-            </div>
-            <div>
-                <button v-if="currPlaylists.previous" @click="prevPage">
-                    prev page
-                </button>
-                <button v-if="currPlaylists.next" @click="nextPage">
-                    next page
-                </button>
+        <div v-else class="scrollable">
+            <div class="scrollable-content">
+                <div class="playlists">
+                    <PlaylistCard
+                        :key="i"
+                        v-for="(playlist, i) in currPlaylists.items"
+                        :playlist="playlist"
+                    ></PlaylistCard>
+                </div>
+                <div class="botButtons">
+                    <button class="botButton prev" :disabled="!currPlaylists.previous" @click="prevPage">
+                        <img src="pagePrev.svg">
+                    </button>
+                    <button class="botButton next" :disabled="!currPlaylists.next" @click="nextPage">
+                        <img src="pageNext.svg">
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -71,9 +90,15 @@ export default {
     name: "ExplorePlaylists",
     data() {
         return {
+            btnGroupTitles: ["My Spotify Library", "Public Library"],
+            selectIdx: 0,
             currPlaylists: [],
             currPlaylistsName: null,
             loading: true,
+
+            choosing: false,
+            selected: 'Most Liked',
+            dropdownOptions: ['Most Liked', 'Most Used', 'Most Productive'],
         };
     },
     computed: {
@@ -88,8 +113,23 @@ export default {
         },
     },
     methods: {
+        async updateContent(i) {
+            this.selectedIdx = i;
+            if (i === 0) {
+                await this.getMyPlaylists();
+            } else if (i === 1) {
+                await this.getPublicPlaylists();
+            }
+        },
         setLoading(loading) {
             this.loading = loading;
+        },
+        toggleChoosing() {
+            this.choosing = !this.choosing;
+        },
+        toggleChoice(option) {
+            this.selected = option;
+            this.choosing = false;
         },
         async prevPage() {
             this.setLoading(true);
@@ -197,42 +237,110 @@ export default {
 .section {
     display: flex;
     flex-direction: column;
-    width: 520px;
+    width: 440px;
 }
 
 .playlists {
-    margin-top: 40px;
     display: flex;
     flex-wrap: wrap;
     justify-content: start;
     column-gap: 40px;
     row-gap: 32px;
-    max-height: 65vh;
-    overflow-y: scroll;
 }
 
-@media (min-width: 1500px) {
+@media (min-width: 1100px) {
     .section {
-        width: 800px;
+        width: 680px;
     }
 }
 
-@media (min-width: 1800px) {
+@media (min-width: 1340px) {
     .section {
-        width: 1080px;
+        width: 920px;
     }
 }
 
-@media (min-width: 2100px) {
+@media (min-width: 1620px) {
     .section {
-        width: 1360px;
+        width: 1160px;
     }
 }
 
-.selectPlaylists {
+@media (min-width: 1940px) {
+    .section {
+        width: 1400px;
+    }
+}
+
+.botButtons {
+    display: flex;
+    margin-top: 32px;
+    margin-bottom: 10px;
+    gap: 16px;
+}
+
+.botButton {
+    padding: 2px 0 0 0;
+    height: 44px;
+    width: 44px;
+    border-radius: 22px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border: none;
+}
+
+.botButton:hover {
+    filter: opacity(70%);
+}
+
+.botButton:disabled {
+    filter: opacity(30%);
+}
+
+.prev {
+    padding-right: 4px;
+}
+
+.next {
+    padding-left: 4px;
+}
+
+.dropdown {
+    background-color: #373544;
+    height: fit-content;
+    border-radius: 22px;
+    position: relative;
+}
+
+.selected {
+    height: 44px;
+    width: 150px;
+    border-radius: 22px;
+    background-color: #664eff;
+    padding: 0 16px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
+
+.expanded {
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+
+    /* margin-top: -22px; */
+    /* background-color: #373544; */
+}
+
+.choice {
+
+}
+
+
 
 .btn-div {
     display: flex;
@@ -251,17 +359,13 @@ export default {
     margin: 18px 0;
 }
 
-.dropdown {
+/* .dropdown {
     padding: 10px;
     border: solid;
     cursor: pointer;
-}
+} */
 
-.selectedBtn {
-    background-color: #6c4eb3;
-}
-
-.unselectedBtn {
-    background-color: #373544;
+.btn-width-220::v-deep .btn-group-button {
+    width: 220px;
 }
 </style>
