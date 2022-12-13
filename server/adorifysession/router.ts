@@ -166,7 +166,7 @@ router.get(
     for (const tuple of studyTimeArr) {
       studyTimeModified.push(tuple[1]);
     }
-
+    console.log('totaltime', totalTime)
     res.status(200).json({
       message: 'Here are the user stats.',
       totalTime: totalTime,

@@ -3,7 +3,13 @@
         <div class="wh40b">Find playlists</div>
 
         <div class="btn-div">
-            <div class="btn-group marginy-18">
+            <ButtonGroup
+                :titles="btnGroupTitles"
+                :initIdx="selectIdx"
+                @selectIdx="updateContent"
+                class="btn-width-220 marginy-18"
+            />
+            <!-- <div class="btn-group">
                 <button
                     :class="{
                         selectedBtn: viewingMine,
@@ -24,7 +30,7 @@
                 >
                     <span class="wh20n">Public Library</span>
                 </button>
-            </div>
+            </div> -->
 
             <div v-if="!viewingMine" class="bgroup2">
                 <button class="dropdown" @click="getMostLiked">
@@ -71,6 +77,8 @@ export default {
     name: "ExplorePlaylists",
     data() {
         return {
+            btnGroupTitles: ["My Spotify Library", "Public Library"],
+            selectIdx: 0,
             currPlaylists: [],
             currPlaylistsName: null,
             loading: true,
@@ -88,6 +96,14 @@ export default {
         },
     },
     methods: {
+        async updateContent(i) {
+            this.selectedIdx = i;
+            if (i === 0) {
+                await this.getMyPlaylists();
+            } else if (i === 1) {
+                await this.getPublicPlaylists();
+            }
+        },
         setLoading(loading) {
             this.loading = loading;
         },
@@ -257,11 +273,7 @@ export default {
     cursor: pointer;
 }
 
-.selectedBtn {
-    background-color: #6c4eb3;
-}
-
-.unselectedBtn {
-    background-color: #373544;
+.btn-width-220::v-deep .btn-group-button {
+    width: 220px;
 }
 </style>

@@ -107,7 +107,7 @@ export default {
 }
 
 ::-webkit-scrollbar {
-    width: 0; 
+    width: 0;
     background: transparent;
 }
 
@@ -117,10 +117,11 @@ export default {
     visibility: hidden;
 }
 
-.scrollable-content, .scrollable:hover, .scrollable:focus {
+.scrollable-content,
+.scrollable:hover,
+.scrollable:focus {
     visibility: visible;
 }
-
 
 /* ::-webkit-scrollbar {
     width: 10px;
@@ -129,7 +130,7 @@ export default {
 ::-webkit-scrollbar-track {
   background: #f1f1f1; 
 } */
- 
+
 /* ::-webkit-scrollbar-thumb {
   background: #888; 
 }
@@ -242,9 +243,10 @@ main {
     color: #ffffff;
     background-color: #373544;
     height: 44px;
-    padding: 0 28px;
     border-radius: 0px;
     border-width: 0;
+    white-space: nowrap;
+    text-align: center;
 }
 .btn-group {
     display: flex;

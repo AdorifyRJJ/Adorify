@@ -68,7 +68,7 @@
             :titles="btnGroupTitles"
             :initIdx="selectIdx"
             @selectIdx="updateContent"
-            class="marginy-32"
+            class="btn-width-150 marginy-32"
         />
         <div class="bottomUserStats">
             <div class="mostPlayed">
@@ -163,9 +163,9 @@ export default {
         const totalSessions = res.totalSessions;
 
         // calculate session info
-        this.sessionInfo = `${completedSessions}/${totalSessions} (${(
-            completedSessions / totalSessions
-        ).toFixed(1)*100}%)`;
+        this.sessionInfo = `${completedSessions}/${totalSessions} (${
+            (completedSessions / totalSessions).toFixed(1) * 100
+        }%)`;
 
         this._mostPlayedWeek = res.mostPlayed.week;
         this._mostPlayedMonth = res.mostPlayed.month;
@@ -247,8 +247,10 @@ export default {
     background-color: #373544;
     border-radius: 25px;
     padding: 11px 16px;
+    height: 44px;
 }
-.btn-width-150 {
+
+.btn-width-150::v-deep .btn-group-button {
     width: 150px;
 }
 
