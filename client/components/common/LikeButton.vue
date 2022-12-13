@@ -30,7 +30,7 @@ export default {
                 `/api/playlists/${this.spotifyId}`,
                 options
             ).then(async (r) => r.json());
-            this.isLiked = res.isLiked;
+            // this.isLiked = res.isLiked;
         },
     },
 };

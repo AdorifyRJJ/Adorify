@@ -36,7 +36,9 @@
                     </button>
                 </div>
                 <div class="bottomDiv">
-                    <div class="wh40b margin-b-8">{{ $store.state.displayName }}</div>
+                    <div class="wh40b margin-b-8">
+                        {{ $store.state.displayName }}
+                    </div>
                     <div class="completionInfo">
                         <div class="pill wh20n">
                             <div v-if="loading" class="lds-ring">
@@ -47,7 +49,7 @@
                             </div>
                             <div v-else class="pillInfo">
                                 {{ this.totalTime }}
-                                <img src="../public/images/studyTime.svg">
+                                <img src="../public/images/studyTime.svg" />
                             </div>
                         </div>
                         <div class="pill wh20n">
@@ -59,7 +61,7 @@
                             </div>
                             <div v-else class="pillInfo">
                                 {{ this.sessionInfo }}
-                                <img src="../public/images/completed.svg">
+                                <img src="../public/images/completed.svg" />
                             </div>
                         </div>
                     </div>
@@ -85,14 +87,22 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <div class="wh30b margin-b-14">Productivity</div>
-                <div>{{ this.graph }}</div>
+            <div class="productivity">
+                <div class="wh30b marginb-14">Productivity</div>
+                <!-- <div class="chart">{{ this.graph }}</div> -->
+                <LineChartGenerator
+                    class="chart"
+                    :chart-options="options"
+                    :chart-data="chartData"
+                />
             </div>
         </div>
     </div>
     <div v-else class="deleteModal center">
-        <div class="modalText">Are you sure? This action will delete all data associated with your account.</div>
+        <div class="modalText">
+            Are you sure? This action will delete all data associated with your
+            account.
+        </div>
         <div class="modalButtons">
             <button class="button" @click="noDelete">
                 <span class="wh20b">No, don't delete</span>
@@ -106,11 +116,63 @@
 
 <script>
 import ButtonGroup from "../components/common/ButtonGroup.vue";
-import { formatHrFromSec, formatMinFromSec, formatSecFromSec } from "../utils.js";
+import {
+    formatHrFromSec,
+    formatMinFromSec,
+    formatSecFromSec,
+} from "../utils.js";
+
+import { Line as LineChartGenerator } from "vue-chartjs";
+import {
+    Chart as ChartJS,
+    Title,
+    Tooltip,
+    Legend,
+    LineElement,
+    LinearScale,
+    CategoryScale,
+    PointElement,
+} from "chart.js";
+
+ChartJS.register(
+    Title,
+    Tooltip,
+    Legend,
+    LineElement,
+    LinearScale,
+    CategoryScale,
+    PointElement
+);
 
 export default {
-    components: { ButtonGroup },
+    components: { ButtonGroup, LineChartGenerator },
     name: "ProfilePage",
+    props: {
+        // chartId: {
+        //     type: String,
+        //     default: "line-chart",
+        // },
+        // datasetIdKey: {
+        //     type: String,
+        //     default: "label",
+        // },
+        // width: {
+        //     type: Number,
+        //     default: 400,
+        // },
+        // height: {
+        //     type: Number,
+        //     default: 400,
+        // },
+        // cssClasses: {
+        //     default: "",
+        //     type: String,
+        // },
+        // styles: {
+        //     type: Object,
+        //     default: () => {},
+        // },
+    },
     data() {
         return {
             btnGroupTitles: ["This Week", "This Month"],
@@ -118,37 +180,62 @@ export default {
             mostPlayed: [],
             _mostPlayedWeek: [],
             _mostPlayedMonth: [],
+            studyTime: [],
             sessionInfo: null,
             totalTime: null,
-            graph: "graph1 uwu",
             loading: true,
             deleting: false,
+
+            chartData: null,
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 18,
+                                weight: "normal",
+                                // family: "Avenir Next LT Pro",
+                            },
+                            padding: 10,
+                            color: "#a9a9a9",
+                            callback: function (value, index, ticks) {
+                                return value + "hr";
+                            },
+                        },
+                        grid: {
+                            display: false,
+                        },
+                        border: {
+                            display: false,
+                        },
+                    },
+
+                    x: {
+                        display: false,
+                        grid: {
+                            display: false,
+                        },
+                        border: {
+                            display: false,
+                        },
+                    },
+                },
+                responsive: true,
+                maintainAspectRatio: true,
+            },
         };
     },
     computed: {},
-    // watch: {
-    //     selectIdx: {
-    //         immediate: true,
-    //         handler(newIdx, oldIdx) {
-    //             console.log(newIdx);
-    //             if (newIdx === 0) {
-    //                 this.graph = "graph1 uwu";
-    //                 this.mostPlayed = this._mostPlayedWeek;
-    //             } else if (newIdx === 1) {
-    //                 this.graph = "graph2 UWU";
-    //                 this.mostPlayed = this._mostPlayedMonth;
-    //             }
-    //         },
-    //     },
-    // },
+
     methods: {
         updateContent(i) {
             this.selectIdx = i;
             if (i === 0) {
-                this.graph = "graph1 uwu";
+                this.graphData = this._lastWeekGraphData;
                 this.mostPlayed = this._mostPlayedWeek;
             } else if (i === 1) {
-                this.graph = "graph2 UWU";
+                this.graphData = this._lastMonthGraphData;
                 this.mostPlayed = this._mostPlayedMonth;
             }
         },
@@ -171,8 +258,11 @@ export default {
             await fetch(`/api/spotify/logout`);
             this.$store.commit("resetStore");
             this.$router.push({ name: "Login" });
-        }
+        },
     },
+    // mounted() {
+    //     this.renderChart(this.chartData, this.options);
+    // },
     async beforeCreate() {
         this.loading = true;
         if (this.$store.state.connected) {
@@ -183,9 +273,9 @@ export default {
         );
         // console.log(res)
         // calculate total time
-        const _totalTime = res.totalTime;
-        const min = formatSecFromSec(_totalTime, true);
-        const hr = formatMinFromSec(_totalTime);
+        const _totalTime_sec = res.totalTime * 60;
+        const min = formatMinFromSec(_totalTime_sec, true);
+        const hr = formatHrFromSec(_totalTime_sec);
         this.totalTime = `${hr}hr ${min}min`;
 
         // calculate session info
@@ -195,13 +285,62 @@ export default {
             totalSessions === 0
                 ? "0%"
                 : `${completedSessions}/${totalSessions} 
-                (${(completedSessions / totalSessions * 100).toFixed(1)}%)`;
+                (${((completedSessions / totalSessions) * 100).toFixed(1)}%)`;
 
         this._mostPlayedWeek = res.mostPlayed.week;
         this._mostPlayedMonth = res.mostPlayed.month;
+        this.studyTime = res.studyTime;
         this.updateContent(this.selectIdx);
         this.loading = false;
-        // console.log("stats", res);
+        console.log("stats", res);
+
+        this.chartData = {
+            labels: [
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+            ],
+            datasets: [
+                {
+                    label: "Line Chart",
+                    data: this.studyTime,
+                    fill: true,
+                    borderColor: "#664EFF",
+                    backgroundColor: "#664EFF",
+                    borderWidth: 2,
+                    pointRadius: 10,
+                },
+            ],
+        };
+    },
+    mounted() {
+        // this.chartData.datasets[0].data = this._lastWeekGraphData;
+        console.log(this.chartData.datasets[0].data);
     },
 };
 </script>
@@ -227,11 +366,11 @@ export default {
     width: 900px;
 }
 
-
 .bottomUserStats {
     display: flex;
     flex-direction: row;
     width: 900px;
+    height: 300px;
     gap: 40px;
 }
 
@@ -347,5 +486,18 @@ export default {
     100% {
         transform: rotate(360deg);
     }
+}
+.productivity {
+    display: flex;
+    flex-direction: column;
+    /* border: solid; */
+
+    width: 580px;
+}
+
+.chart {
+    /* border: solid; */
+    height: 300px;
+    width: 100%;
 }
 </style>
