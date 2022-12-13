@@ -17,7 +17,7 @@ function formatMinFromSec(sec, padding = false) {
 }
 
 function formatHrFromSec(sec, padding = false) {
-    const hr = Math.floor((sec / 60 / 60) % 60);
+    const hr = Math.floor(sec / 60 / 60);
     if (!padding) {
         return hr.toString();
     } else {
