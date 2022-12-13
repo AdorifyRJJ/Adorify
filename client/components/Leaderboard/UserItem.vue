@@ -3,8 +3,8 @@
         <div class="gr26b margin-r-46">{{ this.rank }}</div>
         <img :src="this.user.imgURL" class="image" width="50" height="50" />
         <div class="rightDiv">
-            <div class="wh20n">{{ this.user.displayName }}</div>
-            <div class="wh20n">{{ this.focusTime }}</div>
+            <div :class="isMe ? 'wh20n' : 'gr20'">{{ this.user.displayName }}</div>
+            <div :class="isMe ? 'wh20n' : 'gr20'">{{ this.focusTime }}</div>
         </div>
     </div>
 </template>
