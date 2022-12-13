@@ -37,7 +37,7 @@ export default {
         },
     },
     async beforeMount() {
-        this.$store.commit("refreshLikedPlaylists");
+        // this.$store.commit("refreshLikedPlaylists");
     },
 };
 </script>
