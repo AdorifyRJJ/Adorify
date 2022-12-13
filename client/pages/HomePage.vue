@@ -139,8 +139,13 @@
                 <div class="gr20 topStats">
                     You completed <span class="wh20b">{{ currInterval - 1}}</span> interval<span v-if="currInterval !== 2">s</span> of <span class="wh20b">{{ focusTime }}</span> minutes each.
                 </div>
-                <div class="wh100b focusTimeText">{{ Math.round((currInterval - 1) * focusTime) }}</div>
-                <div class="gr20 bottomStats">minutes focused.</div>
+                <div class="timeDisplay">
+                    <span v-if="getCompletedFocusTimeHr !== '0'" class="wh100b focusTimeText">{{ getCompletedFocusTimeHr }}</span>
+                    <span v-if="getCompletedFocusTimeHr !== '0'" class="gr20 hrDisplay">hr</span>
+                    <span class="wh100b focusTimeText">{{ getCompletedFocusTimeMin }}</span>
+                    <span class="gr20">min</span>
+                </div>
+                <div class="gr20 bottomStats">of focus time.</div>
                 <button class="button" @click="backToHome">
                     <span class="wh20b">Back To Home</span>
                 </button>
@@ -154,6 +159,11 @@
 import HomePlaylistCard from "../components/Playlists/HomePlaylistCard.vue";
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import '@splidejs/splide/dist/css/splide.min.css';
+import {
+    formatHrFromSec,
+    formatMinFromSec,
+    formatSecFromSec,
+} from "../utils.js";
 
 const SessionState = {
     BEFORE: 0,
@@ -187,6 +197,12 @@ export default {
         };
     },
     computed: {
+        getCompletedFocusTimeHr() {
+            return formatHrFromSec(Math.round((this.currInterval - 1) * this.focusTime * 60));
+        },
+        getCompletedFocusTimeMin() {
+            return formatMinFromSec(Math.round((this.currInterval - 1) * this.focusTime * 60));
+        },
         getTime() {
             if (this.getHr)
                 return this.getHr + ":" + this.getMin + ":" + this.getSec;
@@ -601,6 +617,11 @@ export default {
 
 .focusTimeText {
     animation: glow 2s ease-in-out infinite alternate;
+    margin-right: 4px;
+}
+
+.hrDisplay {
+    margin-right: 20px;
 }
 
 .bottomStats {

@@ -194,7 +194,7 @@ export default {
 .lds-ring {
     display: flex;
     align-self: center;
-    padding-top: 30%;
+    padding-top: 20%;
     position: relative;
     width: 80px;
     height: 80px;
