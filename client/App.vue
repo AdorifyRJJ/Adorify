@@ -263,6 +263,7 @@ main {
     border-radius: 20px;
     border-width: 0;
     padding: 0px 30px;
+    cursor:pointer;
 }
 .button:hover {
     filter: brightness(80%);
@@ -275,6 +276,7 @@ main {
     border-width: 0;
     white-space: nowrap;
     text-align: center;
+    cursor:pointer;
 }
 .btn-group {
     display: flex;

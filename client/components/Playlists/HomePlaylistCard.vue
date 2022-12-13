@@ -35,6 +35,7 @@ export default {
 <style scoped>
 .card {
     padding: 20px 0px;
+    cursor:pointer;
 }
 
 .card > img {
