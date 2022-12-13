@@ -49,7 +49,7 @@
                 <div class="carousel">
                     <div v-if="$store.state.myLikedPlaylists.length === 0" class="placeholder center">
                         <router-link to="playlists" class="placeholderInner center">
-                            <img src="../public/add.svg">
+                            <img src="images/add.svg">
                             <div class="gr16 placeholderText">
                                 Add playlists to start session
                             </div>
@@ -95,7 +95,7 @@
 
                 <div class="bottomDiv">
                     <button @click="startSession" class="controlButton pButton" :disabled="$store.state.myLikedPlaylists.length === 0 || !submitIsValid || !$store.state.connected || $store.state.spoitfyPlayer === null">
-                        <img src="../public/play.svg">
+                        <img src="images/play.svg">
                     </button>
                 </div>
             </div>
@@ -122,14 +122,14 @@
 
                     <div class="controls">
                         <button v-if="timerActive && sessionState !== SessionState.BREAK" @click="playPrev" class="controlButton prevButton">
-                            <img src="../public/prev.svg">
+                            <img src="images/prev.svg">
                         </button>
                         <button @click="togglePlay" class="controlButton pButton" :disabled="sessionState === SessionState.BREAK">
-                            <img v-if="timerActive && sessionState !== SessionState.BREAK" src="../public/pause.svg">
-                            <img v-else src="../public/play.svg">
+                            <img v-if="timerActive && sessionState !== SessionState.BREAK" src="images/pause.svg">
+                            <img v-else src="images/play.svg">
                         </button>
                         <button v-if="timerActive && sessionState !== SessionState.BREAK" @click="playNext" class="controlButton nextButton">
-                            <img src="../public/forward.svg">
+                            <img src="images/forward.svg">
                         </button>
                     </div>
                 </div>
