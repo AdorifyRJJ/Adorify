@@ -72,7 +72,7 @@
             :titles="btnGroupTitles"
             :initIdx="selectIdx"
             @selectIdx="updateContent"
-            class="btn-width-140 margin-y-30"
+            class="btn-width-140 margin-b-30 margin-t-18"
         />
         <div class="bottomUserStats">
             <div class="mostPlayed">
@@ -88,7 +88,7 @@
                 </div>
             </div>
             <div class="productivity">
-                <div class="wh30b marginb-14 paddingl-10">Productivity</div>
+                <div class="wh30b margin-b-14 padding-l-10">Productivity</div>
                 <LineChartGenerator
                     class="chart"
                     :chart-options="options"
@@ -203,7 +203,7 @@ export default {
                     },
                 },
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
             },
         };
     },
@@ -359,11 +359,19 @@ export default {
     z-index: 2;
 }
 
-.marginb-14 {
+.margin-b-14 {
     margin-bottom: 14px;
 }
 
-.paddingl-10 {
+.margin-b-30 {
+    margin-bottom: 30px;
+}
+
+.margin-t-18 {
+    margin-top: 18px;
+}
+
+.padding-l-10 {
     padding-left: 10px;
 }
 
@@ -460,7 +468,7 @@ export default {
 
 .chart {
     /* border: solid; */
-    height: 300px;
+    height: 100%;
     width: 100%;
 }
 </style>
