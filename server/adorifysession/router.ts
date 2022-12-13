@@ -166,7 +166,7 @@ router.get(
     for (const tuple of studyTimeArr) {
       studyTimeModified.push(tuple[1]);
     }
-    if (studyTimeModified.length === 0) studyTimeModified = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    if (studyTimeModified.length === 0) studyTimeModified = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
     res.status(200).json({
       message: 'Here are the user stats.',
