@@ -1,15 +1,7 @@
 <template>
-  <div v-if="!loading" @click="toggleLike">
+  <div @click="toggleLike">
     <img v-if="isLiked" src="../../public/images/filledHeart.svg" />
     <img v-else src="../../public/images/heart.svg" />
-  </div>
-  <div v-else>
-    <div class="lds-ring">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
   </div>
 </template>
 
@@ -34,7 +26,7 @@ export default {
         isLiked: this.isLiked,
       });
 
-      this.isLiked = !this.isLiked;
+      //this.isLiked = !this.isLiked;
 
       // api call PUT /api/playlists/:spotifyId
       const options = {
@@ -45,7 +37,7 @@ export default {
       const res = await fetch(`/api/playlists/${this.spotifyId}`, options).then(
         async (r) => r.json()
       );
-      // this.isLiked = res.isLiked;
+      this.isLiked = res.isLiked;
       this.loading = false;
     },
   },
