@@ -98,7 +98,7 @@ class AdorifySessionCollection {
       {
         $sort: { plays: -1 }
       }
-    ]))?.slice(0, 10);
+    ]))?.slice(0, 5);
 
     const mostPlayedMonth = (await AdorifySessionModel.aggregate([
       {
@@ -110,7 +110,7 @@ class AdorifySessionCollection {
       {
         $sort: { plays: -1 }
       }
-    ]))?.slice(0, 10);
+    ]))?.slice(0, 5);
 
     // const mostPlayedAll = (await AdorifySessionModel.aggregate([
     //   {

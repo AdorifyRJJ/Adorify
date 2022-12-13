@@ -297,7 +297,7 @@ export default {
         this._mostPlayedWeek = res.mostPlayed.week;
         this._mostPlayedMonth = res.mostPlayed.month;
         this.studyTime = res.studyTime.map(
-            (val) => Math.round((val / 60 + Number.EPSILON) * 1000) / 1000
+            (val) => Math.round((val / 60 + Number.EPSILON) * 100) / 100
         );
         this.updateContent(this.selectIdx);
         this.loading = false;
