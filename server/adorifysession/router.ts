@@ -168,7 +168,6 @@ router.get(
     }
     if (studyTimeModified.length === 0) studyTimeModified = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
-    console.log('totaltime', totalTime)
     res.status(200).json({
       message: 'Here are the user stats.',
       totalTime: totalTime ?? 0,
