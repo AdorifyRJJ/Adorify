@@ -230,6 +230,27 @@ main {
     font-size: 26px;
     font-weight: bold;
 }
+
+.margin-b-8 {
+    margin-bottom: 8px;
+}
+
+.margin-b-10 {
+    margin-bottom: 10px;
+}
+
+.margin-b-18 {
+    margin-bottom: 18px;
+}
+
+.margin-b-30 {
+    margin-bottom: 30px;
+}
+
+.margin-y-30 {
+    margin: 30px 0;
+}
+
 .center {
     display: flex;
     flex-direction: column;
@@ -238,7 +259,7 @@ main {
 .button {
     color: #ffffff;
     background-color: #6c4eb3;
-    height: 50px;
+    height: 44px;
     border-radius: 20px;
     border-width: 0;
     padding: 0px 30px;

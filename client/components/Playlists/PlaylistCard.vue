@@ -61,10 +61,13 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.cardContent > img {
     filter: brightness(80%);
 }
 
-.cardContent:hover {
+.cardContent:hover > img{
     filter: brightness(100%);
 }
 

@@ -1,7 +1,7 @@
 <template>
-    <div class="item">
+    <div class="item" :class="user.displayName === $store.state.username ? 'me' : ''">
         <div class="gr26b margin-r-46">{{ this.rank }}</div>
-        <img :src="this.user.imgURL" class="image" width="60" height="60" />
+        <img :src="this.user.imgURL" class="image" width="50" height="50" />
         <div class="rightDiv">
             <div class="wh20n">{{ this.user.displayName }}</div>
             <div class="wh20n">{{ this.focusTime }}</div>
@@ -31,9 +31,8 @@ export default {
 <style scoped>
 .item {
     display: flex;
-    /* border: solid; */
     align-items: center;
-    height: 60px;
+    padding: 4px 8px;
 }
 
 .image {
@@ -53,5 +52,10 @@ export default {
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.me {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
 }
 </style>

@@ -272,6 +272,7 @@ export default {
 
 .playlistName {
     max-width: 100%;
+    margin-bottom: 2px;
 }
 
 .botButtons {

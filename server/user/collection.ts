@@ -1,4 +1,5 @@
 import type { HydratedDocument, Types } from 'mongoose';
+import AdorifySessionCollection from '../adorifysession/collection';
 import PlaylistCollection from '../playlist/collection';
 import type { PopulatedUser, User } from './model';
 import UserModel from './model';
@@ -76,6 +77,7 @@ class UserCollection {
   static async deleteOne(username: string): Promise<boolean> {
     const user = await UserModel.deleteOne({ username: username });
     await PlaylistCollection.deleteAllByOwner(username);
+    await AdorifySessionCollection.deleteAllByUser(username);
     return user !== null;
   }
 }

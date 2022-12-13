@@ -1,5 +1,5 @@
 <template>
-    <div class="page">
+    <div v-if="!deleting" class="page">
         <!-- api call DELETE /api/users/session -->
         <!-- <router-link to="/login">
             <button>Log Out</button>
@@ -31,12 +31,12 @@
                     <button class="button" @click="logout">
                         <span class="wh20b">Logout</span>
                     </button>
-                    <button class="button">
+                    <button class="button delete" @click="deleteScreen">
                         <span class="wh20b">Delete</span>
                     </button>
                 </div>
                 <div class="bottomDiv">
-                    <div class="wh40b">{{ $store.state.displayName }}</div>
+                    <div class="wh40b margin-b-8">{{ $store.state.displayName }}</div>
                     <div class="completionInfo">
                         <div class="pill wh20n">
                             <div v-if="loading" class="lds-ring">
@@ -45,8 +45,9 @@
                                 <div></div>
                                 <div></div>
                             </div>
-                            <div v-else>
+                            <div v-else class="pillInfo">
                                 {{ this.totalTime }}
+                                <img src="../public/studyTime.svg">
                             </div>
                         </div>
                         <div class="pill wh20n">
@@ -56,8 +57,9 @@
                                 <div></div>
                                 <div></div>
                             </div>
-                            <div v-else>
+                            <div v-else class="pillInfo">
                                 {{ this.sessionInfo }}
+                                <img src="../public/completed.svg">
                             </div>
                         </div>
                     </div>
@@ -68,32 +70,43 @@
             :titles="btnGroupTitles"
             :initIdx="selectIdx"
             @selectIdx="updateContent"
-            class="btn-width-140 marginy-32"
+            class="btn-width-140 margin-y-30"
         />
         <div class="bottomUserStats">
             <div class="mostPlayed">
-                <div class="wh30b marginb-14">Most Played</div>
+                <div class="wh30b margin-b-10">Most Played</div>
                 <div class="">
                     <div
                         :key="i"
                         v-for="(playlist, i) in mostPlayed"
-                        class="item wh20n truncate1line"
+                        class="item gr20 truncate1line"
                     >
                         {{ playlist.name }}
                     </div>
                 </div>
             </div>
             <div>
-                <div class="wh30b marginb-14">Productivity</div>
+                <div class="wh30b margin-b-14">Productivity</div>
                 <div>{{ this.graph }}</div>
             </div>
+        </div>
+    </div>
+    <div v-else class="deleteModal center">
+        <div class="modalText">Are you sure? This action will delete all data associated with your account.</div>
+        <div class="modalButtons">
+            <button class="button" @click="noDelete">
+                <span class="wh20b">No, don't delete</span>
+            </button>
+            <button class="button delete" @click="yesDelete">
+                <span class="wh20b">Yes, delete permanently</span>
+            </button>
         </div>
     </div>
 </template>
 
 <script>
 import ButtonGroup from "../components/common/ButtonGroup.vue";
-import { formatHrFromSec, formatMinFromSec } from "../utils.js";
+import { formatHrFromSec, formatMinFromSec, formatSecFromSec } from "../utils.js";
 
 export default {
     components: { ButtonGroup },
@@ -109,6 +122,7 @@ export default {
             totalTime: null,
             graph: "graph1 uwu",
             loading: true,
+            deleting: false,
         };
     },
     computed: {},
@@ -143,6 +157,21 @@ export default {
             this.$store.commit("resetStore");
             this.$router.push({ name: "Login" });
         },
+        deleteScreen() {
+            this.deleting = true;
+        },
+        noDelete() {
+            this.deleting = false;
+        },
+        async yesDelete() {
+            await fetch(`/api/users`, {
+                headers: { "Content-Type": "application/json" },
+                method: "DELETE",
+            });
+            await fetch(`/api/spotify/logout`);
+            this.$store.commit("resetStore");
+            this.$router.push({ name: "Login" });
+        }
     },
     async beforeCreate() {
         this.loading = true;
@@ -152,11 +181,11 @@ export default {
         const res = await fetch("/api/adorifySession/stats").then(async (r) =>
             r.json()
         );
-
+        console.log(res)
         // calculate total time
         const _totalTime = res.totalTime;
-        const min = formatMinFromSec(_totalTime, true);
-        const hr = formatHrFromSec(_totalTime);
+        const min = formatSecFromSec(_totalTime, true);
+        const hr = formatMinFromSec(_totalTime);
         this.totalTime = `${hr}hr ${min}min`;
 
         // calculate session info
@@ -166,7 +195,7 @@ export default {
             totalSessions === 0
                 ? "0%"
                 : `${completedSessions}/${totalSessions} 
-                (${(completedSessions / totalSessions).toFixed(1) * 100}%)`;
+                (${(completedSessions / totalSessions * 100).toFixed(1)}%)`;
 
         this._mostPlayedWeek = res.mostPlayed.week;
         this._mostPlayedMonth = res.mostPlayed.month;
@@ -198,9 +227,6 @@ export default {
     width: 900px;
 }
 
-.marginy-32 {
-    margin: 32px 0;
-}
 
 .bottomUserStats {
     display: flex;
@@ -219,6 +245,7 @@ export default {
 .topDiv {
     display: flex;
     justify-content: end;
+    gap: 10px;
 }
 
 .bottomDiv {
@@ -251,6 +278,12 @@ export default {
     height: 44px;
 }
 
+.pillInfo {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 .btn-width-140::v-deep .btn-group-button {
     width: 140px;
 }
@@ -262,7 +295,20 @@ export default {
 
 .item {
     padding: 8px 0;
-    /* width: 280px; */
+}
+
+.delete {
+    background-color: transparent;
+    border: 3px solid #6c4eb3;
+}
+
+.modalText {
+    margin-bottom: 20px;
+}
+
+.modalButtons {
+    display: flex;
+    gap: 10px;
 }
 
 .lds-ring {
@@ -280,7 +326,7 @@ export default {
     width: 16px;
     height: 16px;
     margin: 2px;
-    border: 8px solid #fff;
+    border: 3px solid #fff;
     border-radius: 80%;
     animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
     border-color: #fff transparent transparent transparent;

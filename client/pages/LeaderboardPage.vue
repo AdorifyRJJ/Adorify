@@ -1,33 +1,35 @@
 <template>
     <div class="page">
-        <div class="wh40b margin-b-16">Focus Time Leaderboard</div>
+        <div class="wh40b margin-b-18">Focus Time Leaderboard</div>
         <!-- <button @click="testadd">test add</button> -->
         <ButtonGroup
             :titles="btnGroupTitles"
             :initIdx="selectIdx"
             @selectIdx="updateContent"
-            class="btn-width-140"
+            class="btn-width-140 margin-b-30"
         />
-        <!-- <div>{{ this.content }}</div> -->
-        <!-- <div v-if="leaderboard"> -->
-        <!-- <div>
-                <button @click="getThisWeek">This Week</button>
-                <button @click="getThisMonth">This Month</button>
-                <button @click="getAllTime">All Time</button>
-            </div> -->
         <div v-if="loading" class="lds-ring">
             <div></div>
             <div></div>
             <div></div>
             <div></div>
         </div>
-        <div v-else class="leaderboard">
-            <UserItem
-                :key="i"
-                v-for="(user, i) in leaderboard"
-                :rank="i + 1"
-                :user="user"
-            ></UserItem>
+        <div v-else class="scrollable">
+            <div class="scrollable-content leaderboard">
+                <UserItem
+                    :key="i"
+                    v-for="(user, i) in leaderboard"
+                    :rank="i + 1"
+                    :user="user"
+                ></UserItem>
+                <div v-if="userRank.rank + 1 > 10">
+                    <div class="sep"></div>
+                    <UserItem
+                        :rank="userRank.rank + 1"
+                        :user="{imgURL: $store.state.imgURL, displayName: $store.state.displayName, focusTime: userRank.focusTime}"
+                    ></UserItem>
+                </div>
+            </div>
         </div>
         <!-- </div> -->
     </div>
@@ -50,6 +52,9 @@ export default {
             _weekLB: [],
             loading: true,
 
+            userRank: null,
+            allUserRanks: null,
+
             // leaderboard: undefined,
             // allLeaderboards: undefined,
             // userRank: undefined,
@@ -62,10 +67,13 @@ export default {
             this.selectIdx = i;
             if (i === 0) {
                 this.leaderboard = this._weekLB;
+                this.userRank = this.allUserRanks.week;
             } else if (i === 1) {
                 this.leaderboard = this._monthLB;
+                this.userRank = this.allUserRanks.month;
             } else if (i === 2) {
                 this.leaderboard = this._allTimeLB;
+                this.userRank = this.allUserRanks.allTime;
             }
         },
         // api call GET /api/adorifySession/leaderboard
@@ -131,8 +139,8 @@ export default {
         this._weekLB = res.topUsers.week;
         this._monthLB = res.topUsers.month;
         this._allTimeLB = res.topUsers.allTime;
-        // this.allUserRanks = res.userRank;
-        // this.getThisWeek();
+        
+        this.allUserRanks = res.userRanks;
 
         this.updateContent(this.selectIdx);
         this.loading = false;
@@ -145,23 +153,26 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100%;
 }
 
-.margin-b-16 {
-    margin-bottom: 16px;
-}
 .leaderboard {
-    margin-top: 50px;
     display: flex;
     flex-direction: column;
-    row-gap: 16px;
-    height: 60vh;
     width: 700px;
     overflow-y: scroll;
+    padding-bottom: 20px;
 }
 
 .btn-width-140::v-deep .btn-group-button {
     width: 140px;
+}
+
+.sep {
+    width: 100%;
+    height: 2px;
+    margin: 4px 0;
+    background-color: white;
 }
 
 .lds-ring {
