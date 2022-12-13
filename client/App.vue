@@ -53,12 +53,6 @@ export default {
                     this.$store.commit("setDeviceId", device_id);
                     this.$store.commit("setConnected", true);
                     console.log("Ready with Device ID", device_id);
-                    const res = await this.handleSpotifyResponse(this.$store.state.spotifyApi.setRepeat('context'))
-                    if (!res.expected){
-                        this.errorText = "Spotify Repeat Error: " + res.data;
-                        this.displayError();
-                        return;
-                    }
                 });
                 player.addListener("not_ready", ({ device_id }) => {
                     console.log("Device ID has gone offline", device_id);

@@ -230,7 +230,7 @@ export default {
         async startSession() {
             this.currInterval = 1;
             this.sessionState = SessionState.FOCUS;
-            this.$store.state.spotifyPlayer.addListener('player_state_changed', ({
+            this.$store.state.spotifyPlayer.addListener('player_state_changed', async ({
                 position,
                 duration,
                 track_window: { current_track }
@@ -238,6 +238,12 @@ export default {
                 console.log(current_track)
                 this.currTrackTitle = current_track.name;
                 this.currTrackArtist = current_track.artists.map((a) => a.name).join(" ");
+                const anotherRes = await this.handleSpotifyResponse(this.$store.state.spotifyApi.setRepeat('context'))
+                if (!anotherRes.expected){
+                    this.errorText = "Spotify Repeat Error: " + anotherRes.data;
+                    this.displayError();
+                    return;
+                }
             });
             const res = await this.handleSpotifyResponse(this.$store.state.spotifyApi.play({
                 device_id: this.$store.state.deviceId, 
