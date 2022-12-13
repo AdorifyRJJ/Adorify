@@ -299,13 +299,13 @@ export default {
     const hr = formatHrFromSec(_totalTime_sec);
     this.totalTime = `${hr}hr ${min}min`;
 
-    // calculate session info
-    const completedSessions = res.completed;
-    const totalSessions = res.totalSessions;
-    this.sessionInfo =
-      totalSessions === 0
-        ? "0%"
-        : `${completedSessions}/${totalSessions}
+        // calculate session info
+        const completedSessions = res.completed;
+        const totalSessions = res.totalSessions;
+        this.sessionInfo =
+            totalSessions === 0
+                ? "0/0 (0%)"
+                : `${completedSessions}/${totalSessions}
                 (${((completedSessions / totalSessions) * 100).toFixed(1)}%)`;
 
     this._mostPlayedWeek = res.mostPlayed.week;
