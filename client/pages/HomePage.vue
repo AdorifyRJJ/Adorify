@@ -248,6 +248,12 @@ export default {
                 this.displayError();
                 return;
             }
+            const anotherRes = await this.handleSpotifyResponse(this.$store.state.spotifyApi.setRepeat('context'))
+            if (!anotherRes.expected){
+                this.errorText = "Spotify Error: " + anotherRes.data;
+                this.displayError();
+                return;
+            }
             const as = await fetch("/api/adorifySession/", {
                 headers: { "Content-Type": "application/json" },
                 method: "POST",
@@ -377,7 +383,7 @@ export default {
             try {
                 this.$store.state.spotifyPlayer.connect();
             } catch (e) {
-                console.log(e);
+                //console.log(e);
             }
         }
     },
@@ -385,7 +391,7 @@ export default {
             try {
                 this.$store.commit("forceDisconnect");
             } catch (e) {
-                console.log(e);
+                //console.log(e);
             }
         },
     };
