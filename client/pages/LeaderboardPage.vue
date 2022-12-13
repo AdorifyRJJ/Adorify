@@ -1,7 +1,7 @@
 <template>
     <div class="page">
         <div class="wh40b margin-b-18">Focus Time Leaderboard</div>
-        <!-- <button @click="testadd">test add</button> -->
+        <button @click="testadd">test add</button>
         <ButtonGroup
             :titles="btnGroupTitles"
             :initIdx="selectIdx"
@@ -82,7 +82,7 @@ export default {
         // api call GET /api/adorifySession/leaderboard
 
         async testadd() {
-            return;
+            //return;
             const lastYear = new Date();
             lastYear.setFullYear(lastYear.getFullYear() - 1);
             const lastWeek = new Date();
@@ -93,9 +93,9 @@ export default {
             const today = new Date();
             const testDate = new Date();
             testDate.setDate(testDate.getDate() - 5);
-            const length = 3;
-            const completed = 50;
-            const initializedSessions = 400;
+            const length = 1;
+            const completed = 1;
+            const initializedSessions = 1;
             const spotifyId = "0Z0woTASJoPAOaSn5GLXpm"
             if (completed > initializedSessions) return;
             const data = await fetch("/api/adorifySession/testadd", {
@@ -104,13 +104,15 @@ export default {
                 body: JSON.stringify({
                     length: length,
                     spotifyId: spotifyId,
-                    startTime: lastYear,
+                    startTime: today,
                     completed: completed,
                     initializedSessions: initializedSessions,
                 }),
             });
+            const dataJson = await data.json();
+            console.log(dataJson)
             for (let i = 0; i < completed; i++){
-                await fetch(`/api/adorifySession/${data.asID}`, {
+                await fetch(`/api/adorifySession/${dataJson.asID}`, {
                     headers: { "Content-Type": "application/json" },
                     method: "PUT",
                     body: JSON.stringify({
@@ -119,8 +121,6 @@ export default {
                     }),
                 });
             }
-            const dataJson = await data.json();
-            console.log(dataJson);
         },
 
         // getThisWeek() {
