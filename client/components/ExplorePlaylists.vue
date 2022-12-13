@@ -86,6 +86,7 @@ export default {
         async updateContent(i) {
             this.selectedIdx = i;
             if (i === 0) {
+                // add check if currently loading?
                 await this.getMyPlaylists();
             } else if (i === 1) {
                 await this.getPublicPlaylists();
