@@ -1,5 +1,5 @@
 <template>
-  <div @click="toggleLike">
+  <div @click="toggleLike" class="likeDiv">
     <img v-if="isLiked" src="../../public/images/filledHeart.svg" />
     <img v-else src="../../public/images/heart.svg" />
   </div>
@@ -45,6 +45,9 @@ export default {
 </script>
 
 <style scoped>
+.likeDiv {
+    cursor:pointer;
+}
 .lds-ring {
   display: flex;
   align-self: center;
