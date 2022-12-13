@@ -292,7 +292,7 @@ export default {
         const totalSessions = res.totalSessions;
         this.sessionInfo =
             totalSessions === 0
-                ? "0%"
+                ? "0/0 (0%)"
                 : `${completedSessions}/${totalSessions}
                 (${((completedSessions / totalSessions) * 100).toFixed(1)}%)`;
 
