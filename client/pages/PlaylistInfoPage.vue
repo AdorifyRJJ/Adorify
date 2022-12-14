@@ -91,6 +91,7 @@ export default {
     },
     watch: {
         async "$route.params.spotifyId"(newId, oldId) {
+            this.spotifyId = newId;
             await this.getTracks(newId);
         },
     },
@@ -123,6 +124,7 @@ export default {
             this.owner = res.playlistInfo.owner.display_name;
             this.image = res.playlistInfo.images[0]?.url;
             this.name = res.playlistInfo.name;
+            console.log(this.name)
             this.setLoading(false);
         },
         exit() {
