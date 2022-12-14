@@ -48,6 +48,7 @@ export default {
 .likeDiv {
     cursor:pointer;
 }
+
 .lds-ring {
   display: flex;
   align-self: center;
