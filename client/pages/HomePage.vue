@@ -253,6 +253,7 @@ export default {
             this.selectedIndex = slide.index;
         },
         async startSession() {
+            if (this.sessionState !== SessionState.BEFORE) return;
             this.currInterval = 1;
             this.sessionState = SessionState.FOCUS;
             this.$store.state.spotifyPlayer.addListener('player_state_changed', async ({
@@ -299,6 +300,7 @@ export default {
             }
         },
         async startTimer() {
+            if (this.timerActive) return;
             this.timerActive = true;
             this.timestamp =
                 this.timestamp ??
@@ -339,7 +341,8 @@ export default {
                                 }),
                             });
                         }
-                        this.startTimer();
+                        this.timerActive = false;
+                        await this.startTimer();
                     }
                 }
             }, 1000);
