@@ -13,26 +13,6 @@ const router = express.Router();
 // POST /api/adorifySession
 
 router.post(
-  '/testadd',
-  [
-    userValidator.isUserLoggedIn,
-  ],
-  async (req: Request, res: Response) => {
-    const as = await AdorifySessionCollection.testAddOne(req.session.username,
-      req.body.length,
-      req.body.spotifyId,
-      req.body.startTime,
-      req.body.completed,
-      req.body.initializedSessions);
-    await PlaylistCollection.addUsed(req.body.spotifyId, req.body.initializedSessions);
-    res.status(200).json({
-      message: 'Adorify Session created successfully.',
-      asID: as._id,
-    });
-  }
-)
-
-router.post(
   '/',
   [
     userValidator.isUserLoggedIn,
