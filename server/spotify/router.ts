@@ -119,6 +119,7 @@ router.get(
             meSpotifyApi.setAccessToken(req.session.accessToken);
             console.log("3")
             const me = await meSpotifyApi.getMe();
+            console.log("4")
             const user = await UserCollection.findOneByUsername(me.body.id);
             if (!user)
                 await UserCollection.addOne(me.body.id, me.body.display_name, me.body.images[0]?.url);
@@ -160,4 +161,4 @@ router.get(
     }
 );
 
-export { router as spotifyRouter, spotifyApi };
+export { router as spotifyRouter };
