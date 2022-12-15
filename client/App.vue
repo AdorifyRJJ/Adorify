@@ -17,6 +17,7 @@ export default {
     components: { NavBar },
     async beforeCreate() {
         this.$store.commit("setConnected", false);
+        console.log(this.$route.query.code)
         const myData = this.$route.query.code
             ? await fetch(
                   `/api/spotify/initializeAuth?code=${this.$route.query.code}`
