@@ -101,13 +101,9 @@ router.get(
     [],
     async function (req: Request, res: Response) {
         try {
-            console.log(req.query.code)
-            const newSpotifyApi = new SpotifyWebApi({
-                clientId: process.env.ID,
-                clientSecret: process.env.SECRET,
-                redirectUri: process.env.REDIRECT,
-            });
-            const data = await newSpotifyApi.authorizationCodeGrant(req.query.code as string);
+            console.log(req.query.code);
+            const data = await spotifyApi.authorizationCodeGrant(req.query.code as string);
+            console.log("1")
             req.session.accessToken = data.body['access_token'];
             req.session.refreshToken = data.body['refresh_token'];
             const tokenExpirationEpoch =
@@ -119,7 +115,9 @@ router.get(
                 clientSecret: process.env.SECRET,
                 redirectUri: process.env.REDIRECT,
             });
+            console.log("2")
             meSpotifyApi.setAccessToken(req.session.accessToken);
+            console.log("3")
             const me = await meSpotifyApi.getMe();
             const user = await UserCollection.findOneByUsername(me.body.id);
             if (!user)
@@ -127,8 +125,8 @@ router.get(
             req.session.username = me.body.id;
             res.status(200).json({ me: me.body, accessToken: req.session.accessToken, expiryTime: req.session.expiryTime });
         } catch (e: any) {
-            res.status(e.statusCode).json({
-                message: e.body.error_description
+            res.status(401).json({
+                message: e.body.error
             });
         }
         res.end();
@@ -162,4 +160,4 @@ router.get(
     }
 );
 
-export { router as spotifyRouter };
+export { router as spotifyRouter, spotifyApi };
