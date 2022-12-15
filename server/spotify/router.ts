@@ -102,7 +102,12 @@ router.get(
     async function (req: Request, res: Response) {
         try {
             console.log(req.query.code)
-            const data = await spotifyApi.authorizationCodeGrant(req.query.code as string);
+            const newSpotifyApi = new SpotifyWebApi({
+                clientId: process.env.ID,
+                clientSecret: process.env.SECRET,
+                redirectUri: process.env.REDIRECT,
+            });
+            const data = await newSpotifyApi.authorizationCodeGrant(req.query.code as string);
             req.session.accessToken = data.body['access_token'];
             req.session.refreshToken = data.body['refresh_token'];
             const tokenExpirationEpoch =
@@ -157,4 +162,4 @@ router.get(
     }
 );
 
-export { router as spotifyRouter, spotifyApi };
+export { router as spotifyRouter };
