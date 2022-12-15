@@ -101,6 +101,7 @@ router.get(
     [],
     async function (req: Request, res: Response) {
         try {
+            console.log(req.query.code)
             const data = await spotifyApi.authorizationCodeGrant(req.query.code as string);
             req.session.accessToken = data.body['access_token'];
             req.session.refreshToken = data.body['refresh_token'];
