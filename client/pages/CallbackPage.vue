@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import SpotifyWebApi from "spotify-web-api-node";
 export default {
   name: "CallbackPage",
   async beforeCreate() {
