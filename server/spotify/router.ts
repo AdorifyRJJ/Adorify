@@ -111,16 +111,18 @@ router.get(
                 new Date().getTime() / 1000 + data.body['expires_in'];
             req.session.expiryTime = tokenExpirationEpoch;
 
-            const meSpotifyApi = new SpotifyWebApi({
-                clientId: process.env.ID,
-                clientSecret: process.env.SECRET,
-                redirectUri: process.env.REDIRECT,
-            });
-            console.log("2")
-            // await meSpotifyApi.clientCredentialsGrant();
-            meSpotifyApi.setAccessToken(req.session.accessToken);
-            console.log("3")
-            const me = await meSpotifyApi.getMe();
+            // const meSpotifyApi = new SpotifyWebApi({
+            //     clientId: process.env.ID,
+            //     clientSecret: process.env.SECRET,
+            //     redirectUri: process.env.REDIRECT,
+            // });
+            // console.log("2")
+            // meSpotifyApi.setAccessToken(req.session.accessToken);
+            // console.log("3")
+            // const me = await meSpotifyApi.getMe();
+            spotifyApi.setAccessToken(req.session.accessToken);
+            const me = await spotifyApi.getMe();
+
             console.log("4")
             const user = await UserCollection.findOneByUsername(me.body.id);
             if (!user)
