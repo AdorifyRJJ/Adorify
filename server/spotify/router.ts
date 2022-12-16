@@ -128,7 +128,7 @@ router.get(
             req.session.username = me.body.id;
             res.status(200).json({ me: me.body, accessToken: req.session.accessToken, expiryTime: req.session.expiryTime });
         } catch (e: any) {
-            res.status(401).json({
+            res.status(e.statusCode).json({
                 message: e.body.error,
                 hi: e.body.error_description,
             });
