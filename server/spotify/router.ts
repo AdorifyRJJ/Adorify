@@ -106,6 +106,7 @@ router.get(
             console.log("1")
             req.session.accessToken = data.body['access_token'];
             req.session.refreshToken = data.body['refresh_token'];
+            console.log(req.session.accessToken);
             const tokenExpirationEpoch =
                 new Date().getTime() / 1000 + data.body['expires_in'];
             req.session.expiryTime = tokenExpirationEpoch;
@@ -116,17 +117,20 @@ router.get(
                 redirectUri: process.env.REDIRECT,
             });
             console.log("2")
+            // await meSpotifyApi.clientCredentialsGrant();
             meSpotifyApi.setAccessToken(req.session.accessToken);
             console.log("3")
             const me = await meSpotifyApi.getMe();
+            console.log("4")
             const user = await UserCollection.findOneByUsername(me.body.id);
             if (!user)
                 await UserCollection.addOne(me.body.id, me.body.display_name, me.body.images[0]?.url);
             req.session.username = me.body.id;
             res.status(200).json({ me: me.body, accessToken: req.session.accessToken, expiryTime: req.session.expiryTime });
         } catch (e: any) {
-            res.status(401).json({
-                message: e.body.error
+            res.status(e.statusCode).json({
+                message: e.body.error,
+                hi: e.body.error_description,
             });
         }
         res.end();
@@ -160,4 +164,4 @@ router.get(
     }
 );
 
-export { router as spotifyRouter, spotifyApi };
+export { router as spotifyRouter };
