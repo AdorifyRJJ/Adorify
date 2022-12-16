@@ -106,6 +106,7 @@ router.get(
             console.log("1")
             req.session.accessToken = data.body['access_token'];
             req.session.refreshToken = data.body['refresh_token'];
+            console.log(req.session.accessToken);
             const tokenExpirationEpoch =
                 new Date().getTime() / 1000 + data.body['expires_in'];
             req.session.expiryTime = tokenExpirationEpoch;
@@ -116,6 +117,7 @@ router.get(
                 redirectUri: process.env.REDIRECT,
             });
             console.log("2")
+            // await meSpotifyApi.clientCredentialsGrant();
             meSpotifyApi.setAccessToken(req.session.accessToken);
             console.log("3")
             const me = await meSpotifyApi.getMe();
