@@ -129,7 +129,8 @@ router.get(
             res.status(200).json({ me: me.body, accessToken: req.session.accessToken, expiryTime: req.session.expiryTime });
         } catch (e: any) {
             res.status(401).json({
-                message: e.body.error
+                message: e.body.error,
+                hi: e.body.error_description,
             });
         }
         res.end();
