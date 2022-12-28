@@ -6,6 +6,7 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import * as playlistUtil from '../playlist/util';
 import dotenv from 'dotenv';
 import PlaylistCollection from '../playlist/collection';
+import * as spotifyUtil from '../spotify/util';
 dotenv.config({});
 
 const router = express.Router();
@@ -50,6 +51,7 @@ router.get(
   [
     userValidator.isUserLoggedIn,
     userValidator.validAccessToken,
+    spotifyUtil.refreshIfNeeded,
   ],
   async (req: Request, res: Response) => {
     const spotifyApi = new SpotifyWebApi({
