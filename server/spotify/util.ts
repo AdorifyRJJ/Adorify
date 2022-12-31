@@ -29,6 +29,8 @@ const refreshIfNeeded = async (req: Request, res: Response, next: NextFunction) 
                     new Date().getTime() / 1000 + data.body['expires_in'];
                 req.session.expiryTime = tokenExpirationEpoch;
             } catch (e: any) {
+                console.log('badRefreshToken')
+                console.log(e)
                 res.status(e.statusCode).json({
                     message: e.body.error_description
                 });
