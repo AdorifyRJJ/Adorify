@@ -277,7 +277,14 @@ export default {
     if (this.$store.state.connected) {
       this.$store.commit("forceDisconnect");
     }
-    const res = await fetch("/api/adorifySession/stats").then(async (r) => r.json());
+    const resp = await fetch("/api/adorifySession/stats");
+    const res = await resp.json();
+    if (!resp.ok) {
+      await fetch(`/api/spotify/logout`);
+      this.$store.commit("resetStore");
+      if (this.$router.history.current.name !== "Login")
+        this.$router.push({ name: "Login" });
+    }
     // console.log(res)
     // calculate total time
     const _totalTime_sec = res.totalTime * 60;
@@ -285,13 +292,13 @@ export default {
     const hr = formatHrFromSec(_totalTime_sec);
     this.totalTime = `${hr}hr ${min}min`;
 
-        // calculate session info
-        const completedSessions = res.completed;
-        const totalSessions = res.totalSessions;
-        this.sessionInfo =
-            totalSessions === 0
-                ? "0/0 (0%)"
-                : `${completedSessions}/${totalSessions}
+    // calculate session info
+    const completedSessions = res.completed;
+    const totalSessions = res.totalSessions;
+    this.sessionInfo =
+      totalSessions === 0
+        ? "0/0 (0%)"
+        : `${completedSessions}/${totalSessions}
                 (${((completedSessions / totalSessions) * 100).toFixed(1)}%)`;
 
     this._mostPlayedWeek = res.mostPlayed.week;
