@@ -1,7 +1,8 @@
 <template>
     <div class="page">
         <MyLikedPlaylists />
-        <ExplorePlaylists />
+        <ExplorePlaylists @tooManyLiked="displayLikedError" />
+        <div id="snackbar" class="center">{{ errorText }}</div>
     </div>
 </template>
 
@@ -12,6 +13,26 @@ import ExplorePlaylists from "../components/ExplorePlaylists.vue";
 export default {
     components: { MyLikedPlaylists, ExplorePlaylists },
     name: "PlaylistsPage",
+    data() {
+        return {
+            errorText: '',
+        }
+    },
+    methods: {
+        displayLikedError() {
+            if (this.errorText) return;
+                this.errorText = 'Sorry, you are limited to 15 liked playlists.';
+                this.displayError();
+        },
+        displayError() {
+            const x = document.getElementById("snackbar");
+            x.className = "show";
+            setTimeout(() => {
+                x.className = x.className.replace("show", "");
+                this.errorText = "";
+            }, 3000);
+        },
+    },
     async mounted() {
         if (!this.$store.state.displayName) {
             this.$router.push({ name: "Login" });

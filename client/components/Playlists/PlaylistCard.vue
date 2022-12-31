@@ -7,6 +7,7 @@
             :name="this.playlist.name"
             :owner="this.playlist.owner.display_name"
             :isLiked="this.playlist.isLiked"
+            @tooManyLiked="tooManyLiked"
         />
         <div class="cardContent" @click="openPlaylist">
             <img
@@ -40,6 +41,9 @@ export default {
                 },
             });
         },
+        tooManyLiked() {
+            this.$emit("tooManyLiked");
+        }
     },
 };
 </script>

@@ -13,9 +13,6 @@
                     </a>
                     <div class="bottomDiv">
                         <div class="pInfo">
-                            <!-- <div>
-                                <img src="../public/images/Spotify_Logo_RGB_White.png" height="22">
-                            </div> -->
                             <div class="wh30b truncate1line playlistName">
                                 {{ this.name }}
                             </div>
@@ -31,6 +28,7 @@
                             :name="name"
                             :owner="owner"
                             :isLiked="isLiked"
+                            @tooManyLiked="displayLikedError"
                         />
                     </div>
                 </div>
@@ -69,6 +67,7 @@
                 </div>
             </div>
         </div>
+        <div id="snackbar" class="center">{{ errorText }}</div>
     </div>
 </template>
 
@@ -86,6 +85,7 @@ export default {
             tracks: [],
             url: '',
             loading: true,
+            errorText: '',
         };
     },
     computed: {
@@ -132,11 +132,23 @@ export default {
             this.image = res.playlistInfo.images[0]?.url;
             this.name = res.playlistInfo.name;
             this.url = res.playlistInfo.external_urls.spotify;
-            console.log(this.name)
             this.setLoading(false);
         },
         exit() {
             this.$router.push({ name: "Playlists" });
+        },
+        displayLikedError() {
+            if (this.errorText) return;
+            this.errorText = 'Sorry, you are limited to 15 liked playlists.';
+            this.displayError();
+        },
+        displayError() {
+            const x = document.getElementById("snackbar");
+            x.className = "show";
+            setTimeout(() => { 
+                x.className = x.className.replace("show", "");
+                this.errorText = "";
+            }, 3000);
         },
     },
     async created() {

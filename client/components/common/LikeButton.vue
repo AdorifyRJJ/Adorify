@@ -17,6 +17,12 @@ export default {
   methods: {
     async toggleLike() {
       if (this.loading) return;
+
+      if (!this.isLiked && this.$store.state.myLikedPlaylists.length > 14) {
+        this.$emit("tooManyLiked");
+        return;
+      }
+
       this.loading = true;
       this.$store.commit("toggleLike", {
         id: this.spotifyId,

@@ -1,52 +1,44 @@
 <template>
-    <div class="section">
-        <div class="wh40b">Find playlists</div>
+  <div class="section">
+    <div class="wh40b">Find playlists</div>
 
-        <div class="btn-div">
-            <ButtonGroup
-                :titles="btnGroupTitles"
-                :initIdx="selectIdx"
-                @selectIdx="updateContent"
-                class="btn-width-180"
-            />
-            <div v-if="!viewingMine" class="dropdown">
-                <button class="selected wh16n" @click="toggleChoosing">
-                    <div class="selectedText">{{selected}}</div>
-                    <img src="../public/images/dropdown.svg">
-                </button>
-                <div v-if="choosing" class="expanded">
-                    <div v-for="(option, i) in dropdownOptions" @click="toggleChoice(option)" :key="i" class="choice wh16n">
-                        {{option}}
-                    </div>
-                </div>
-            </div>
+    <div class="btn-div">
+      <ButtonGroup :titles="btnGroupTitles" :initIdx="selectIdx" @selectIdx="updateContent" class="btn-width-180" />
+      <div v-if="!viewingMine" class="dropdown">
+        <button class="selected wh16n" @click="toggleChoosing">
+          <div class="selectedText">{{ selected }}</div>
+          <img src="../public/images/dropdown.svg">
+        </button>
+        <div v-if="choosing" class="expanded">
+          <div v-for="(option, i) in dropdownOptions" @click="toggleChoice(option)" :key="i" class="choice wh16n">
+            {{ option }}
+          </div>
         </div>
-        <div v-if="loading" class="lds-ring">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-        <div v-else class="scrollable" id="playlistDiv">
-            <div class="scrollable-content">
-                <div class="playlists">
-                    <PlaylistCard
-                        :key="i"
-                        v-for="(playlist, i) in currPlaylists.items"
-                        :playlist="playlist"
-                    ></PlaylistCard>
-                </div>
-                <div class="botButtons">
-                    <button class="botButton prev" :disabled="!currPlaylists.previous" @click="prevPage">
-                        <img src="../public/images/pagePrev.svg">
-                    </button>
-                    <button class="botButton next" :disabled="!currPlaylists.next" @click="nextPage">
-                        <img src="../public/images/pageNext.svg">
-                    </button>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div v-if="loading" class="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div v-else class="scrollable" id="playlistDiv">
+      <div class="scrollable-content">
+        <div class="playlists">
+          <PlaylistCard :key="i" v-for="(playlist, i) in currPlaylists.items" :playlist="playlist"
+            @tooManyLiked="tooManyLiked"></PlaylistCard>
+        </div>
+        <div class="botButtons">
+          <button class="botButton prev" :disabled="!currPlaylists.previous" @click="prevPage">
+            <img src="../public/images/pagePrev.svg">
+          </button>
+          <button class="botButton next" :disabled="!currPlaylists.next" @click="nextPage">
+            <img src="../public/images/pageNext.svg">
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -195,6 +187,9 @@ export default {
 
       this.setLoading(false);
     },
+    tooManyLiked() {
+      this.$emit("tooManyLiked");
+    }
   },
   async mounted() {
     // initial api call GET public playlists by likes
@@ -204,7 +199,6 @@ export default {
 </script>
 
 <style scoped>
-
 .section {
   display: flex;
   flex-direction: column;
@@ -236,11 +230,11 @@ export default {
 }
 
 .playlists {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    column-gap: 40px;
-    row-gap: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  column-gap: 40px;
+  row-gap: 30px;
 }
 
 /** Bottom buttons */
@@ -280,10 +274,10 @@ export default {
 /** Dropdown menu */
 
 .dropdown {
-    background-color: #373544;
-    height: fit-content;
-    border-radius: 22px;
-    width: 180px;
+  background-color: #373544;
+  height: fit-content;
+  border-radius: 22px;
+  width: 180px;
 }
 
 .selected {
@@ -327,17 +321,17 @@ export default {
   margin-top: 18px;
   margin-bottom: 30px;
 
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 @media (min-width: 1100px) {
-    .btn-div {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-    }
+  .btn-div {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 
@@ -348,40 +342,46 @@ export default {
 /** Loading animation */
 
 .lds-ring {
-    display: flex;
-    align-self: center;
-    padding-top: 20%;
-    position: relative;
-    width: 80px;
-    height: 80px;
+  display: flex;
+  align-self: center;
+  padding-top: 20%;
+  position: relative;
+  width: 80px;
+  height: 80px;
 }
+
 .lds-ring div {
-    box-sizing: border-box;
-    display: block;
-    position: absolute;
-    width: 64px;
-    height: 64px;
-    margin: 8px;
-    border: 8px solid #fff;
-    border-radius: 50%;
-    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: #fff transparent transparent transparent;
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid #fff;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
 }
+
 .lds-ring div:nth-child(1) {
-    animation-delay: -0.45s;
+  animation-delay: -0.45s;
 }
+
 .lds-ring div:nth-child(2) {
-    animation-delay: -0.3s;
+  animation-delay: -0.3s;
 }
+
 .lds-ring div:nth-child(3) {
-    animation-delay: -0.15s;
+  animation-delay: -0.15s;
 }
+
 @keyframes lds-ring {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
