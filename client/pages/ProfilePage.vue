@@ -1,31 +1,17 @@
 <template>
   <div v-if="!deleting" class="page">
-    <!-- api call DELETE /api/users/session -->
-    <!-- <router-link to="/login">
-            <button>Log Out</button>
-        </router-link> -->
-    <!-- <button @click="logout">Log Out</button>
-        <div v-if="$store.state.displayName">
-            <img
-                :src="
-                    $store.state.imgURL ??
-                    'https://www.computerhope.com/jargon/g/guest-user.png'
-                "
-            />
-            <h2>{{ $store.state.displayName }}</h2>
-            <div>125hr 34 min</div>
-            <div>250/277 (90.2%)</div>
-        </div> -->
     <div class="topUserStats">
-      <img
-        :src="
-          $store.state.imgURL ??
-          'https://www.computerhope.com/jargon/g/guest-user.png'
-        "
-        class="image"
-        height="260"
-        width="260"
-      />
+      <div class="imageBox">
+        <img
+          :src="
+            $store.state.imgURL ??
+            'https://www.computerhope.com/jargon/g/guest-user.png'
+          "
+          class="image"
+          height="260"
+          width="260"
+        />
+      </div>
       <div class="rightContainer">
         <div class="topDiv">
           <button class="button" @click="logout">
@@ -36,7 +22,7 @@
           </button>
         </div>
         <div class="bottomDiv">
-          <div class="wh40b margin-b-8">
+          <div class="wh40b margin-b-10 truncate1line">
             {{ $store.state.displayName }}
           </div>
           <div class="completionInfo">
@@ -330,6 +316,7 @@ export default {
 </script>
 
 <style scoped>
+
 .page {
   display: flex;
   flex-direction: column;
@@ -338,26 +325,26 @@ export default {
   height: 100%;
 }
 
+/** Top section */
+
 .image {
   object-fit: cover;
-  border: 5px solid #664eff;
+  border: 6px solid #664eff;
   border-radius: 100%;
   box-shadow: 0px 4px 10px 4px rgba(0, 0, 0, 0.25);
   z-index: 1;
 }
+
+.imageBox {
+  width: 260px;
+  height: 260px;
+}
+
 .topUserStats {
   display: flex;
   flex-direction: row;
   height: 260px;
-  width: 900px;
-}
-
-.bottomUserStats {
-  display: flex;
-  flex-direction: row;
-  width: 900px;
-  height: 300px;
-  gap: 40px;
+  width: 600px;
 }
 
 .rightContainer {
@@ -375,27 +362,13 @@ export default {
 
 .bottomDiv {
   display: flex;
-  /* border: solid; */
   flex-direction: column;
 
-  /* justify-content: space-between; */
   background: rgba(255, 255, 255, 0.05);
   border-radius: 25px;
-  padding: 38px 30px 28px 180px;
+  padding: 20px 30px 20px 180px;
   margin-left: -150px;
   z-index: 2;
-}
-
-.margin-b-14 {
-  margin-bottom: 14px;
-}
-
-.margin-b-30 {
-  margin-bottom: 30px;
-}
-
-.margin-t-18 {
-  margin-top: 18px;
 }
 
 .padding-l-10 {
@@ -404,8 +377,9 @@ export default {
 
 .completionInfo {
   display: flex;
-  flex-direction: row;
-  gap: 14px;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
 }
 
 .pill {
@@ -419,20 +393,66 @@ export default {
   display: flex;
   gap: 10px;
   align-items: center;
+  /* flex-grow: 0; */
 }
 
 .btn-width-140::v-deep .btn-group-button {
   width: 140px;
 }
 
-.mostPlayed {
-  padding-left: 28px;
-  width: 280px;
+/** Bottom section */
+
+.bottomUserStats {
+  display: flex;
+  flex-direction: row;
+  width: 600px;
+  height: 300px;
 }
+
+.productivity {
+  display: flex;
+  flex-direction: column;
+  width: 370px;
+}
+
+.chart {
+  height: 100%;
+  width: 100%;
+}
+
+.mostPlayed {
+  padding-left: 20px;
+  width: 220px;
+}
+
+@media (min-width: 1100px) {
+  .topUserStats {
+    width: 900px;
+  }
+  .bottomUserStats {
+    width: 900px;
+  }
+  .mostPlayed {
+    width: 280px;
+  }
+  .productivity {
+    width: 610px;
+  }
+  .completionInfo {
+    flex-direction: row;
+    gap: 14px;
+  }
+  .bottomDiv {
+    padding: 38px 30px 28px 180px;
+  }
+}
+
 
 .item {
   padding: 8px 0;
 }
+
+/** Delete page */
 
 .delete {
   background-color: transparent;
@@ -447,6 +467,8 @@ export default {
   display: flex;
   gap: 10px;
 }
+
+/** Loading animations */
 
 .lds-ring-sm {
   display: flex;
@@ -523,17 +545,6 @@ export default {
     transform: rotate(360deg);
   }
 }
-.productivity {
-  display: flex;
-  flex-direction: column;
-  /* border: solid; */
 
-  width: 580px;
-}
 
-.chart {
-  /* border: solid; */
-  height: 100%;
-  width: 100%;
-}
 </style>

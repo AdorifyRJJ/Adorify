@@ -110,6 +110,8 @@ export default {
   height: 100%;
   overflow: auto;
   visibility: hidden;
+  
+  /* margin-right: -10px; */
 }
 
 .scrollable-content,
@@ -123,7 +125,7 @@ export default {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: rgba(0, 0, 0, 0.2); 
 }
  
 ::-webkit-scrollbar-thumb {
@@ -226,6 +228,14 @@ main {
   font-weight: bold;
 }
 
+.margin-t-40 {
+  margin-top: 40px;
+}
+
+.margin-b-4 {
+  margin-bottom: 4px;
+}
+
 .margin-b-8 {
   margin-bottom: 8px;
 }
@@ -234,12 +244,24 @@ main {
   margin-bottom: 10px;
 }
 
+.margin-b-14 {
+  margin-bottom: 14px;
+}
+
 .margin-b-18 {
   margin-bottom: 18px;
 }
 
 .margin-b-30 {
   margin-bottom: 30px;
+}
+
+.margin-b-60 {
+  margin-bottom: 60px;
+}
+
+.margin-r-30 {
+  margin-right: 30px;
 }
 
 .margin-y-30 {
@@ -304,4 +326,5 @@ a:link {
 a:visited {
   text-decoration: none;
 }
+
 </style>

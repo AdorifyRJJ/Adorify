@@ -128,6 +128,7 @@ export default {
 </script>
 
 <style scoped>
+
 .page {
   display: flex;
   flex-direction: column;
@@ -138,9 +139,14 @@ export default {
 .leaderboard {
   display: flex;
   flex-direction: column;
-  width: 700px;
-  overflow-y: scroll;
+  width: 600px;
   padding-bottom: 20px;
+}
+
+@media (min-width: 1100px) {
+  .leaderboard {
+      width: 700px;
+  }
 }
 
 .btn-width-140::v-deep .btn-group-button {
@@ -153,6 +159,8 @@ export default {
   margin: 4px 0;
   background-color: white;
 }
+
+/** Loading animation */
 
 .lds-ring {
   display: flex;

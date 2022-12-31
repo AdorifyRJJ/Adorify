@@ -80,16 +80,20 @@ export default {
     margin: 16px;
     position: absolute;
     z-index: 1;
-    /* filter: drop-shadow(0px 0px 5px #664eff); */
+    filter: drop-shadow(0px 0px 3px rgba(0,0,0,0.3));
+}
+
+.likeBtn:hover + .cardContent > img {
+    filter: brightness(100%);
 }
 
 .playlistName {
-    margin-top: 12px;
-    margin-bottom: 2px;
+    margin-top: 16px;
+    margin-bottom: 3px;
     max-width: 200px;
 }
 
 .ownerName {
-    max-width: 200px
+    max-width: 200px;
 }
 </style>

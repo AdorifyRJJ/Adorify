@@ -10,12 +10,10 @@
                 class="btn-width-180"
             />
             <div v-if="!viewingMine" class="dropdown">
-                <div>
-                    <button class="selected wh16n" @click="toggleChoosing">
-                        <div class="selectedText">{{selected}}</div>
-                        <img src="../public/images/dropdown.svg">
-                    </button>
-                </div>
+                <button class="selected wh16n" @click="toggleChoosing">
+                    <div class="selectedText">{{selected}}</div>
+                    <img src="../public/images/dropdown.svg">
+                </button>
                 <div v-if="choosing" class="expanded">
                     <div v-for="(option, i) in dropdownOptions" @click="toggleChoice(option)" :key="i" class="choice wh16n">
                         {{option}}
@@ -191,56 +189,11 @@ export default {
 </script>
 
 <style scoped>
-.lds-ring {
-    display: flex;
-    align-self: center;
-    padding-top: 20%;
-    position: relative;
-    width: 80px;
-    height: 80px;
-}
-.lds-ring div {
-    box-sizing: border-box;
-    display: block;
-    position: absolute;
-    width: 64px;
-    height: 64px;
-    margin: 8px;
-    border: 8px solid #fff;
-    border-radius: 50%;
-    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: #fff transparent transparent transparent;
-}
-.lds-ring div:nth-child(1) {
-    animation-delay: -0.45s;
-}
-.lds-ring div:nth-child(2) {
-    animation-delay: -0.3s;
-}
-.lds-ring div:nth-child(3) {
-    animation-delay: -0.15s;
-}
-@keyframes lds-ring {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
 
 .section {
     display: flex;
     flex-direction: column;
     width: 440px;
-}
-
-.playlists {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    column-gap: 40px;
-    row-gap: 30px;
 }
 
 @media (min-width: 1100px) {
@@ -266,6 +219,16 @@ export default {
         width: 1400px;
     }
 }
+
+.playlists {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    column-gap: 40px;
+    row-gap: 30px;
+}
+
+/** Bottom buttons */
 
 .botButtons {
     display: flex;
@@ -299,10 +262,13 @@ export default {
     padding-left: 4px;
 }
 
+/** Dropdown menu */
+
 .dropdown {
     background-color: #373544;
     height: fit-content;
     border-radius: 22px;
+    width: 180px;
 }
 
 .selected {
@@ -340,20 +306,67 @@ export default {
     padding: 6px 16px;
 }
 
+/** Button group */
+
 .btn-div {
     margin-top: 18px;
     margin-bottom: 30px;
 
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.btn-width-210 {
-    width: 210px;
+@media (min-width: 1100px) {
+    .btn-div {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
 }
+
 
 .btn-width-180::v-deep .btn-group-button {
     width: 180px;
+}
+
+/** Loading animation */
+
+.lds-ring {
+    display: flex;
+    align-self: center;
+    padding-top: 20%;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+.lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 8px solid #fff;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #fff transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

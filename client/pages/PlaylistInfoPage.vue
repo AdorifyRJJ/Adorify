@@ -8,8 +8,14 @@
                     <div class="topDiv">
                         <button class="button wh20b" @click="exit">Back</button>
                     </div>
+                    <a class="logo" :href="url" target="_blank">
+                        <img src="../public/images/Spotify_Logo_RGB_White.png" height="24">
+                    </a>
                     <div class="bottomDiv">
                         <div class="pInfo">
+                            <!-- <div>
+                                <img src="../public/images/Spotify_Logo_RGB_White.png" height="22">
+                            </div> -->
                             <div class="wh30b truncate1line playlistName">
                                 {{ this.name }}
                             </div>
@@ -78,6 +84,7 @@ export default {
         return {
             spotifyId: this.$route.params.spotifyId,
             tracks: [],
+            url: '',
             loading: true,
         };
     },
@@ -124,6 +131,7 @@ export default {
             this.owner = res.playlistInfo.owner.display_name;
             this.image = res.playlistInfo.images[0]?.url;
             this.name = res.playlistInfo.name;
+            this.url = res.playlistInfo.external_urls.spotify;
             console.log(this.name)
             this.setLoading(false);
         },
@@ -147,43 +155,7 @@ export default {
 </script>
 
 <style scoped>
-.lds-ring {
-    display: flex;
-    align-self: center;
-    padding-top: 20%;
-    position: relative;
-    width: 80px;
-    height: 80px;
-}
-.lds-ring div {
-    box-sizing: border-box;
-    display: block;
-    position: absolute;
-    width: 64px;
-    height: 64px;
-    margin: 8px;
-    border: 8px solid #fff;
-    border-radius: 50%;
-    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: #fff transparent transparent transparent;
-}
-.lds-ring div:nth-child(1) {
-    animation-delay: -0.45s;
-}
-.lds-ring div:nth-child(2) {
-    animation-delay: -0.3s;
-}
-.lds-ring div:nth-child(3) {
-    animation-delay: -0.15s;
-}
-@keyframes lds-ring {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
+
 .page {
     display: flex;
     flex-direction: row;
@@ -220,11 +192,12 @@ export default {
         width: 1400px;
     }
 }
+
+/** Top section */
+
 .playlistInfo {
     display: flex;
-    /* outline: auto; */
     flex-direction: row;
-    /* height: 186px; */
     width: 100%;
     margin-bottom: 30px;
 }
@@ -246,13 +219,29 @@ export default {
     min-width: 0;
 }
 
+.logo {
+    height: 40px;
+    width: 140px;
+    /* background: rgba(0, 0, 0, 0.8); */
+    /* background: rgba(255, 255, 255, 0.05); */
+    background-color: #664eff;
+    margin-left: -15px;
+    margin-top: -10px;
+    padding: 8px 34px;
+    border-radius: 0 10px 10px 0 ;
+}
+
+.logo:hover {
+    filter: brightness(80%);
+}
+
 .bottomDiv {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 25px;
-    padding: 18px 30px 18px 55px;
+    padding: 16px 30px 16px 60px;
     margin-left: -40px;
 }
 
@@ -271,16 +260,20 @@ export default {
     z-index: 1;
 }
 
+.playlistName {
+    max-width: 100%;
+    margin-bottom: 4px;
+}
+
+/** Tracks */
+
 .tracks {
     display: flex;
     flex-direction: column;
     row-gap: 16px;
 }
 
-.playlistName {
-    max-width: 100%;
-    margin-bottom: 2px;
-}
+/** Bottom buttons */
 
 .botButtons {
     display: flex;
@@ -312,5 +305,45 @@ export default {
 
 .next {
     padding-left: 4px;
+}
+
+/** Loading animation */
+
+.lds-ring {
+    display: flex;
+    align-self: center;
+    padding-top: 20%;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+.lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 8px solid #fff;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #fff transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

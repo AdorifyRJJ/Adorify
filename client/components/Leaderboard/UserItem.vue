@@ -1,7 +1,10 @@
 <template>
     <div class="item" :class="isMe ? 'me' : ''">
         <div class="gr26b margin-r-46">{{ this.rank }}</div>
-        <img :src="this.user.imgURL" class="image" width="50" height="50" />
+        <div class="imageBox">
+            <img :src="this.user.imgURL" class="image" width="46" height="46" />
+        </div>
+        
         <div class="rightDiv">
             <div :class="isMe ? 'wh20n' : 'gr20'">{{ this.user.displayName }}</div>
             <div :class="isMe ? 'wh20n' : 'gr20'">{{ this.focusTime }}</div>
@@ -37,9 +40,14 @@ export default {
 
 .image {
     object-fit: cover;
-    border: 3px solid #664eff;
+    outline: 3px solid #664eff;
     border-radius: 100%;
-    margin: 0 24px;
+}
+
+.imageBox {
+    margin: 3px 24px;
+    width: 46px;
+    height: 46px;
 }
 
 .margin-r-46 {

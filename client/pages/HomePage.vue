@@ -1,158 +1,161 @@
 <template>
-    <main class="scrollable">
-        <div class="scrollable-content center">
-            <div class="wh40b">{{ $store.state.displayName }},</div>
-            <div class="gr24">
-                <span v-if="sessionState === SessionState.BEFORE">Start a focus session</span>
-                <span v-else-if="sessionState === SessionState.FOCUS">You're doing great!</span>
-                <span v-else-if="sessionState === SessionState.BREAK">Take a break!</span>
-                <span v-else>Study session complete!</span>
-            </div>
-
-            <div v-if="sessionState === SessionState.BEFORE" class="center" >
-                <div class="selector">
-                    <div class="selectorItem">
-                        <div class="siNormal">
-                            <div class="left gr20">Focus Time</div>
-                            <div class="right gr20">
-                                <input v-model.number="focusTime" /> min
-                            </div>
-                        </div>
-                        <div class="badInput gr12" v-if="!focusTimeIsValid">
-                            Please enter a number between 0-999.
-                        </div>
-                    </div>
-                    <div class="selectorItem">
-                        <div class="siNormal">
-                            <div class="left gr20">Break Time</div>
-                            <div class="right gr20">
-                                <input v-model.number="breakTime" /> min
-                            </div>
-                        </div>
-                        <div class="badInput gr12" v-if="!breakTimeIsValid">
-                            Please enter a number between 0-999.
-                        </div>
-                    </div>
-                    <div class="selectorItem">
-                        <div class="siNormal">
-                            <div class="left gr20">Intervals</div>
-                            <div class="right gr20">
-                                <input v-model.number="intervals" /> times
-                            </div>
-                        </div>
-                        <div class="badInput gr12" v-if="!intervalsIsValid">
-                            Please enter an integer between 1-20.
-                        </div>
-                    </div>
+    <main class="center">
+        <div class="scrollable">
+            <div class="scrollable-content center mainContent">
+                <div class="wh40b">{{ $store.state.displayName }},</div>
+                <div class="gr24">
+                    <span v-if="sessionState === SessionState.BEFORE">Start a focus session</span>
+                    <span v-else-if="sessionState === SessionState.FOCUS">You're doing great!</span>
+                    <span v-else-if="sessionState === SessionState.BREAK">Take a break!</span>
+                    <span v-else>Study session complete!</span>
                 </div>
+
+                <div v-if="sessionState === SessionState.BEFORE" class="center">
+                    <div class="selector">
+                        <div class="selectorItem">
+                            <div class="siNormal">
+                                <div class="left gr20">Focus Time</div>
+                                <div class="right gr20">
+                                    <input v-model.number="focusTime" /> min
+                                </div>
+                            </div>
+                            <div class="badInput gr12" v-if="!focusTimeIsValid">
+                                Please enter a number between 0-999.
+                            </div>
+                        </div>
+                        <div class="selectorItem">
+                            <div class="siNormal">
+                                <div class="left gr20">Break Time</div>
+                                <div class="right gr20">
+                                    <input v-model.number="breakTime" /> min
+                                </div>
+                            </div>
+                            <div class="badInput gr12" v-if="!breakTimeIsValid">
+                                Please enter a number between 0-999.
+                            </div>
+                        </div>
+                        <div class="selectorItem">
+                            <div class="siNormal">
+                                <div class="left gr20">Intervals</div>
+                                <div class="right gr20">
+                                    <input v-model.number="intervals" /> times
+                                </div>
+                            </div>
+                            <div class="badInput gr12" v-if="!intervalsIsValid">
+                                Please enter an integer between 1-20.
+                            </div>
+                        </div>
+                    </div>
                     
-                <div class="carousel">
-                    <div v-if="$store.state.myLikedPlaylists.length === 0" class="placeholder center">
-                        <router-link to="playlists" class="placeholderInner center">
-                            <img src="../public/images/add.svg">
-                            <div class="gr16 placeholderText">
-                                Add playlists to start session
-                            </div>
-                        </router-link>
+                    <div class="carousel">
+                        <div v-if="$store.state.myLikedPlaylists.length === 0" class="placeholder center">
+                            <router-link to="playlists" class="placeholderInner center">
+                                <img src="../public/images/add.svg">
+                                <div class="gr16 placeholderText">
+                                    Add playlists to start session
+                                </div>
+                            </router-link>
+                        </div>
+
+                        <Splide v-else-if="$store.state.myLikedPlaylists.length === 1" @splide:active="onActive"
+                            @splide:click="onClick"
+                            :options="{ arrows: false, perPage: 1, padding: '60px', speed: 100, slideFocus: true, cloneStatus: false, drag: false, }">
+                            <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
+                                <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
+                                </HomePlaylistCard>
+                            </SplideSlide>
+                        </Splide>
+
+                        <Splide v-else-if="$store.state.myLikedPlaylists.length === 2" @splide:active="onActive"
+                            @splide:click="onClick"
+                            :options="{ arrows: false, perPage: 2, padding: '60px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false, }">
+                            <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
+                                <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
+                                </HomePlaylistCard>
+                            </SplideSlide>
+                        </Splide>
+
+                        <Splide v-else-if="$store.state.myLikedPlaylists.length === 3" @splide:active="onActive"
+                            @splide:click="onClick"
+                            :options="{ arrows: false, perPage: 3, padding: '60px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false }">
+                            <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
+                                <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
+                                </HomePlaylistCard>
+                            </SplideSlide>
+                        </Splide>
+
+                        <Splide v-else @splide:active="onActive"
+                            @splide:click="onClick"
+                            :options="{ type: 'loop', rewind: true, perPage: 3, padding: '60px', speed: 100, slideFocus: true, focus: 'center', cloneStatus: false, }">
+                            <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
+                                <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
+                                </HomePlaylistCard>
+                            </SplideSlide>
+                        </Splide>
                     </div>
-
-                    <Splide v-else-if="$store.state.myLikedPlaylists.length === 1" @splide:active="onActive"
-                        @splide:click="onClick"
-                        :options="{ arrows: false, perPage: 1, padding: '60px', speed: 100, slideFocus: true, cloneStatus: false, drag: false, }">
-                        <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
-                            <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
-                            </HomePlaylistCard>
-                        </SplideSlide>
-                    </Splide>
-
-                    <Splide v-else-if="$store.state.myLikedPlaylists.length === 2" @splide:active="onActive"
-                        @splide:click="onClick"
-                        :options="{ arrows: false, perPage: 2, padding: '60px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false, }">
-                        <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
-                            <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
-                            </HomePlaylistCard>
-                        </SplideSlide>
-                    </Splide>
-
-                    <Splide v-else-if="$store.state.myLikedPlaylists.length === 3" @splide:active="onActive"
-                        @splide:click="onClick"
-                        :options="{ arrows: false, perPage: 3, padding: '60px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false }">
-                        <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
-                            <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
-                            </HomePlaylistCard>
-                        </SplideSlide>
-                    </Splide>
-
-                    <Splide v-else @splide:active="onActive"
-                        @splide:click="onClick"
-                        :options="{ type: 'loop', rewind: true, perPage: 3, padding: '60px', speed: 100, slideFocus: true, focus: 'center', cloneStatus: false, }">
-                        <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
-                            <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
-                            </HomePlaylistCard>
-                        </SplideSlide>
-                    </Splide>
                 </div>
 
-                <div class="bottomDiv">
-                    <button @click="startSession" class="controlButton pButton" :disabled="$store.state.myLikedPlaylists.length === 0 || !submitIsValid || !$store.state.connected || $store.state.spoitfyPlayer === null">
-                        <img src="../public/images/play.svg">
+                <div v-else-if="sessionState !== SessionState.AFTER" class="center" >
+                    <div class="wh100b margin-t-40">{{ getTime }}</div>
+                    <div class="progressbar">
+                        <div class="pbItem" v-for="i in (currInterval - 1)"></div>
+                        <div class="pbItem pbActive" v-if="sessionState === SessionState.FOCUS"></div>
+                        <div class="pbItem pbNotDone" v-else></div>
+                        <div class="pbItem pbNotDone" v-for="i in (intervals - currInterval)"></div>
+                    </div>
+                    <button class="button" @click="endSession">
+                        <span class="wh20b">End Session</span>
                     </button>
                 </div>
-            </div>
 
-            <div v-else-if="sessionState !== SessionState.AFTER" class="center" >
-                <div class="wh100b time">{{ getTime }}</div>
-                <div class="progressbar">
-                    <!-- don't add key rn as it breaks it -->
-                    <div class="pbItem" v-for="i in (currInterval - 1)"></div>
-                    <div class="pbItem pbActive" v-if="sessionState === SessionState.FOCUS"></div>
-                    <div class="pbItem pbNotDone" v-else></div>
-                    <div class="pbItem pbNotDone" v-for="i in (intervals - currInterval)"></div>
-                </div>
-
-                <button class="button" @click="endSession">
-                    <span class="wh20b">End Session</span>
-                </button>
-
-                <div class="bottomDiv">
-                    <div class="center trackInfo">
-                        <div class="wh20b">{{ currTrackTitle }}</div>
-                        <div class="gr20">{{ currTrackArtist }}</div>
+                <div v-else class="center">
+                    <div class="gr20 margin-t-40 margin-b-30">
+                        You completed <span class="wh20b">{{ currInterval - 1}}</span> interval<span v-if="currInterval !== 2">s</span> of <span class="wh20b">{{ focusTime }}</span> minutes each.
                     </div>
-
-                    <div class="controls">
-                        <button v-if="timerActive && sessionState !== SessionState.BREAK" @click="playPrev" class="controlButton prevButton">
-                            <img src="../public/images/prev.svg">
-                        </button>
-                        <button @click="togglePlay" class="controlButton pButton" :disabled="sessionState === SessionState.BREAK">
-                            <img v-if="timerActive && sessionState !== SessionState.BREAK" src="../public/images/pause.svg">
-                            <img v-else src="../public/images/play.svg">
-                        </button>
-                        <button v-if="timerActive && sessionState !== SessionState.BREAK" @click="playNext" class="controlButton nextButton">
-                            <img src="../public/images/forward.svg">
-                        </button>
+                    <div class="timeDisplay">
+                        <span v-if="getCompletedFocusTimeHr !== '0'" class="wh100b focusTimeText">{{ getCompletedFocusTimeHr }}</span>
+                        <span v-if="getCompletedFocusTimeHr !== '0'" class="gr20 margin-r-30">hr</span>
+                        <span class="wh100b focusTimeText">{{ getCompletedFocusTimeMin }}</span>
+                        <span class="gr20">min</span>
                     </div>
+                    <div class="gr20 margin-b-60">of focus time.</div>
+                    <button class="button" @click="backToHome">
+                        <span class="wh20b">Back To Home</span>
+                    </button>
                 </div>
+                <div id="snackbar" class="center">{{ errorText }}</div>
             </div>
-
-            <div v-else class="center">
-                <div class="gr20 topStats">
-                    You completed <span class="wh20b">{{ currInterval - 1}}</span> interval<span v-if="currInterval !== 2">s</span> of <span class="wh20b">{{ focusTime }}</span> minutes each.
-                </div>
-                <div class="timeDisplay">
-                    <span v-if="getCompletedFocusTimeHr !== '0'" class="wh100b focusTimeText">{{ getCompletedFocusTimeHr }}</span>
-                    <span v-if="getCompletedFocusTimeHr !== '0'" class="gr20 hrDisplay">hr</span>
-                    <span class="wh100b focusTimeText">{{ getCompletedFocusTimeMin }}</span>
-                    <span class="gr20">min</span>
-                </div>
-                <div class="gr20 bottomStats">of focus time.</div>
-                <button class="button" @click="backToHome">
-                    <span class="wh20b">Back To Home</span>
-                </button>
-            </div>
-            <div id="snackbar" class="center">{{ errorText }}</div>
         </div>
-        
+
+        <div v-if="sessionState === SessionState.BEFORE" class="bottomContent">
+            <button @click="startSession" class="controlButton pButton" :disabled="$store.state.myLikedPlaylists.length === 0 || !submitIsValid || !$store.state.connected || $store.state.spoitfyPlayer === null">
+                <img src="../public/images/play.svg">
+            </button>
+        </div>
+
+        <div v-else-if="sessionState !== SessionState.AFTER" class="bottomContent">
+            <div>
+                <img src="../public/images/Spotify_Icon_RGB_White.png" height="22" width="22">
+            </div>
+
+            <div class="center trackInfo">
+                <div class="wh20b">{{ currTrackTitle }}</div>
+                <div class="gr20">{{ currTrackArtist }}</div>
+            </div>
+
+            <div class="controls">
+                <button v-if="timerActive && sessionState !== SessionState.BREAK" @click="playPrev" class="controlButton prevButton">
+                    <img src="../public/images/prev.svg">
+                </button>
+                <button @click="togglePlay" class="controlButton pButton" :disabled="sessionState === SessionState.BREAK">
+                    <img v-if="timerActive && sessionState !== SessionState.BREAK" src="../public/images/pause.svg">
+                    <img v-else src="../public/images/play.svg">
+                </button>
+                <button v-if="timerActive && sessionState !== SessionState.BREAK" @click="playNext" class="controlButton nextButton">
+                    <img src="../public/images/forward.svg">
+                </button>
+            </div>
+        </div>
     </main>
 </template>
 
@@ -262,7 +265,7 @@ export default {
                 track_window: { current_track }
             }) => {
                 this.currTrackTitle = current_track.name;
-                this.currTrackArtist = current_track.artists.map((a) => a.name).join(" ");
+                this.currTrackArtist = current_track.artists.map((a) => a.name).join(", ");
                 console.log('pos', position)
                 
             });
@@ -423,6 +426,20 @@ export default {
 
 <style scoped>
 
+main {
+    height: 100%;
+}
+
+.bottomContent {
+    padding: 20px 0px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/** Selectors */
+
 .selector {
     display: flex;
     flex-direction: column;
@@ -436,7 +453,6 @@ export default {
     padding: 10px 20px;
     background-color: #373544;
     border-radius: 25px;
-
 }
 
 .siNormal {
@@ -462,19 +478,10 @@ export default {
     color: #ffffff;
     font-size: 20px;
     border-style: none;
-    padding: 0px 4px;
+    padding: 0px 6px;
 }
 
-.bottomDiv {
-    width: 100vw;
-    position: fixed;
-    bottom: 0;
-    padding: 20px 0px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+/** Bottom Controls */
 
 .controls {
     display: flex;
@@ -491,7 +498,6 @@ export default {
 .pButton {
     background-color: #664eff;
     filter: drop-shadow(0px 0px 10px #664eff);
-    /* animation: buttonGlow 2s ease-in-out infinite alternate; */
 }
 
 .prevButton {
@@ -521,17 +527,39 @@ export default {
 }
 
 .trackInfo {
-    padding: 20px;
+    padding: 6px 20px 20px 20px;
 }
 
-.time {
-    margin-top: 40px;
+/** Carousel */
+
+.carousel {
+    width: 600px;
 }
 
-/* .intervals {
-    padding-top: 20px;
-    padding-bottom: 10px;
-} */
+.placeholder {
+    padding: 20px 0;
+}
+
+.placeholderInner {
+    height: 166.4px;
+    width: 120px;
+    border: 2px dashed white;
+    border-radius: 6px;
+    padding: 10px;
+
+    justify-content: center;
+}
+
+.placeholderInner:hover {
+    background-color: #333243;
+}
+
+.placeholderText {
+    margin-top: 4px;
+    text-align: center;
+}
+
+/** Progress bar */
 
 .progressbar {
     position: relative;
@@ -581,50 +609,11 @@ export default {
     z-index: 1;
 }
 
-.carousel {
-    width: 600px;
-}
-
-.placeholder {
-    padding: 20px 0;
-}
-
-.placeholderInner {
-    height: 166.4px;
-    width: 120px;
-    border: 2px dashed white;
-    border-radius: 6px;
-    padding: 10px;
-
-    justify-content: center;
-}
-
-.placeholderInner:hover {
-    /* filter: brightness(70%); */
-    background-color: #333243;
-}
-
-.placeholderText {
-    margin-top: 4px;
-    text-align: center;
-}
-
-.topStats {
-    margin-top: 40px;
-    margin-bottom: 30px;
-}
+/** End screen */
 
 .focusTimeText {
     animation: glow 2s ease-in-out infinite alternate;
     margin-right: 4px;
-}
-
-.hrDisplay {
-    margin-right: 20px;
-}
-
-.bottomStats {
-    margin-bottom: 60px;
 }
 
 @keyframes glow {
@@ -635,15 +624,6 @@ export default {
         text-shadow: 0 0 30px #7c68ff, 0 0 10px #9281ff;
     }
 }
-
-/* @keyframes buttonGlow {
-    from {
-        box-shadow: 0 0 10px #664eff;
-    }
-    to {
-        box-shadow: 0 0 20px #7c68ff, 0 0 5px #9281ff;
-    }
-} */
 
 /* The snackbar - position it at the bottom and in the middle of the screen */
 #snackbar {

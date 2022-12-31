@@ -54,7 +54,7 @@ export default {
     text-align: right;
     padding: 8px 0;
     cursor: pointer;
-    width: 200px;
+    width: 160px;
 }
 
 .item:hover {
@@ -63,17 +63,5 @@ export default {
 
 .titleText {
     margin-bottom: 10px;
-}
-
-@media (min-width: 1200px) {
-}
-
-@media (min-width: 1500px) {
-}
-
-@media (min-width: 1800px) {
-}
-
-@media (min-width: 2100px) {
 }
 </style>

@@ -8,7 +8,7 @@
         />
         <div class="content">
             <div class="oneHalf">
-                <div class="wh16b truncate1line">{{ this.track.name }}</div>
+                <div class="wh16b truncate1line margin-b-4">{{ this.track.name }}</div>
                 <div class="gr16 truncate1line">
                     {{
                         this.track.artists
@@ -38,18 +38,6 @@ export default {
     name: "TrackItem",
     props: ["track"],
     computed: {
-        // getSec() {
-        //     const sec = Math.floor((this.track.duration_ms / 1000) % 60);
-        //     return sec < 10 ? `0${sec}` : `${sec}`;
-        // },
-        // getMin() {
-        //     const min = Math.floor((this.track.duration_ms / 60 / 1000) % 60);
-        //     return min < 10 ? `0${min}` : `${min}`;
-        // },
-        // getHr() {
-        //     const hr = Math.floor((this.track.duration_ms / 3600 / 1000) % 24);
-        //     return hr < 10 ? `0${hr}` : `${hr}`;
-        // },
         duration() {
             const duration_sec = this.track.duration_ms / 1000;
 
@@ -70,7 +58,6 @@ export default {
 <style scoped>
 .item {
     display: flex;
-
     height: 48px;
 }
 
@@ -84,6 +71,7 @@ export default {
 
 .oneHalf {
     width: 50%;
+    margin-right: 4px;
 }
 .oneFourth {
     width: 25%;
@@ -93,6 +81,7 @@ export default {
     display: flex;
     justify-content: flex-end;
 }
+
 .image {
     object-fit: cover;
 }
