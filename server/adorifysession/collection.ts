@@ -83,7 +83,7 @@ class AdorifySessionCollection {
         $group: { _id: "$spotifyPlaylistId", plays: { $sum: "$completed" } }
       },
       {
-        $sort: { plays: -1 }
+        $sort: { plays: -1, _id: 1 }
       }
     ]))?.slice(0, 5);
 
@@ -95,7 +95,7 @@ class AdorifySessionCollection {
         $group: { _id: "$spotifyPlaylistId", plays: { $sum: "$completed" } }
       },
       {
-        $sort: { plays: -1 }
+        $sort: { plays: -1, _id: 1 }
       }
     ]))?.slice(0, 5);
 

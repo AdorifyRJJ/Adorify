@@ -6,6 +6,7 @@
     <div id="remainingContent">
       <router-view />
     </div>
+    <div id="snackbar" class="center">{{ errorText }}</div>
   </div>
 </template>
 
@@ -15,6 +16,21 @@ import SpotifyWebApi from "spotify-web-api-node";
 export default {
     name: "App",
     components: { NavBar },
+    data() {
+      return {
+        errorText: '',
+      };
+    },
+    methods: {
+      async displayError() {
+            const x = document.getElementById("snackbar");
+            x.className = "show";
+            // setTimeout(function(){ 
+            //     x.className = x.className.replace("show", "");
+            //     this.errorText = "";
+            // }, 3000);
+        },
+    },
     async beforeCreate() {
         this.$store.commit("setConnected", false);
         const myData = this.$route.query.code
@@ -62,6 +78,10 @@ export default {
             };
             if (this.$route.query.code) this.$router.push({ name: "Home" });
         } else {
+            if (this.$route.query.code) {
+              this.errorText = "Login failed. Please ensure you have a Spotify Premium account.";
+              this.displayError();
+            }
             await fetch(`/api/spotify/logout`);
             this.$store.commit("resetStore");
             if (this.$router.history.current.name !== "Login")
@@ -350,8 +370,7 @@ a:visited {
 /* The snackbar - position it at the bottom and in the middle of the screen */
 #snackbar {
   visibility: hidden; /* Hidden by default. Visible on click */
-  min-width: 250px; 
-  margin-left: -125px;
+  min-width: 250px;
   background-color: #333; /* Black background color */
   color: #fff; /* White text color */
   text-align: center; /* Centered text */
@@ -359,7 +378,8 @@ a:visited {
   padding: 16px; /* Padding */
   position: fixed; /* Sit on top of the screen */
   z-index: 1; /* Add a z-index if needed */
-  margin: 0 auto;
+  left: 50%;
+  transform: translateX(-50%);
   bottom: 30px; /* 30px from the bottom */
 }
 

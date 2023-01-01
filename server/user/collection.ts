@@ -37,22 +37,6 @@ class UserCollection {
     return await UserModel.findOne({ username: username }).populate('likedPlaylists');
   }
 
-  // static async addToLikedPlaylists(username: string, playlist: Types.ObjectId | String): Promise<HydratedDocument<User>> {
-  //   const user = await UserModel.findOne({username: username});
-  //   user.likedPlaylists.push(playlist as Types.ObjectId);
-
-  //   await user.save();
-  //   return user;
-  // }
-
-  // static async deleteFromLikedPlaylists(username: string, playlist: Types.ObjectId | String): Promise<HydratedDocument<User>> {
-  //   const user = await UserModel.findOne({username: username});
-  //   user.likedPlaylists.push(playlist as Types.ObjectId);
-
-  //   await user.save();
-  //   return user;
-  // }
-
   static async inLikedPlaylists(username: string, spotifyId: string): Promise<boolean> {
     const user = await UserModel.findOne({ username: username });
     const playlist = await PlaylistCollection.findOneBySpotifyId(spotifyId);

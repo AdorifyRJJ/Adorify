@@ -94,7 +94,7 @@
       <div v-else class="deleteModal center">
         <div class="modalText">
           Are you sure? This action will delete all data associated with your
-          account.
+          Adorify (not Spotify) account.
         </div>
         <div class="modalButtons">
           <button class="button" @click="noDelete">
@@ -414,6 +414,7 @@ export default {
 .bottomUserStats {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   width: 600px;
   height: 300px;
 }
@@ -445,7 +446,7 @@ export default {
     width: 280px;
   }
   .productivity {
-    width: 610px;
+    width: 600px;
   }
   .completionInfo {
     flex-direction: row;

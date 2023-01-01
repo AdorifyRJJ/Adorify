@@ -365,7 +365,8 @@ export default {
                 device_id: this.$store.state.deviceId, 
             }));
             if (!res.expected){
-                this.errorText = "Spotify Play Error: " + res.data;
+                // this.errorText = "Spotify Play Error: " + res.data;
+                this.errorText = "Spotify Play Error";
                 this.displayError();
             }
         },
@@ -374,7 +375,8 @@ export default {
                 device_id: this.$store.state.deviceId, 
             }));
             if (!res.expected){
-                this.errorText = "Spotify Pause Error: " + res.data;
+                // this.errorText = "Spotify Pause Error: " + res.data;
+                this.errorText = "Spotify Pause Error";
                 this.displayError();
             }
         },
@@ -384,6 +386,7 @@ export default {
             }));
             if (!res.expected){
                 this.errorText = "Spotify Previous Error: " + res.data;
+                this.errorText = "Spotify Previous Error";
                 this.displayError();
             }
         },
@@ -392,7 +395,8 @@ export default {
                 device_id: this.$store.state.deviceId, 
             }));
             if (!res.expected){
-                this.errorText = "Spotify Next Error: " + res.data;
+                // this.errorText = "Spotify Next Error: " + res.data;
+                this.errorText = "Spotify Next Error";
                 this.displayError();
             }
         },

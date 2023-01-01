@@ -69,26 +69,26 @@ router.get(
     const mostPlayedWeek: Array<SpotifyApi.PlaylistObjectSimplified> = []
 
     for (const p of mostPlayed.week) {
-      const playlistInfo = await spotifyApi.getPlaylist(p._id, { fields: 'id, images, name, owner.display_name, public' });
+      const playlistInfo = await spotifyApi.getPlaylist(p._id, { fields: 'name' });
       if (playlistInfo.statusCode === 200)
         mostPlayedWeek.push(playlistInfo.body);
       else
         console.log('Failed to retrieve', playlistInfo.body);
     }
-
-    const finalMostPlayedWeek = await Promise.all(mostPlayedWeek.map((p: SpotifyApi.PlaylistObjectSimplified) => playlistUtil.constructShallowPlaylistResponse(req.session.username, p)))
+    // console.log(mostPlayedWeek);
+    // const finalMostPlayedWeek = await Promise.all(mostPlayedWeek.map((p: SpotifyApi.PlaylistObjectSimplified) => playlistUtil.constructShallowPlaylistResponse(req.session.username, p)))
 
     const mostPlayedMonth: Array<SpotifyApi.PlaylistObjectSimplified> = []
 
     for (const p of mostPlayed.month) {
-      const playlistInfo = await spotifyApi.getPlaylist(p._id, { fields: 'id, images, name, owner.display_name, public' });
+      const playlistInfo = await spotifyApi.getPlaylist(p._id, { fields: 'name' });
       if (playlistInfo.statusCode === 200)
         mostPlayedMonth.push(playlistInfo.body);
       else
         console.log('Failed to retrieve', playlistInfo.body);
     }
 
-    const finalMostPlayedMonth = await Promise.all(mostPlayedWeek.map((p: SpotifyApi.PlaylistObjectSimplified) => playlistUtil.constructShallowPlaylistResponse(req.session.username, p)))
+    // const finalMostPlayedMonth = await Promise.all(mostPlayedWeek.map((p: SpotifyApi.PlaylistObjectSimplified) => playlistUtil.constructShallowPlaylistResponse(req.session.username, p)))
 
     const studyTimeArr = await AdorifySessionCollection.getStudyTimeByUsername(req.session.username);
     let studyTimeModified = [];
@@ -98,14 +98,15 @@ router.get(
     }
     if (studyTimeModified.length === 0) studyTimeModified = Array.apply(0, Array(28)).map(() => 0);
 
+    // console.log(finalMostPlayedWeek);
     res.status(200).json({
       message: 'Here are the user stats.',
       totalTime: totalTime ?? 0,
       completed: completed ?? 0,
       totalSessions: totalSessions ?? 0,
       mostPlayed: {
-        week: finalMostPlayedWeek,
-        month: finalMostPlayedMonth,
+        week: mostPlayedWeek,
+        month: mostPlayedMonth,
       },
       studyTime: studyTimeModified,
     });
