@@ -32,7 +32,8 @@ const refreshIfNeeded = async (req: Request, res: Response, next: NextFunction) 
                 console.log('badRefreshToken')
                 console.log(e)
                 res.status(e.statusCode).json({
-                    message: e.body.error_description
+                    message: e.body.error_description,
+                    payload: e
                 });
                 res.end();
                 return;
