@@ -175,6 +175,11 @@ main {
   font-size: 30px;
   font-weight: bold;
 }
+.wh36b {
+  color: #ffffff;
+  font-size: 36px;
+  font-weight: bold;
+}
 .wh40b {
   color: #ffffff;
   font-size: 40px;
@@ -200,6 +205,11 @@ main {
 .wh20n {
   color: #ffffff;
   font-size: 20px;
+  font-weight: normal;
+}
+.wh36n {
+  color: #ffffff;
+  font-size: 36px;
   font-weight: normal;
 }
 .wh40n {

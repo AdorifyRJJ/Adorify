@@ -47,56 +47,54 @@
                         </div>
                     </div>
                     
-                    <div class="carousel">
-                        <div v-if="$store.state.myLikedPlaylists.length === 0" class="placeholder center">
-                            <router-link to="playlists" class="placeholderInner center">
-                                <img src="../public/images/add.svg">
-                                <div class="gr16 placeholderText">
-                                    Add playlists to start session
-                                </div>
-                            </router-link>
-                        </div>
-
-                        <Splide v-else-if="$store.state.myLikedPlaylists.length === 1" @splide:active="onActive"
-                            @splide:click="onClick"
-                            :options="{ arrows: false, perPage: 1, padding: '60px', speed: 100, slideFocus: true, cloneStatus: false, drag: false, }">
-                            <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
-                                <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
-                                </HomePlaylistCard>
-                            </SplideSlide>
-                        </Splide>
-
-                        <Splide v-else-if="$store.state.myLikedPlaylists.length === 2" @splide:active="onActive"
-                            @splide:click="onClick"
-                            :options="{ arrows: false, perPage: 2, padding: '60px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false, }">
-                            <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
-                                <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
-                                </HomePlaylistCard>
-                            </SplideSlide>
-                        </Splide>
-
-                        <Splide v-else-if="$store.state.myLikedPlaylists.length === 3" @splide:active="onActive"
-                            @splide:click="onClick"
-                            :options="{ arrows: false, perPage: 3, padding: '60px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false }">
-                            <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
-                                <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
-                                </HomePlaylistCard>
-                            </SplideSlide>
-                        </Splide>
-
-                        <Splide v-else @splide:active="onActive"
-                            @splide:click="onClick"
-                            :options="{ type: 'loop', rewind: true, perPage: 3, padding: '60px', speed: 100, slideFocus: true, focus: 'center', cloneStatus: false, }">
-                            <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
-                                <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
-                                </HomePlaylistCard>
-                            </SplideSlide>
-                        </Splide>
+                    <div v-if="$store.state.myLikedPlaylists.length === 0" class="placeholder center">
+                        <router-link to="playlists" class="placeholderInner center">
+                            <img src="../public/images/add.svg">
+                            <div class="gr16 placeholderText">
+                                Add playlists to start session
+                            </div>
+                        </router-link>
                     </div>
+
+                    <Splide v-else-if="$store.state.myLikedPlaylists.length === 1" @splide:active="onActive"
+                        @splide:click="onClick"
+                        :options="{ arrows: false, fixedWidth: '120px', padding: '20px', speed: 100, slideFocus: true, cloneStatus: false, drag: false, width: '160px' }">
+                        <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
+                            <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
+                            </HomePlaylistCard>
+                        </SplideSlide>
+                    </Splide>
+
+                    <Splide v-else-if="$store.state.myLikedPlaylists.length === 2" @splide:active="onActive"
+                        @splide:click="onClick"
+                        :options="{ arrows: false, fixedWidth: '120px', gap: '40px', padding: '20px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false, width: '320px' }">
+                        <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
+                            <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
+                            </HomePlaylistCard>
+                        </SplideSlide>
+                    </Splide>
+
+                    <Splide v-else-if="$store.state.myLikedPlaylists.length === 3" @splide:active="onActive"
+                        @splide:click="onClick"
+                        :options="{ arrows: false, fixedWidth: '120px', gap: '40px', padding: '20px', speed: 100, slideFocus: true, focus: 0, cloneStatus: false, drag: false, width: '480px' }">
+                        <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
+                            <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
+                            </HomePlaylistCard>
+                        </SplideSlide>
+                    </Splide>
+
+                    <Splide v-else @splide:active="onActive"
+                        @splide:click="onClick"
+                        :options="{ type: 'loop', fixedWidth: '120px', gap: '40px', padding: '20px', speed: 100, slideFocus: true, focus: 'center', cloneStatus: false, width: '600px' }">
+                        <SplideSlide :key="i" v-for="(playlist, i) in $store.state.myLikedPlaylists">
+                            <HomePlaylistCard :id="i" :playlist="playlist" :isSelected="i === selectedIndex">
+                            </HomePlaylistCard>
+                        </SplideSlide>
+                    </Splide>
                 </div>
 
                 <div v-else-if="sessionState !== SessionState.AFTER" class="center" >
-                    <div class="wh100b margin-t-50">{{ getTime }}</div>
+                    <div class="wh100b margin-t-40">{{ getTime }}</div>
                     <div class="progressbar">
                         <div class="pbItem" v-for="i in (currInterval - 1)"></div>
                         <div class="pbItem pbActive" v-if="sessionState === SessionState.FOCUS"></div>
@@ -532,9 +530,10 @@ main {
 
 /** Carousel */
 
-.carousel {
-    width: 600px;
-}
+/* .carousel {
+    display: flex;
+    justify-content: center;
+} */
 
 .placeholder {
     padding: 20px 0;
