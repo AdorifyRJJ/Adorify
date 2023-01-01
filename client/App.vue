@@ -175,7 +175,7 @@ main {
   font-size: 30px;
   font-weight: bold;
 }
-.wh36b {
+.wh36b {    
   color: #ffffff;
   font-size: 36px;
   font-weight: bold;

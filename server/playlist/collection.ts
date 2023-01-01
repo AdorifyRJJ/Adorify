@@ -63,7 +63,7 @@ class PlaylistCollection {
           }
         }
       },
-    ]).sort({ productivityRatio: -1, spotifyId: 1 }).skip(offset).limit(6)
+    ]).sort({ productivityRatio: -1, numUsed: -1, spotifyId: 1 }).skip(offset).limit(6)
   }
 
   static async addLike(spotifyId: string): Promise<void> {

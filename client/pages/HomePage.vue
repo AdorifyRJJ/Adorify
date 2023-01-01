@@ -562,8 +562,7 @@ main {
 
 .progressbar {
     position: relative;
-    margin-top: 10px;
-    margin-bottom: 40px;
+    margin: 10px 3px 40px 3px;
 }
 
 .pbItem:first-child {

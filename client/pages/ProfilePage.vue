@@ -1,108 +1,110 @@
 <template>
-  <div v-if="!deleting" class="page">
-    <div class="topUserStats">
-      <div class="imageBox">
-        <img
-          :src="
-            $store.state.imgURL ??
-            'https://www.computerhope.com/jargon/g/guest-user.png'
-          "
-          class="image"
-          height="260"
-          width="260"
+  <div class="scrollable">
+    <div class="scrollable-content">
+      <div v-if="!deleting" class="page">
+        <div class="topUserStats">
+          <div class="imageBox">
+            <img
+              :src="
+                $store.state.imgURL ??
+                'https://www.computerhope.com/jargon/g/guest-user.png'
+              "
+              class="image"
+              height="260"
+              width="260"
+            />
+          </div>
+          <div class="rightContainer">
+            <div class="topDiv">
+              <button class="button" @click="logout">
+                <span class="wh20b">Logout</span>
+              </button>
+              <button class="button delete" @click="deleteScreen">
+                <span class="wh20b">Delete</span>
+              </button>
+            </div>
+            <div class="bottomDiv">
+              <div class="wh40b margin-b-10 truncate1line">
+                {{ $store.state.displayName }}
+              </div>
+              <div class="completionInfo">
+                <div class="pill wh20n">
+                  <div v-if="loading" class="lds-ring-sm">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  <div v-else class="pillInfo">
+                    {{ this.totalTime }}
+                    <img src="../public/images/studyTime.svg" />
+                  </div>
+                </div>
+                <div class="pill wh20n">
+                  <div v-if="loading" class="lds-ring-sm">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  <div v-else class="pillInfo">
+                    {{ this.sessionInfo }}
+                    <img src="../public/images/completed.svg" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ButtonGroup
+          :titles="btnGroupTitles"
+          :initIdx="selectIdx"
+          @selectIdx="updateContent"
+          class="btn-width-140 margin-y-30"
         />
+        <div v-if="loading" class="lds-ring">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <div v-else class="bottomUserStats">
+          <div class="mostPlayed">
+            <div class="wh30b margin-b-10">Most Played</div>
+            <div class="">
+              <div
+                :key="i"
+                v-for="(playlist, i) in mostPlayed"
+                class="item gr20 truncate1line"
+              >
+                {{ playlist.name }}
+              </div>
+            </div>
+          </div>
+          <div class="productivity">
+            <div class="wh30b margin-b-14 padding-l-10">Productivity</div>
+            <LineChartGenerator
+              class="chart"
+              :chart-options="options"
+              :chart-data="chartData"
+            />
+          </div>
+        </div>
       </div>
-      <div class="rightContainer">
-        <div class="topDiv">
-          <button class="button" @click="logout">
-            <span class="wh20b">Logout</span>
+      <div v-else class="deleteModal center">
+        <div class="modalText">
+          Are you sure? This action will delete all data associated with your
+          account.
+        </div>
+        <div class="modalButtons">
+          <button class="button" @click="noDelete">
+            <span class="wh20b">No, don't delete</span>
           </button>
-          <button class="button delete" @click="deleteScreen">
-            <span class="wh20b">Delete</span>
+          <button class="button delete" @click="yesDelete">
+            <span class="wh20b">Yes, delete permanently</span>
           </button>
         </div>
-        <div class="bottomDiv">
-          <div class="wh40b margin-b-10 truncate1line">
-            {{ $store.state.displayName }}
-          </div>
-          <div class="completionInfo">
-            <div class="pill wh20n">
-              <div v-if="loading" class="lds-ring-sm">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
-              <div v-else class="pillInfo">
-                {{ this.totalTime }}
-                <img src="../public/images/studyTime.svg" />
-              </div>
-            </div>
-            <div class="pill wh20n">
-              <div v-if="loading" class="lds-ring-sm">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
-              <div v-else class="pillInfo">
-                {{ this.sessionInfo }}
-                <img src="../public/images/completed.svg" />
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
-    </div>
-    <ButtonGroup
-      :titles="btnGroupTitles"
-      :initIdx="selectIdx"
-      @selectIdx="updateContent"
-      class="btn-width-140 margin-y-30"
-    />
-    <div v-if="loading" class="lds-ring">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-    <div v-else class="scrollable">
-      <div class="bottomUserStats scrollable-content">
-        <div class="mostPlayed">
-          <div class="wh30b margin-b-10">Most Played</div>
-          <div class="">
-            <div
-              :key="i"
-              v-for="(playlist, i) in mostPlayed"
-              class="item gr20 truncate1line"
-            >
-              {{ playlist.name }}
-            </div>
-          </div>
-        </div>
-        <div class="productivity">
-          <div class="wh30b margin-b-14 padding-l-10">Productivity</div>
-          <LineChartGenerator
-            class="chart"
-            :chart-options="options"
-            :chart-data="chartData"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-  <div v-else class="deleteModal center">
-    <div class="modalText">
-      Are you sure? This action will delete all data associated with your
-      account.
-    </div>
-    <div class="modalButtons">
-      <button class="button" @click="noDelete">
-        <span class="wh20b">No, don't delete</span>
-      </button>
-      <button class="button delete" @click="yesDelete">
-        <span class="wh20b">Yes, delete permanently</span>
-      </button>
     </div>
   </div>
 </template>

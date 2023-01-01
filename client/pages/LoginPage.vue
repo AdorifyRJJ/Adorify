@@ -1,66 +1,55 @@
 <template>
-    <!-- <div class="page">
-        <div class="cen">
-            <div class="shadow-box margin-y-40 width-500">
-                <div class="wh40n">Pomodoro</div>
-                <div class="wh20n">+</div>
-                <div class="wh40n">Spotify</div>
-                <div class="wh20n">=</div>
-                <img src="../public/images/adorify_logo_full.svg" height="72" width="auto" />
-            </div>
-            <button class="button margin-y-14 width-500" @click="login">
-                <span class="wh20b">Log in with Spotify</span>
-            </button>
-            <div class="gr20">Spotify Premium account required</div>
-        </div>
-    </div> -->
-    <div class="page">
-        <div class="leftSection">
-            <div class="leftContent">
-                <div class="topInfo">
-                    <div class="wh36n">Pomodoro</div>
-                    <div class="wh20n">+</div>
-                    <!-- <div class="wh36n">Spotify</div> -->
-                    <img src="../public/images/Spotify_Logo_RGB_White.png" height="48" width="auto" />
-                    <div class="wh20n">=</div>
-                    <img src="../public/images/adorify_logo_full.svg" height="72" width="auto" />
+    <div class="scrollable wrapper">
+        <div class="scrollable-content page">
+            <div class="leftSection">
+                <div class="leftContent">
+                    <div class="topInfo">
+                        <div class="topLine">
+                            <div class="wh36n">Pomodoro</div>
+                            <div class="wh20n">+</div>
+                            <!-- <div class="wh36n">Spotify</div> -->
+                            <img src="../public/images/Spotify_Logo_RGB_White.png" height="48" width="auto" />
+                        </div>
+                        <div class="wh20n">=</div>
+                        <img src="../public/images/adorify_logo_full.svg" height="72" width="auto" />
+                    </div>
+                    <button class="button loginButton" @click="login">
+                        <span class="wh20b">Log in with Spotify</span>
+                    </button>
+                    <div class="gr16">Spotify Premium account required</div>
                 </div>
-                <button class="button loginButton" @click="login">
-                    <span class="wh20b">Log in with Spotify</span>
-                </button>
-                <div class="gr16">Spotify Premium account required</div>
             </div>
-        </div>
-        <div class="rightSection">
-            <div class="rightContent">
-                <Splide
-                    ref="splide"
-                    :options="{ type: 'loop', autoplay: false, arrows: false, pagination: true, height: '480px', width: '540px'}">
-                    <SplideSlide>
-                        <div class="slide">
-                            <img class="demoImg" src="../public/images/ls1.png" height="300" />
-                            <div class="wh30b botText">Pomodoro sessions and Spotify study music, all in one.</div>
-                        </div>
-                    </SplideSlide>
-                    <SplideSlide>
-                        <div class="slide">
-                            <img class="demoImg" src="../public/images/ls1.png" height="300"/>
-                            <div class="wh30b botText">Focus while your music plays. When the music stops, take a break!</div>
-                        </div>
-                    </SplideSlide>
-                    <SplideSlide>
-                        <div class="slide">
-                            <img class="demoImg" src="../public/images/ls1.png" height="300"/>
-                            <div class="wh30b botText">Browse the most productive playlists curated by other users!</div>
-                        </div>
-                    </SplideSlide>
-                    <SplideSlide>
-                        <div class="slide">
-                            <img class="demoImg" src="../public/images/ls1.png" height="300"/>
-                            <div class="wh30b botText">Keep studying to climb the leaderboards!</div>
-                        </div>
-                    </SplideSlide>
-                </Splide>
+            <div class="rightSection">
+                <div class="rightContent">
+                    <Splide
+                        ref="splide"
+                        :options="{ type: 'loop', autoplay: true, arrows: false, pagination: true, height: '480px', width: '540px'}">
+                        <SplideSlide>
+                            <div class="slide">
+                                <img class="demoImg" src="../public/images/ls1.png" height="300" />
+                                <div class="wh30b botText">Pomodoro sessions and Spotify study music, all in one.</div>
+                            </div>
+                        </SplideSlide>
+                        <SplideSlide>
+                            <div class="slide">
+                                <img class="demoImg" src="../public/images/ls2.png" height="300"/>
+                                <div class="wh30b botText">Focus while your music plays. When the music stops, take a break!</div>
+                            </div>
+                        </SplideSlide>
+                        <SplideSlide>
+                            <div class="slide">
+                                <img class="demoImg" src="../public/images/ls3.png" height="300"/>
+                                <div class="wh30b botText">Browse the most productive playlists curated by other users!</div>
+                            </div>
+                        </SplideSlide>
+                        <SplideSlide>
+                            <div class="slide">
+                                <img class="demoImg" src="../public/images/ls4.png" height="300"/>
+                                <div class="wh30b botText">Keep studying to climb the leaderboards!</div>
+                            </div>
+                        </SplideSlide>
+                    </Splide>
+                </div>
             </div>
         </div>
     </div>
@@ -92,11 +81,15 @@ export default {
 
 <style scoped>
 
-.page {
-    height: 100%;
+.wrapper {
     width: 100%;
     position: fixed;
     top: 0px;
+}
+
+.page {
+    height: 100%;
+    min-height: 500px;
     display: flex;
 }
 
@@ -111,6 +104,12 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    gap: 6px;
+}
+
+.topLine {
+    display: flex;
+    align-items: center;
     gap: 10px;
 }
 
