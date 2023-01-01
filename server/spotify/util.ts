@@ -33,7 +33,7 @@ const refreshIfNeeded = async (req: Request, res: Response, next: NextFunction) 
                 console.log(e)
                 res.status(e.statusCode).json({
                     message: e.body.error_description,
-                    payload: e
+                    payload: e,
                 });
                 res.end();
                 return;
