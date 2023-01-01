@@ -96,7 +96,7 @@
                 </div>
 
                 <div v-else-if="sessionState !== SessionState.AFTER" class="center" >
-                    <div class="wh100b margin-t-40">{{ getTime }}</div>
+                    <div class="wh100b margin-t-50">{{ getTime }}</div>
                     <div class="progressbar">
                         <div class="pbItem" v-for="i in (currInterval - 1)"></div>
                         <div class="pbItem pbActive" v-if="sessionState === SessionState.FOCUS"></div>

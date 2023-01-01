@@ -232,6 +232,10 @@ main {
   margin-top: 40px;
 }
 
+.margin-t-50 {
+  margin-top: 50px;
+}
+
 .margin-b-4 {
   margin-bottom: 4px;
 }
