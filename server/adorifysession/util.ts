@@ -1,7 +1,9 @@
-export type PlaylistDate = {
-    _id: string,
-    plays: number,
-}
+import { Playlist } from "../playlist/model";
+
+// export type PlaylistDate = {
+//     _id: string,
+//     plays: number,
+// }
 
 export const generateLast30Days = (): Array<Date> => {
     const today = new Date();

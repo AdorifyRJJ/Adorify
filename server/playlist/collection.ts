@@ -3,13 +3,14 @@ import type { Playlist } from './model';
 import PlaylistModel from './model';
 
 class PlaylistCollection {
-  static async addOne(spotifyId: string, owner: string, isPublic: boolean): Promise<HydratedDocument<Playlist>> {
+  static async addOne(spotifyId: string, owner: string, name: string, isPublic: boolean): Promise<HydratedDocument<Playlist>> {
     const playlist = new PlaylistModel({
       spotifyId: spotifyId,
       numLikes: 0,
       numUsed: 0,
       numCompleted: 0,
       owner: owner,
+      name: name,
       isPublic: isPublic,
     });
     await playlist.save();
@@ -63,7 +64,7 @@ class PlaylistCollection {
           }
         }
       },
-    ]).sort({ productivityRatio: -1, numUsed: -1, spotifyId: 1 }).skip(offset).limit(6)
+    ]).sort({ productivityRatio: -1, numUsed: -1, spotifyId: 1 }).skip(offset).limit(6);
   }
 
   static async addLike(spotifyId: string): Promise<void> {
@@ -94,8 +95,16 @@ class PlaylistCollection {
     await playlist.save();
   }
 
-  static async updateIsPublic(spotifyId: string, isPublic: boolean): Promise<void> {
+  // static async updateIsPublic(spotifyId: string, isPublic: boolean): Promise<void> {
+  //   const playlist = await PlaylistModel.findOne({ spotifyId: spotifyId });
+  //   playlist.isPublic = isPublic;
+
+  //   await playlist.save();
+  // }
+
+  static async update(spotifyId: string, name: string, isPublic: boolean): Promise<void> {
     const playlist = await PlaylistModel.findOne({ spotifyId: spotifyId });
+    playlist.name = name;
     playlist.isPublic = isPublic;
 
     await playlist.save();

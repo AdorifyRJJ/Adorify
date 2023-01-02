@@ -38,11 +38,11 @@ const AdorifySessionSchema = new Schema({
   }
 });
 
-AdorifySessionSchema.virtual('playlist', {
-  ref: 'Playlist',
-  localField: 'playlist',
-  foreignField: 'spotifyId',
-})
+// AdorifySessionSchema.virtual('playlist', {
+//   ref: 'Playlist',
+//   localField: 'spotifyPlaylistId',
+//   foreignField: 'spotifyId',
+// })
 
 const AdorifySessionModel = model<AdorifySession>('AdorifySession', AdorifySessionSchema);
 export default AdorifySessionModel;

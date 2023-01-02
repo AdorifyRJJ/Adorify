@@ -102,9 +102,11 @@ router.get(
     if (playlistInfo.statusCode !== 200)
       res.status(playlistInfo.statusCode).json(playlistInfo.body);
 
-    const playlist = await PlaylistCollection.findOneBySpotifyId(req.params.spotifyId);
-    if (playlist)
-      await PlaylistCollection.updateIsPublic(req.params.spotifyId, playlistInfo.body.public !== null ? playlistInfo.body.public : false);
+    // const playlist = await PlaylistCollection.findOneBySpotifyId(req.params.spotifyId);
+    // if (playlist)
+
+    // this may need try-catch
+    await PlaylistCollection.update(req.params.spotifyId, playlistInfo.body.name, playlistInfo.body.public !== null ? playlistInfo.body.public : false);
 
     res.status(200).json({
       message: 'Retrieved succesfully.',
@@ -159,11 +161,11 @@ router.put(
       });
       spotifyApi.setAccessToken(req.session.accessToken);
 
-      const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId, { fields: 'owner.id, public' });
+      const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId, { fields: 'owner.id, name, public' });
       if (playlistInfo.statusCode !== 200)
         res.status(playlistInfo.statusCode).json(playlistInfo.body);
 
-      await PlaylistCollection.addOne(req.params.spotifyId, playlistInfo.body.owner.id, playlistInfo.body.public !== null ? playlistInfo.body.public : false);
+      await PlaylistCollection.addOne(req.params.spotifyId, playlistInfo.body.owner.id, playlistInfo.body.name, playlistInfo.body.public !== null ? playlistInfo.body.public : false);
     }
 
     const isLiked = await UserCollection.toggleLikedPlaylists(req.session.username, req.params.spotifyId);
