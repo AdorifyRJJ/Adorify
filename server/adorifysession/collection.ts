@@ -1,6 +1,7 @@
 import { HydratedDocument, Types } from "mongoose";
+import PlaylistModel, { Playlist } from "../playlist/model";
 import AdorifySessionModel, { AdorifySession } from "./model";
-import { PlaylistDate, generateLast30Days } from './util';
+import { generateLast30Days } from './util';
 
 class AdorifySessionCollection {
 
@@ -64,7 +65,7 @@ class AdorifySessionCollection {
     ]))[0]?.totalSessions;
   }
 
-  static async getMostPlayedByUsername(username: string): Promise<{ week: Array<PlaylistDate>, month: Array<PlaylistDate>/*, allTime: Array<PlaylistDate>*/ }> {
+  static async getMostPlayedByUsername(username: string): Promise<{ week: Array<Playlist>, month: Array<Playlist>/*, allTime: Array<PlaylistDate>*/ }> {
     //find in as model by username, filter by date.
     //call helper function to split into week, month, and alltime* arrays
     //sum up as sessions and combine per playlist
@@ -84,8 +85,22 @@ class AdorifySessionCollection {
       },
       {
         $sort: { plays: -1, _id: 1 }
+      },
+      {
+        $limit: 5
+      },
+      {
+        $lookup: { from: 'playlists', localField: '_id', foreignField: 'spotifyId', as: 'playlist'}
+      },
+      {
+        $project: {
+          'playlist': { "$arrayElemAt": ["$playlist", 0] }
+        }
+      },
+      {
+        $replaceRoot: { newRoot: '$playlist' }
       }
-    ]))?.slice(0, 5);
+    ]));
 
     const mostPlayedMonth = (await AdorifySessionModel.aggregate([
       {
@@ -96,8 +111,22 @@ class AdorifySessionCollection {
       },
       {
         $sort: { plays: -1, _id: 1 }
+      },
+      {
+        $limit: 5
+      },
+      {
+        $lookup: { from: 'playlists', localField: '_id', foreignField: 'spotifyId', as: 'playlist'}
+      },
+      {
+        $project: {
+          'playlist': { "$arrayElemAt": ["$playlist", 0] }
+        }
+      },
+      {
+        $replaceRoot: { newRoot: '$playlist' }
       }
-    ]))?.slice(0, 5);
+    ]));
 
     // const mostPlayedAll = (await AdorifySessionModel.aggregate([
     //   {

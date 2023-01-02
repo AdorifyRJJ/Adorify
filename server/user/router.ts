@@ -5,37 +5,9 @@ import * as userValidator from '../user/middleware';
 import * as util from '../playlist/util';
 import * as spotifyUtil from '../spotify/util';
 import SpotifyWebApi from 'spotify-web-api-node';
+import PlaylistCollection from '../playlist/collection';
 
 const router = express.Router();
-
-// POST /api/users/session
-// router.post(
-//   '/session',
-//   [],
-//   async (req: Request, res: Response) => {
-//     const user = await UserCollection.findOneByUsername(req.body.username);
-//     if (!user)
-//       await UserCollection.addOne(req.body.username);
-//     req.session.username = req.body.username;
-//     res.status(200).json({
-//       message: 'You have logged in successfully.'
-//     });
-//   }
-// )
-
-// // DELETE /api/users/session
-// router.delete(
-//   '/session',
-//   [
-//     userValidator.isUserLoggedIn,
-//   ],
-//   (req: Request, res: Response) => {
-//     req.session.username = undefined;
-//     res.status(200).json({
-//       message: 'You have logged out successfully.'
-//     });
-//   }
-// )
 
 // GET /api/users
 router.get(
@@ -58,8 +30,10 @@ router.get(
     
     for (const p of populatedUser.likedPlaylists) {
       const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'id, images, name, owner.display_name, public'});
-      if (playlistInfo.statusCode === 200)
+      if (playlistInfo.statusCode === 200) {
         playlistInfos.push(playlistInfo.body);
+        await PlaylistCollection.update(p.spotifyId, playlistInfo.body.name, playlistInfo.body.public !== null ? playlistInfo.body.public : false);
+      }
       else
         console.log('Failed to retrieve', playlistInfo.body);
     }

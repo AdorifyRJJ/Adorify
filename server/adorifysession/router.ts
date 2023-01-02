@@ -7,6 +7,8 @@ import * as playlistUtil from '../playlist/util';
 import dotenv from 'dotenv';
 import PlaylistCollection from '../playlist/collection';
 import * as spotifyUtil from '../spotify/util';
+import UserCollection from '../user/collection';
+import { Playlist } from '../playlist/model';
 dotenv.config({});
 
 const router = express.Router();
@@ -66,27 +68,36 @@ router.get(
     const totalSessions = await AdorifySessionCollection.getTotalSessionsByUsername(req.session.username);
 
     const mostPlayed = await AdorifySessionCollection.getMostPlayedByUsername(req.session.username);
-    const mostPlayedWeek: Array<SpotifyApi.PlaylistObjectSimplified> = []
+    // const mostPlayedWeek: Array<SpotifyApi.PlaylistObjectSimplified> = []
 
-    for (const p of mostPlayed.week) {
-      const playlistInfo = await spotifyApi.getPlaylist(p._id, { fields: 'name' });
-      if (playlistInfo.statusCode === 200)
-        mostPlayedWeek.push(playlistInfo.body);
-      else
-        console.log('Failed to retrieve', playlistInfo.body);
-    }
-    // console.log(mostPlayedWeek);
-    // const finalMostPlayedWeek = await Promise.all(mostPlayedWeek.map((p: SpotifyApi.PlaylistObjectSimplified) => playlistUtil.constructShallowPlaylistResponse(req.session.username, p)))
+    // for (const p of mostPlayed.week) {
+    //   // console.log(p.playlist)
+    //   const playlistInfo = await spotifyApi.getPlaylist(p._id, { fields: 'name' });
+    //   if (playlistInfo.statusCode === 200)
+    //     mostPlayedWeek.push(playlistInfo.body);
+    //   else
+    //     console.log('Failed to retrieve', playlistInfo.body);
+    // }
 
-    const mostPlayedMonth: Array<SpotifyApi.PlaylistObjectSimplified> = []
+    const mostPlayedWeek = await Promise.all(mostPlayed.week.map(
+      async (p: Playlist) => {
+        return { name: p.name, isLiked: await UserCollection.inLikedPlaylists(req.session.username, p.spotifyId) };
+      }
+    ));
 
-    for (const p of mostPlayed.month) {
-      const playlistInfo = await spotifyApi.getPlaylist(p._id, { fields: 'name' });
-      if (playlistInfo.statusCode === 200)
-        mostPlayedMonth.push(playlistInfo.body);
-      else
-        console.log('Failed to retrieve', playlistInfo.body);
-    }
+    const mostPlayedMonth = await Promise.all(mostPlayed.month.map(
+      async (p: Playlist) => {
+        return { name: p.name, isLiked: await UserCollection.inLikedPlaylists(req.session.username, p.spotifyId) };
+      }
+    ));
+
+    // for (const p of mostPlayed.month) {
+    //   const playlistInfo = await spotifyApi.getPlaylist(p._id, { fields: 'name' });
+    //   if (playlistInfo.statusCode === 200)
+    //     mostPlayedMonth.push(playlistInfo.body);
+    //   else
+    //     console.log('Failed to retrieve', playlistInfo.body);
+    // }
 
     // const finalMostPlayedMonth = await Promise.all(mostPlayedWeek.map((p: SpotifyApi.PlaylistObjectSimplified) => playlistUtil.constructShallowPlaylistResponse(req.session.username, p)))
 

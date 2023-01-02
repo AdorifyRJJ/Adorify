@@ -8,6 +8,7 @@ export type Playlist = {
   numUsed: number;
   numCompleted: number;
   owner: string;
+  name: string;
   isPublic: boolean;
 };
 
@@ -30,6 +31,10 @@ const PlaylistSchema = new Schema({
     required: true
   },
   owner: {
+    type: String,
+    required: true
+  },
+  name: {
     type: String,
     required: true
   },
