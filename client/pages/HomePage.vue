@@ -264,7 +264,6 @@ export default {
             }) => {
                 this.currTrackTitle = current_track.name;
                 this.currTrackArtist = current_track.artists.map((a) => a.name).join(", ");
-                console.log('pos', position)
                 
             });
             const res = await this.handleSpotifyResponse(this.$store.state.spotifyApi.play({

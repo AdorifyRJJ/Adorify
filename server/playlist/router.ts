@@ -183,7 +183,6 @@ router.get(
     spotifyUtil.refreshIfNeeded,
   ],
   async (req: Request, res: Response) => {
-    console.log('here')
     const spotifyApi = new SpotifyWebApi({
       clientId: process.env.ID,
       clientSecret: process.env.SECRET,
@@ -203,7 +202,6 @@ router.get(
       else
         console.log('Failed to retrieve', playlistInfo.body);
     }
-    console.log(await PlaylistCollection.countTotal())
     res.status(200).json({
       message: 'Retrieved successfully.',
       items: await Promise.all(playlistInfos.map((p: SpotifyApi.PlaylistObjectSimplified) => util.constructShallowPlaylistResponse(req.session.username, p))),
@@ -243,7 +241,6 @@ router.get(
       else
         console.log('Failed to retrieve', playlistInfo.body);
     }
-    console.log(await PlaylistCollection.countTotal())
     res.status(200).json({
       message: 'Retrieved successfully.',
       items: await Promise.all(playlistInfos.map((p: SpotifyApi.PlaylistObjectSimplified) => util.constructShallowPlaylistResponse(req.session.username, p))),
@@ -283,7 +280,6 @@ router.get(
       else
         console.log('Failed to retrieve', playlistInfo.body);
     }
-    console.log(await PlaylistCollection.countTotal())
     res.status(200).json({
       message: 'Retrieved successfully.',
       items: await Promise.all(playlistInfos.map((p: SpotifyApi.PlaylistObjectSimplified) => util.constructShallowPlaylistResponse(req.session.username, p))),

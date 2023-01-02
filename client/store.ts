@@ -127,9 +127,11 @@ const store = new Vuex.Store({
       const objIdx = state.myLikedPlaylists.findIndex(
           (obj) => obj.id === id
       );
-      if (objIdx >= 0) { // will remove from myLikedPlaylists
+      if (objIdx >= 0) {
         state.myLikedPlaylists.splice(objIdx, 1); 
-      } else { // will add to in myLikedPlaylists
+      } 
+      // used to be else
+      if (!isLiked) {
         state.myLikedPlaylists.push({
           id: id,
           image: image,

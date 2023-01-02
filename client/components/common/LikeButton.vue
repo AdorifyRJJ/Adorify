@@ -32,7 +32,7 @@ export default {
         isLiked: this.isLiked,
       });
 
-      //this.isLiked = !this.isLiked;
+      this.isLiked = !this.isLiked;
 
       // api call PUT /api/playlists/:spotifyId
       const options = {

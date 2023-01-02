@@ -248,7 +248,7 @@ export default {
       }
       this.executeLogout = false;
       const data = await fetch(`/api/spotify/logout`);
-      console.log(await data.json());
+      // console.log(await data.json());
 
       this.$store.commit("resetStore");
       this.$router.push({ name: "Login" });
@@ -310,7 +310,6 @@ export default {
     );
     this.updateContent(this.selectIdx);
     this.loading = false;
-    console.log("stats", res);
     this.inCreated = false;
     if (this.executeLogout) {
       await this.logout();
