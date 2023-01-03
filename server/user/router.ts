@@ -6,6 +6,7 @@ import * as util from '../playlist/util';
 import * as spotifyUtil from '../spotify/util';
 import SpotifyWebApi from 'spotify-web-api-node';
 import PlaylistCollection from '../playlist/collection';
+import { Playlist } from '../playlist/model';
 
 const router = express.Router();
 
@@ -26,20 +27,29 @@ router.get(
     spotifyApi.setAccessToken(req.session.accessToken);
 
     const populatedUser = await UserCollection.findOneByUsernameAndPopulate(req.session.username);
-    const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
-    
+    const finalPlaylists: Array<Playlist> = [];
+
     for (const p of populatedUser.likedPlaylists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, {fields: 'id, images, name, owner.display_name, public'});
-      if (playlistInfo.statusCode === 200) {
-        playlistInfos.push(playlistInfo.body);
-        await PlaylistCollection.update(p.spotifyId, playlistInfo.body.name, playlistInfo.body.public !== null ? playlistInfo.body.public : false);
+      if (p.expiryTime < new Date()) {
+        const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, { fields: 'id, owner.id, owner.display_name, name, images, public' });
+        if (playlistInfo.statusCode === 200) {
+          const p = playlistInfo.body;
+          const updatedPlaylist = await PlaylistCollection.update(p.id, p.name, p.images[0]?.url, p.owner.display_name, p.public !== null ? p.public : false);
+          finalPlaylists.push(updatedPlaylist);
+        }
+        else {
+          console.log('Failed to retrieve', playlistInfo.body);
+          finalPlaylists.push(p);
+        }
       }
-      else
-        console.log('Failed to retrieve', playlistInfo.body);
+      // if it's not expired, just return from db
+      else {
+        finalPlaylists.push(p);
+      }
     }
     res.status(200).json({
       message: 'Retrieved successfully.',
-      playlists: await Promise.all(playlistInfos.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
+      playlists: await Promise.all(finalPlaylists.map((p: Playlist) => util.shallowDbResponse(req.session.username, p))),
     });
   }
 )

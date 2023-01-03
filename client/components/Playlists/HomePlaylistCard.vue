@@ -3,10 +3,10 @@
         :class="{ selected: isSelected, unselected: !isSelected }"
         class="card center"
     >
-        <img :src="image" height="120" width="120" />
+        <img :src="this.playlist.image" height="120" width="120" />
         <div class="playlistInfo center">
-            <div class="wh16b trunc">{{ playlistName }}</div>
-            <div class="gr16 trunc">{{ owner }}</div>
+            <div class="wh16b trunc">{{ this.playlist.name }}</div>
+            <div class="gr16 trunc">{{ this.playlist.owner }}</div>
         </div>
     </div>
 </template>
@@ -16,18 +16,18 @@ export default {
     name: "HomePlaylistCard",
     props: ["playlist", "isSelected"],
     computed: {
-        image() {
-            return this.playlist.image;
-        },
-        playlistName() {
-            return this.playlist.name;
-        },
-        owner() {
-            return this.playlist.owner;
-        },
-        spotifyId() {
-            return this.playlist.id;
-        },
+        // image() {
+        //     return this.playlist.image;
+        // },
+        // playlistName() {
+        //     return this.playlist.name;
+        // },
+        // owner() {
+        //     return this.playlist.owner;
+        // },
+        // spotifyId() {
+        //     return this.playlist.id;
+        // },
     },
 };
 </script>

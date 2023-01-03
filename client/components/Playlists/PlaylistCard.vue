@@ -3,7 +3,7 @@
         <LikeButton
             class="likeBtn"
             :spotifyId="this.playlist.id"
-            :image="this.playlist.images[0]?.url"
+            :image="this.playlist.image"
             :name="this.playlist.name"
             :owner="this.playlist.owner.display_name"
             :isLiked="this.playlist.isLiked"
@@ -12,7 +12,7 @@
         <div class="cardContent" @click="openPlaylist">
             <img
                 class="image"
-                :src="this.playlist.images[0]?.url"
+                :src="this.playlist.image"
                 height="200"
                 width="200"
             />
@@ -36,7 +36,7 @@ export default {
                     spotifyId: this.playlist.id,
                     name: this.playlist.name,
                     owner: this.playlist.owner.display_name,
-                    image: this.playlist.images[0]?.url,
+                    image: this.playlist.image,
                     isLiked: this.playlist.isLiked,
                 },
             });
