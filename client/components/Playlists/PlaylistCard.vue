@@ -2,22 +2,22 @@
     <div class="card">
         <LikeButton
             class="likeBtn"
-            :spotifyId="this.playlist.spotifyId"
-            :image="this.playlist.imageUrl"
+            :spotifyId="this.playlist.id"
+            :image="this.playlist.image"
             :name="this.playlist.name"
-            :owner="this.playlist.ownerName"
+            :owner="this.playlist.owner.display_name"
             :isLiked="this.playlist.isLiked"
             @tooManyLiked="tooManyLiked"
         />
         <div class="cardContent" @click="openPlaylist">
             <img
                 class="image"
-                :src="this.playlist.imageUrl"
+                :src="this.playlist.image"
                 height="200"
                 width="200"
             />
             <div class="truncate1line wh16b playlistName">{{ this.playlist.name }}</div>
-            <div class="truncate1line gr16 ownerName">{{ this.playlist.ownerName }}</div>
+            <div class="truncate1line gr16 ownerName">{{ this.playlist.owner.display_name }}</div>
         </div>
     </div>
 </template>
@@ -33,10 +33,10 @@ export default {
             this.$router.push({
                 name: "PlaylistInfoPage",
                 params: {
-                    spotifyId: this.playlist.spotifyId,
+                    spotifyId: this.playlist.id,
                     name: this.playlist.name,
-                    owner: this.playlist.ownerName,
-                    image: this.playlist.imageUrl,
+                    owner: this.playlist.owner.display_name,
+                    image: this.playlist.image,
                     isLiked: this.playlist.isLiked,
                 },
             });

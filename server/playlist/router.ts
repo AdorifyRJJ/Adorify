@@ -9,7 +9,6 @@ import SpotifyWebApi from 'spotify-web-api-node';
 //import { spotifyApi } from '../spotify/router';
 
 import dotenv from 'dotenv';
-import { HydratedDocument } from 'mongoose';
 import { Playlist } from './model';
 dotenv.config({});
 
@@ -77,16 +76,18 @@ router.get(
       res.status(myPlaylists.statusCode).json(myPlaylists.body);
     }
 
-    const finalPlaylists: Array<Playlist> = [];
-    for (const p of myPlaylists.body.items) {
-      const updatedPlaylist = await PlaylistCollection.update(p.id, p.name, p.images[0]?.url, p.owner.display_name, p.public !== null ? p.public : false);
-      finalPlaylists.push(updatedPlaylist);
-    }
+    // rewrite this to use promise.all, but issue is still in the public thing
+    // for (const p of myPlaylists.body.items) {
+    //   const playlist = await PlaylistCollection.findOneBySpotifyId(p.id);
+    //   if (playlist)
+    //     // public from the spotify call is weird (returns false for other user's public playlists), so we don't change it
+    //     await PlaylistCollection.update(p.id, p.name, p.images[0]?.url, p.owner.display_name, playlist.isPublic);
+    // }
 
     res.status(200).json({
       message: 'Retrieved succesfully.',
       ...myPlaylists.body,
-      items: await Promise.all(finalPlaylists.map((p: Playlist) => util.shallowDbResponse(req.session.username, p))),
+      items: await Promise.all(myPlaylists.body.items.map(p => util.shallowSpotifyResponse(req.session.username, p))),
     });
   }
 )
@@ -112,7 +113,10 @@ router.get(
       res.status(playlistInfo.statusCode).json(playlistInfo.body);
 
     const p = playlistInfo.body;
-    await PlaylistCollection.update(p.id, p.name, p.images[0]?.url, p.owner.display_name, p.public !== null ? p.public : false);
+    // const playlist = await PlaylistCollection.findOneBySpotifyId(p.id);
+    // if (playlist)
+    //   await PlaylistCollection.update(p.id, p.name, p.images[0]?.url, p.owner.display_name, p.public !== null ? p.public : false);
+    await PlaylistCollection.updateIfInDb(p.id, p.name, p.images[0]?.url, p.owner.display_name, p.public !== null ? p.public : false);
 
     res.status(200).json({
       message: 'Retrieved succesfully.',
@@ -210,6 +214,7 @@ router.get(
         const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, { fields: 'id, owner.id, owner.display_name, name, images, public' });
         if (playlistInfo.statusCode === 200) {
           const p = playlistInfo.body;
+          
           const updatedPlaylist = await PlaylistCollection.update(p.id, p.name, p.images[0]?.url, p.owner.display_name, p.public !== null ? p.public : false);
           finalPlaylists.push(updatedPlaylist);
         }
@@ -227,9 +232,9 @@ router.get(
     res.status(200).json({
       message: 'Retrieved successfully.',
       items: await Promise.all(finalPlaylists.map((p: Playlist) => util.shallowDbResponse(req.session.username, p))),
-      limit: 6,
+      limit: 20,
       offset: offset,
-      next: offset + 6 < Math.min(100, await PlaylistCollection.countTotal()),
+      next: offset + 20 < Math.min(100, await PlaylistCollection.countTotal()),
       previous: offset > 0,
     });
   }
@@ -279,9 +284,9 @@ router.get(
     res.status(200).json({
       message: 'Retrieved successfully.',
       items: await Promise.all(finalPlaylists.map((p: Playlist) => util.shallowDbResponse(req.session.username, p))),
-      limit: 6,
+      limit: 20,
       offset: offset,
-      next: offset + 6 < Math.min(100, await PlaylistCollection.countTotal()),
+      next: offset + 20 < Math.min(100, await PlaylistCollection.countTotal()),
       previous: offset > 0,
     });
   }
@@ -331,9 +336,9 @@ router.get(
     res.status(200).json({
       message: 'Retrieved successfully.',
       items: await Promise.all(finalPlaylists.map((p: Playlist) => util.shallowDbResponse(req.session.username, p))),
-      limit: 6,
+      limit: 20,
       offset: offset,
-      next: offset + 6 < Math.min(100, await PlaylistCollection.countTotal()),
+      next: offset + 20 < Math.min(100, await PlaylistCollection.countTotal()),
       previous: offset > 0,
     });
   }

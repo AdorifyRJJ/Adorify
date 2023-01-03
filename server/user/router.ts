@@ -19,7 +19,6 @@ router.get(
     spotifyUtil.refreshIfNeeded,
   ],
   async (req: Request, res: Response) => {
-    console.log('what')
     const spotifyApi = new SpotifyWebApi({
       clientId: process.env.ID,
       clientSecret: process.env.SECRET,
@@ -30,15 +29,11 @@ router.get(
     const populatedUser = await UserCollection.findOneByUsernameAndPopulate(req.session.username);
     const finalPlaylists: Array<Playlist> = [];
 
-    console.log('hi')
-
     for (const p of populatedUser.likedPlaylists) {
-      // if (p.expiryTime < new Date()) {
-      if (true) {
+      if (p.expiryTime < new Date()) {
         const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, { fields: 'id, owner.id, owner.display_name, name, images, public' });
         if (playlistInfo.statusCode === 200) {
           const p = playlistInfo.body;
-          console.log('sup')
           const updatedPlaylist = await PlaylistCollection.update(p.id, p.name, p.images[0]?.url, p.owner.display_name, p.public !== null ? p.public : false);
           finalPlaylists.push(updatedPlaylist);
         }
@@ -52,7 +47,6 @@ router.get(
         finalPlaylists.push(p);
       }
     }
-    console.log(finalPlaylists)
     res.status(200).json({
       message: 'Retrieved successfully.',
       playlists: await Promise.all(finalPlaylists.map((p: Playlist) => util.shallowDbResponse(req.session.username, p))),

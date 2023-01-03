@@ -39,11 +39,11 @@ class PlaylistCollection {
   }
 
   static async findMostLikes(offset: number): Promise<Array<HydratedDocument<Playlist>>> {
-    return PlaylistModel.find({ isPublic: true }).sort({ numLikes: -1, spotifyId: 1 }).skip(offset).limit(6);
+    return PlaylistModel.find({ isPublic: true }).sort({ numLikes: -1, spotifyId: 1 }).skip(offset).limit(20);
   }
 
   static async findMostUsed(offset: number): Promise<Array<HydratedDocument<Playlist>>> {
-    return PlaylistModel.find({ isPublic: true }).sort({ numUsed: -1, spotifyId: 1 }).skip(offset).limit(6);
+    return PlaylistModel.find({ isPublic: true }).sort({ numUsed: -1, spotifyId: 1 }).skip(offset).limit(20);
   }
 
   static async findMostProductive(offset: number): Promise<Array<HydratedDocument<Playlist>>> {
@@ -69,7 +69,7 @@ class PlaylistCollection {
           }
         }
       },
-    ]).sort({ productivityRatio: -1, numUsed: -1, spotifyId: 1 }).skip(offset).limit(6);
+    ]).sort({ productivityRatio: -1, numUsed: -1, spotifyId: 1 }).skip(offset).limit(20);
   }
 
   static async addLike(spotifyId: string): Promise<void> {
@@ -108,13 +108,23 @@ class PlaylistCollection {
     playlist.isPublic = isPublic;
     playlist.expiryTime = generateExpiryDate();
 
-    console.log('pls')
     await playlist.save();
-    console.log('ret')
     return playlist;
   }
 
+  static async updateIfInDb(spotifyId: string, name: string, imageUrl: string, ownerName: string, isPublic?: boolean): Promise<void> {
+    const playlist = await PlaylistModel.findOne({ spotifyId: spotifyId });
+    if (playlist === null) return;
 
+    playlist.name = name;
+    playlist.imageUrl = imageUrl;
+    playlist.ownerName = ownerName;
+    // if (isPublic !== null)
+      playlist.isPublic = isPublic;
+    playlist.expiryTime = generateExpiryDate();
+
+    await playlist.save();
+  }
 }
 
 export default PlaylistCollection;
