@@ -9,6 +9,8 @@ import SpotifyWebApi from 'spotify-web-api-node';
 //import { spotifyApi } from '../spotify/router';
 
 import dotenv from 'dotenv';
+import { HydratedDocument } from 'mongoose';
+import { Playlist } from './model';
 dotenv.config({});
 
 const router = express.Router();
@@ -69,16 +71,22 @@ router.get(
       redirectUri: process.env.REDIRECT,
     });
     spotifyApi.setAccessToken(req.session.accessToken);
+
     const myPlaylists = await spotifyApi.getUserPlaylists(req.session.username, { offset: parseInt(req.query.offset as string) });
     if (myPlaylists.statusCode !== 200) {
       res.status(myPlaylists.statusCode).json(myPlaylists.body);
     }
 
+    const finalPlaylists: Array<Playlist> = [];
+    for (const p of myPlaylists.body.items) {
+      const updatedPlaylist = await PlaylistCollection.update(p.id, p.name, p.images[0]?.url, p.owner.display_name, p.public !== null ? p.public : false);
+      finalPlaylists.push(updatedPlaylist);
+    }
 
     res.status(200).json({
       message: 'Retrieved succesfully.',
       ...myPlaylists.body,
-      items: await Promise.all(myPlaylists.body.items.map(p => util.constructShallowPlaylistResponse(req.session.username, p))),
+      items: await Promise.all(finalPlaylists.map((p: Playlist) => util.shallowDbResponse(req.session.username, p))),
     });
   }
 )
@@ -98,20 +106,18 @@ router.get(
       redirectUri: process.env.REDIRECT,
     });
     spotifyApi.setAccessToken(req.session.accessToken);
+
     const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId);
     if (playlistInfo.statusCode !== 200)
       res.status(playlistInfo.statusCode).json(playlistInfo.body);
 
-    // const playlist = await PlaylistCollection.findOneBySpotifyId(req.params.spotifyId);
-    // if (playlist)
-
-    // this may need try-catch
-    await PlaylistCollection.update(req.params.spotifyId, playlistInfo.body.name, playlistInfo.body.public !== null ? playlistInfo.body.public : false);
+    const p = playlistInfo.body;
+    await PlaylistCollection.update(p.id, p.name, p.images[0]?.url, p.owner.display_name, p.public !== null ? p.public : false);
 
     res.status(200).json({
       message: 'Retrieved succesfully.',
-      playlistInfo: playlistInfo.body,
-      isLiked: await UserCollection.inLikedPlaylists(req.session.username, req.params.spotifyId),
+      playlistInfo: p,
+      isLiked: await UserCollection.inLikedPlaylists(req.session.username, p.id),
     });
   }
 )
@@ -161,11 +167,12 @@ router.put(
       });
       spotifyApi.setAccessToken(req.session.accessToken);
 
-      const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId, { fields: 'owner.id, name, public' });
+      const playlistInfo = await spotifyApi.getPlaylist(req.params.spotifyId, { fields: 'id, owner.id, owner.display_name, name, images, public' });
       if (playlistInfo.statusCode !== 200)
         res.status(playlistInfo.statusCode).json(playlistInfo.body);
 
-      await PlaylistCollection.addOne(req.params.spotifyId, playlistInfo.body.owner.id, playlistInfo.body.name, playlistInfo.body.public !== null ? playlistInfo.body.public : false);
+      const p = playlistInfo.body;
+      await PlaylistCollection.addOne(p.id, p.owner.id, p.name, p.images[0]?.url, p.owner.display_name, p.public !== null ? p.public : false);
     }
 
     const isLiked = await UserCollection.toggleLikedPlaylists(req.session.username, req.params.spotifyId);
@@ -195,21 +202,34 @@ router.get(
     const offset = parseInt(req.query.offset as string)
 
     const playlists = await PlaylistCollection.findMostLikes(offset);
-    const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+    const finalPlaylists: Array<Playlist> = [];
 
     for (const p of playlists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, { fields: 'id, images, name, owner.display_name, public' });
-      if (playlistInfo.statusCode === 200)
-        playlistInfos.push(playlistInfo.body);
-      else
-        console.log('Failed to retrieve', playlistInfo.body);
+      // if it's expired, fetch updated info from Spotify
+      if (p.expiryTime < new Date()) {
+        const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, { fields: 'id, owner.id, owner.display_name, name, images, public' });
+        if (playlistInfo.statusCode === 200) {
+          const p = playlistInfo.body;
+          const updatedPlaylist = await PlaylistCollection.update(p.id, p.name, p.images[0]?.url, p.owner.display_name, p.public !== null ? p.public : false);
+          finalPlaylists.push(updatedPlaylist);
+        }
+        else {
+          console.log('Failed to retrieve', playlistInfo.body);
+          finalPlaylists.push(p);
+        }
+      }
+      // if it's not expired, just return from db
+      else {
+        finalPlaylists.push(p);
+      }
     }
+
     res.status(200).json({
       message: 'Retrieved successfully.',
-      items: await Promise.all(playlistInfos.map((p: SpotifyApi.PlaylistObjectSimplified) => util.constructShallowPlaylistResponse(req.session.username, p))),
+      items: await Promise.all(finalPlaylists.map((p: Playlist) => util.shallowDbResponse(req.session.username, p))),
       limit: 6,
       offset: offset,
-      next: offset + 6 < await PlaylistCollection.countTotal(),
+      next: offset + 6 < Math.min(100, await PlaylistCollection.countTotal()),
       previous: offset > 0,
     });
   }
@@ -234,21 +254,34 @@ router.get(
     const offset = parseInt(req.query.offset as string)
 
     const playlists = await PlaylistCollection.findMostUsed(offset);
-    const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+    const finalPlaylists: Array<Playlist> = [];
 
     for (const p of playlists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, { fields: 'id, images, name, owner.display_name, public' });
-      if (playlistInfo.statusCode === 200)
-        playlistInfos.push(playlistInfo.body);
-      else
-        console.log('Failed to retrieve', playlistInfo.body);
+      // if it's expired, fetch updated info from Spotify
+      if (p.expiryTime < new Date()) {
+        const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, { fields: 'id, owner.id, owner.display_name, name, images, public' });
+        if (playlistInfo.statusCode === 200) {
+          const p = playlistInfo.body;
+          const updatedPlaylist = await PlaylistCollection.update(p.id, p.name, p.images[0]?.url, p.owner.display_name, p.public !== null ? p.public : false);
+          finalPlaylists.push(updatedPlaylist);
+        }
+        else {
+          console.log('Failed to retrieve', playlistInfo.body);
+          finalPlaylists.push(p);
+        }
+      }
+      // if it's not expired, just return from db
+      else {
+        finalPlaylists.push(p);
+      }
     }
+
     res.status(200).json({
       message: 'Retrieved successfully.',
-      items: await Promise.all(playlistInfos.map((p: SpotifyApi.PlaylistObjectSimplified) => util.constructShallowPlaylistResponse(req.session.username, p))),
+      items: await Promise.all(finalPlaylists.map((p: Playlist) => util.shallowDbResponse(req.session.username, p))),
       limit: 6,
       offset: offset,
-      next: offset + 6 < await PlaylistCollection.countTotal(),
+      next: offset + 6 < Math.min(100, await PlaylistCollection.countTotal()),
       previous: offset > 0,
     });
   }
@@ -273,21 +306,34 @@ router.get(
     const offset = parseInt(req.query.offset as string)
 
     const playlists = await PlaylistCollection.findMostProductive(offset);
-    const playlistInfos: Array<SpotifyApi.PlaylistObjectSimplified> = [];
+    const finalPlaylists: Array<Playlist> = [];
 
     for (const p of playlists) {
-      const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, { fields: 'id, images, name, owner.display_name, public' });
-      if (playlistInfo.statusCode === 200)
-        playlistInfos.push(playlistInfo.body);
-      else
-        console.log('Failed to retrieve', playlistInfo.body);
+      // if it's expired, fetch updated info from Spotify
+      if (p.expiryTime < new Date()) {
+        const playlistInfo = await spotifyApi.getPlaylist(p.spotifyId, { fields: 'id, owner.id, owner.display_name, name, images, public' });
+        if (playlistInfo.statusCode === 200) {
+          const p = playlistInfo.body;
+          const updatedPlaylist = await PlaylistCollection.update(p.id, p.name, p.images[0]?.url, p.owner.display_name, p.public !== null ? p.public : false);
+          finalPlaylists.push(updatedPlaylist);
+        }
+        else {
+          console.log('Failed to retrieve', playlistInfo.body);
+          finalPlaylists.push(p);
+        }
+      }
+      // if it's not expired, just return from db
+      else {
+        finalPlaylists.push(p);
+      }
     }
+
     res.status(200).json({
       message: 'Retrieved successfully.',
-      items: await Promise.all(playlistInfos.map((p: SpotifyApi.PlaylistObjectSimplified) => util.constructShallowPlaylistResponse(req.session.username, p))),
+      items: await Promise.all(finalPlaylists.map((p: Playlist) => util.shallowDbResponse(req.session.username, p))),
       limit: 6,
       offset: offset,
-      next: offset + 6 < await PlaylistCollection.countTotal(),
+      next: offset + 6 < Math.min(100, await PlaylistCollection.countTotal()),
       previous: offset > 0,
     });
   }

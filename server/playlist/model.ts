@@ -7,9 +7,12 @@ export type Playlist = {
   numLikes: number;
   numUsed: number;
   numCompleted: number;
-  owner: string;
+  ownerId: string;
   name: string;
+  imageUrl: string;
+  ownerName: string;
   isPublic: boolean;
+  expiryTime: Date;
 };
 
 const PlaylistSchema = new Schema({
@@ -30,7 +33,7 @@ const PlaylistSchema = new Schema({
     type: Number,
     required: true
   },
-  owner: {
+  ownerId: {
     type: String,
     required: true
   },
@@ -38,8 +41,20 @@ const PlaylistSchema = new Schema({
     type: String,
     required: true
   },
+  imageUrl: {
+    type: String,
+    required: true
+  },
+  ownerName: {
+    type: String,
+    required: true
+  },
   isPublic: {
     type: Boolean,
+    required: true
+  },
+  expiryTime: {
+    type: Date,
     required: true
   },
 });

@@ -1,17 +1,22 @@
 import type { HydratedDocument, Types } from 'mongoose';
 import type { Playlist } from './model';
 import PlaylistModel from './model';
+import { generateExpiryDate } from './util';
 
 class PlaylistCollection {
-  static async addOne(spotifyId: string, owner: string, name: string, isPublic: boolean): Promise<HydratedDocument<Playlist>> {
+  static async addOne(spotifyId: string, ownerId: string, name: string, imageUrl: string, ownerName: string, isPublic: boolean): Promise<HydratedDocument<Playlist>> {
+    const expiryTime = generateExpiryDate();
     const playlist = new PlaylistModel({
       spotifyId: spotifyId,
       numLikes: 0,
       numUsed: 0,
       numCompleted: 0,
-      owner: owner,
+      ownerId: ownerId,
       name: name,
+      imageUrl: imageUrl,
+      ownerName: ownerName,
       isPublic: isPublic,
+      expiryTime: expiryTime,
     });
     await playlist.save();
     return playlist;
@@ -25,8 +30,8 @@ class PlaylistCollection {
     return PlaylistModel.findOne({ spotifyId: spotifyId });
   }
 
-  static async deleteAllByOwner(owner: string): Promise<void> {
-    await PlaylistModel.deleteMany({ owner: owner });
+  static async deleteAllByOwner(ownerId: string): Promise<void> {
+    await PlaylistModel.deleteMany({ ownerId: ownerId });
   }
 
   static async countTotal(): Promise<number> {
@@ -95,20 +100,21 @@ class PlaylistCollection {
     await playlist.save();
   }
 
-  // static async updateIsPublic(spotifyId: string, isPublic: boolean): Promise<void> {
-  //   const playlist = await PlaylistModel.findOne({ spotifyId: spotifyId });
-  //   playlist.isPublic = isPublic;
-
-  //   await playlist.save();
-  // }
-
-  static async update(spotifyId: string, name: string, isPublic: boolean): Promise<void> {
+  static async update(spotifyId: string, name: string, imageUrl: string, ownerName: string, isPublic: boolean): Promise<HydratedDocument<Playlist>> {
     const playlist = await PlaylistModel.findOne({ spotifyId: spotifyId });
     playlist.name = name;
+    playlist.imageUrl = imageUrl;
+    playlist.ownerName = ownerName;
     playlist.isPublic = isPublic;
+    playlist.expiryTime = generateExpiryDate();
 
+    console.log('pls')
     await playlist.save();
+    console.log('ret')
+    return playlist;
   }
+
+
 }
 
 export default PlaylistCollection;
