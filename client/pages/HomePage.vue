@@ -155,7 +155,7 @@
             </div>
         </div>
         
-        <div id="footer">
+        <div v-if="sessionState === SessionState.BEFORE" id="footer">
             <router-link to="/privacy" class="gr12">Privacy Policy</router-link>
             <span class="gr12">|</span>
             <span class="gr12">©2023 Adorify</span>
