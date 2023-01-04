@@ -22,14 +22,9 @@ export default {
 <style scoped>
 nav {
     line-height: 1.5;
-    padding: 18px 30px;
+    padding: 18px 26px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-}
-
-.left {
-    display: flex;
     align-items: center;
 }
 
@@ -42,9 +37,6 @@ a {
     display: flex;
     gap: 30px;
     align-items: center;
-}
-
-a:hover {
 }
 
 .right > .router-link-active {

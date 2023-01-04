@@ -242,7 +242,7 @@ export default {
 .botButtons {
   display: flex;
   margin-top: 32px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   gap: 16px;
 }
 

@@ -9,6 +9,7 @@ import PlaylistsPage from './pages/PlaylistsPage.vue'
 import CallbackPage from './pages/CallbackPage.vue'
 import NotFound from './NotFound.vue';
 import PlaylistInfoPage from './pages/PlaylistInfoPage.vue';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage.vue';
 
 Vue.use(VueRouter);
 
@@ -19,6 +20,7 @@ const routes = [
   { path: '/leaderboard', name: 'Leaderboard', component: LeaderboardPage },
   { path: '/playlists', name: 'Playlists', component: PlaylistsPage },
   { path: '/playlists/info/:spotifyId', name: 'PlaylistInfoPage', component: PlaylistInfoPage, props: true},
+  { path: '/privacy', name: 'Privacy Policy', component: PrivacyPolicyPage },
   { path: '/callback', name: 'Callback', component: CallbackPage },
   { path: '*', name: 'Not Found', component: NotFound }
 ];
@@ -29,17 +31,6 @@ const router = new VueRouter({ mode: 'history', routes });
  * Navigation guards to prevent user from accessing wrong pages.
  */
 router.beforeEach((to, from, next) => {
-  // if (router.app.$store) {
-  //   if (to.name === 'Login' && router.app.$store.state.username) {
-  //     next({ name: 'Account' }); // Go to Account page if user navigates to Login and are signed in
-  //     return;
-  //   }
-
-  //   if (to.name === 'Account' && !router.app.$store.state.username) {
-  //     next({ name: 'Login' }); // Go to Login page if user navigates to Account and are not signed in
-  //     return;
-  //   }
-  // }
   if (router.app.$store) {
     // if (router.app.$store.state.deviceId && router.app.$store.state.displayName) {
     //   if (to.name === 'Home' && router.app.$store.state.spotifyPlayer) {

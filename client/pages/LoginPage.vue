@@ -14,9 +14,16 @@
                         <img src="../public/images/adorify_logo_full.svg" height="72" width="auto" />
                     </div>
                     <button class="button loginButton" @click="login">
-                        <span class="wh20b">Log in with Spotify</span>
+                        <span class="wh18b">Log in with Spotify</span>
                     </button>
                     <div class="gr16">Spotify Premium account required</div>
+                    <div id="footer">
+                        <router-link to="/privacy" class="gr12">Privacy Policy</router-link>
+                        <span class="gr12">|</span>
+                        <!-- <span class="gr12">Donate</span>
+                        <span class="gr12">|</span> -->
+                        <span class="gr12">©2023 Adorify</span>
+                    </div>
                 </div>
             </div>
             <div class="rightSection">

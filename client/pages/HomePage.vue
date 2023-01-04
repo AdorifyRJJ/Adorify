@@ -102,7 +102,7 @@
                         <div class="pbItem pbNotDone" v-for="i in (intervals - currInterval)"></div>
                     </div>
                     <button class="button" @click="endSession">
-                        <span class="wh20b">End Session</span>
+                        <span class="wh18b">End Session</span>
                     </button>
                 </div>
 
@@ -118,7 +118,7 @@
                     </div>
                     <div class="gr20 margin-b-60">of focus time.</div>
                     <button class="button" @click="backToHome">
-                        <span class="wh20b">Back To Home</span>
+                        <span class="wh18b">Back To Home</span>
                     </button>
                 </div>
                 <div id="snackbar" class="center">{{ errorText }}</div>
@@ -153,6 +153,12 @@
                     <img src="../public/images/forward.svg">
                 </button>
             </div>
+        </div>
+        
+        <div id="footer">
+            <router-link to="/privacy" class="gr12">Privacy Policy</router-link>
+            <span class="gr12">|</span>
+            <span class="gr12">©2023 Adorify</span>
         </div>
     </main>
 </template>
@@ -288,6 +294,7 @@ export default {
             await this.startTimer();
         },
         async endSession() {
+            document.title = 'Adorify';
             this.sessionState = SessionState.AFTER;
             this.timestamp = null;
             this.selectedIndex = null;
@@ -305,9 +312,11 @@ export default {
             this.timestamp =
                 this.timestamp ??
                 (this.sessionState === SessionState.FOCUS ? this.focusTime * 60 : this.breakTime * 60);
+            document.title = this.getTime + " • Adorify";
             this.timerId = setInterval(async () => {
                 if (this.timerActive) {
                     this.timestamp--;
+                    document.title = this.getTime + " • Adorify";
                     if (this.timestamp <= 0) {
                         this.clearTimer();
                         this.timestamp = null;
@@ -415,14 +424,25 @@ export default {
             }
         }
     },
-    async beforeUnmount() {
-            try {
-                this.$store.commit("forceDisconnect");
-            } catch (e) {
-                //console.log(e);
-            }
-        },
-    };
+    // async beforeUnmount() {
+    //     console.log('unmounting')
+    //     try {
+    //         this.$store.commit("forceDisconnect");
+    //     } catch (e) {
+    //         //console.log(e);
+    //     }
+    // },
+    async beforeRouteLeave(to, from, next) {
+        if (this.sessionState === SessionState.FOCUS || this.sessionState === SessionState.BREAK)
+            await this.endSession();
+        try {
+            this.$store.commit("forceDisconnect");
+        } catch (e) {
+            console.log(e);
+        }
+        next();
+    } 
+};
 </script>
 
 <style scoped>

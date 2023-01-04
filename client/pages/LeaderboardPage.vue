@@ -140,7 +140,7 @@ export default {
   display: flex;
   flex-direction: column;
   width: 600px;
-  padding-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 @media (min-width: 1100px) {

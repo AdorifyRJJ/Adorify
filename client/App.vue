@@ -3,6 +3,9 @@
     <header v-if="$store.state.displayName">
       <NavBar />
     </header>
+    <header v-else-if="$route.name === 'Privacy Policy'">
+      <PrivacyNavBar />
+    </header>
     <div id="remainingContent">
       <router-view />
     </div>
@@ -12,10 +15,11 @@
 
 <script>
 import NavBar from "@/components/common/NavBar.vue";
+import PrivacyNavBar from "@/components/PrivacyNavBar.vue";
 import SpotifyWebApi from "spotify-web-api-node";
 export default {
   name: "App",
-  components: { NavBar },
+  components: { NavBar, PrivacyNavBar },
   data() {
     return {
       errorText: '',
@@ -84,13 +88,26 @@ export default {
       }
       await fetch(`/api/spotify/logout`);
       this.$store.commit("resetStore");
-      if (this.$router.history.current.name !== "Login")
+      if (this.$router.history.current.name !== "Login" && this.$router.history.current.name !== "Privacy Policy")
         this.$router.push({ name: "Login" });
     }
   },
 };
 </script>
 <style>
+
+#footer {
+  position: fixed;
+  bottom: 14px;
+  left: 18px;
+  display: flex;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  background-color: #373544;
+  z-index: 1;
+}
+
 /* @font-face {
     font-family: "AdorifyF";
     src: url("./public/fonts/AdorifyF/AvenirNextLTPro-UltLt.otf");
@@ -178,9 +195,9 @@ body {
   bottom: 0;
 }
 
-main {
+/* main {
   padding: 0 30px;
-}
+} */
 
 .wh12b {
   color: #ffffff;
@@ -191,6 +208,12 @@ main {
 .wh16b {
   color: #ffffff;
   font-size: 16px;
+  font-weight: bold;
+}
+
+.wh18b {
+  color: #ffffff;
+  font-size: 18px;
   font-weight: bold;
 }
 
@@ -233,6 +256,12 @@ main {
 .wh16n {
   color: #ffffff;
   font-size: 16px;
+  font-weight: normal;
+}
+
+.wh18n {
+  color: #ffffff;
+  font-size: 18px;
   font-weight: normal;
 }
 

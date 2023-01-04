@@ -64,4 +64,8 @@ export default {
 .titleText {
     margin-bottom: 10px;
 }
+
+.scrollable-content {
+    margin-bottom: 12px;
+}
 </style>

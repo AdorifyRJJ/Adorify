@@ -6,7 +6,7 @@
                 <img :src="image" class="image" height="186" width="186" />
                 <div class="rightContainer">
                     <div class="topDiv">
-                        <button class="button wh20b" @click="exit">Back</button>
+                        <button class="button wh18b" @click="exit">Back</button>
                     </div>
                     <a class="logo" :href="url" target="_blank">
                         <img src="../public/images/Spotify_Logo_RGB_White.png" height="24">
@@ -290,7 +290,7 @@ export default {
 .botButtons {
     display: flex;
     margin-top: 32px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     gap: 16px;
 }
 

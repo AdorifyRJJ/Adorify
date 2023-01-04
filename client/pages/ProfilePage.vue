@@ -17,10 +17,10 @@
           <div class="rightContainer">
             <div class="topDiv">
               <button class="button" @click="logout">
-                <span class="wh20b">Logout</span>
+                <span class="wh18b">Logout</span>
               </button>
               <button class="button delete" @click="deleteScreen">
-                <span class="wh20b">Delete</span>
+                <span class="wh18b">Delete</span>
               </button>
             </div>
             <div class="bottomDiv">
@@ -98,10 +98,10 @@
         </div>
         <div class="modalButtons">
           <button class="button" @click="noDelete">
-            <span class="wh20b">No, don't delete</span>
+            <span class="wh18b">No, don't delete</span>
           </button>
           <button class="button delete" @click="yesDelete">
-            <span class="wh20b">Yes, delete permanently</span>
+            <span class="wh18b">Yes, delete permanently</span>
           </button>
         </div>
       </div>
@@ -416,6 +416,7 @@ export default {
   justify-content: space-between;
   width: 600px;
   height: 300px;
+  margin-bottom: 8px;
 }
 
 .productivity {
@@ -432,6 +433,27 @@ export default {
 .mostPlayed {
   padding-left: 20px;
   width: 220px;
+}
+
+.item {
+  padding: 8px 0;
+}
+
+/** Delete page */
+
+.delete {
+  background-color: transparent;
+  border: 3px solid #6c4eb3;
+}
+
+.modalText {
+  width: 600px;
+  margin: 20px 0;
+}
+
+.modalButtons {
+  display: flex;
+  gap: 10px;
 }
 
 @media (min-width: 1100px) {
@@ -454,27 +476,9 @@ export default {
   .bottomDiv {
     padding: 38px 30px 28px 180px;
   }
-}
-
-
-.item {
-  padding: 8px 0;
-}
-
-/** Delete page */
-
-.delete {
-  background-color: transparent;
-  border: 3px solid #6c4eb3;
-}
-
-.modalText {
-  margin: 20px;
-}
-
-.modalButtons {
-  display: flex;
-  gap: 10px;
+  .modalText {
+    width: 900px;
+  }
 }
 
 /** Loading animations */
