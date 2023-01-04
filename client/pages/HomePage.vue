@@ -434,7 +434,9 @@ export default {
     // },
     async beforeRouteLeave(to, from, next) {
         if (this.sessionState === SessionState.FOCUS || this.sessionState === SessionState.BREAK)
-            await this.endSession();
+            // await this.endSession();
+            document.title = 'Adorify';
+            this.clearTimer();
         try {
             this.$store.commit("forceDisconnect");
         } catch (e) {
