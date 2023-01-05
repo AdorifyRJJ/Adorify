@@ -949,7 +949,7 @@ class AdorifySessionCollection {
         }
       },
     ]));
-
+    console.log(studyTimeMonth)
     if (studyTimeMonth[0]) {
       return [...Object.entries(studyTimeMonth[0])].slice(0, 30).reverse();
     }
