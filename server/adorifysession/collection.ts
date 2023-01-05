@@ -1,7 +1,7 @@
 import { HydratedDocument, Types } from "mongoose";
 import PlaylistModel, { Playlist } from "../playlist/model";
 import AdorifySessionModel, { AdorifySession } from "./model";
-import { generateLast30Days } from './util';
+import { generateLast28Days } from './util';
 
 class AdorifySessionCollection {
 
@@ -294,7 +294,7 @@ class AdorifySessionCollection {
     //combine and convert to studydate
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
-    const daysLastMonth = [...generateLast30Days(tzoffset)];
+    const daysLastMonth = [...generateLast28Days(tzoffset)];
 
     const studyTimeMonth = (await AdorifySessionModel.aggregate([
       {
@@ -904,54 +904,54 @@ class AdorifySessionCollection {
               ]
             },
           },
-          "29": {
-            $sum: {
-              $cond: [
-                {
-                  $gt: ["$startTime", daysLastMonth[30]]
-                },
-                {
-                  $cond: [
-                    {
-                      $lt: ["$startTime", daysLastMonth[29]]
-                    },
-                    {
-                      $multiply: ["$length", "$completed"]
-                    },
-                    0
-                  ]
-                },
-                0
-              ]
-            },
-          },
-          "30": {
-            $sum: {
-              $cond: [
-                {
-                  $gt: ["$startTime", daysLastMonth[31]]
-                },
-                {
-                  $cond: [
-                    {
-                      $lt: ["$startTime", daysLastMonth[30]]
-                    },
-                    {
-                      $multiply: ["$length", "$completed"]
-                    },
-                    0
-                  ]
-                },
-                0
-              ]
-            },
-          },
+          // "29": {
+          //   $sum: {
+          //     $cond: [
+          //       {
+          //         $gt: ["$startTime", daysLastMonth[30]]
+          //       },
+          //       {
+          //         $cond: [
+          //           {
+          //             $lt: ["$startTime", daysLastMonth[29]]
+          //           },
+          //           {
+          //             $multiply: ["$length", "$completed"]
+          //           },
+          //           0
+          //         ]
+          //       },
+          //       0
+          //     ]
+          //   },
+          // },
+          // "30": {
+          //   $sum: {
+          //     $cond: [
+          //       {
+          //         $gt: ["$startTime", daysLastMonth[31]]
+          //       },
+          //       {
+          //         $cond: [
+          //           {
+          //             $lt: ["$startTime", daysLastMonth[30]]
+          //           },
+          //           {
+          //             $multiply: ["$length", "$completed"]
+          //           },
+          //           0
+          //         ]
+          //       },
+          //       0
+          //     ]
+          //   },
+          // },
         }
       },
     ]));
     console.log(studyTimeMonth)
     if (studyTimeMonth[0]) {
-      return [...Object.entries(studyTimeMonth[0])].slice(0, 30).reverse();
+      return [...Object.entries(studyTimeMonth[0])].slice(0, 28).reverse();
     }
     return []
 

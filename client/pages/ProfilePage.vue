@@ -224,7 +224,7 @@ export default {
         };
       } else if (i === 1) {
         this.mostPlayed = this._mostPlayedMonth;
-        const labels = getLastXDates(30);
+        const labels = getLastXDates(28);
         this.chartData = {
           labels: labels,
           datasets: [
