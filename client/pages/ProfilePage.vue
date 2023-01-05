@@ -224,7 +224,7 @@ export default {
         };
       } else if (i === 1) {
         this.mostPlayed = this._mostPlayedMonth;
-        const labels = getLastXDates(28);
+        const labels = getLastXDates(30);
         this.chartData = {
           labels: labels,
           datasets: [
@@ -279,7 +279,7 @@ export default {
     if (this.$store.state.connected) {
       this.$store.commit("forceDisconnect");
     }
-    const resp = await fetch("/api/adorifySession/stats");
+    const resp = await fetch(`/api/adorifySession/stats?tzoffset=${new Date().getTimezoneOffset()}`);
     const res = await resp.json();
     if (!resp.ok) {
       await fetch(`/api/spotify/logout`);

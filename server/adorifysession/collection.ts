@@ -260,9 +260,9 @@ class AdorifySessionCollection {
     const userAllRank = leaderboardAll?.findIndex(findUser)
     const userAllFocusTime = leaderboardAll[userAllRank]?.focusTime ?? 0;
 
-    const finalLeaderboardWeek = leaderboardWeek?.splice(0, 10)
-    const finalLeaderboardMonth = leaderboardMonth?.splice(0, 10)
-    const finalLeaderboardAll = leaderboardAll?.splice(0, 10)
+    const finalLeaderboardWeek = leaderboardWeek?.slice(0, 10)
+    const finalLeaderboardMonth = leaderboardMonth?.slice(0, 10)
+    const finalLeaderboardAll = leaderboardAll?.slice(0, 10)
 
     return {
       topUsers: {
@@ -288,13 +288,13 @@ class AdorifySessionCollection {
 
   }
 
-  static async getStudyTimeByUsername(username: string): Promise<Array<[string, unknown]>> {
+  static async getStudyTimeByUsername(username: string, tzoffset: number): Promise<Array<[string, unknown]>> {
     //find in as model by username, filter by date.
     //call helper function to split into week, month, and alltime* arrays
     //combine and convert to studydate
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
-    const daysLastMonth = [...generateLast30Days()];
+    const daysLastMonth = [...generateLast30Days(tzoffset)];
 
     const studyTimeMonth = (await AdorifySessionModel.aggregate([
       {
@@ -904,12 +904,54 @@ class AdorifySessionCollection {
               ]
             },
           },
+          "29": {
+            $sum: {
+              $cond: [
+                {
+                  $gt: ["$startTime", daysLastMonth[30]]
+                },
+                {
+                  $cond: [
+                    {
+                      $lt: ["$startTime", daysLastMonth[29]]
+                    },
+                    {
+                      $multiply: ["$length", "$completed"]
+                    },
+                    0
+                  ]
+                },
+                0
+              ]
+            },
+          },
+          "30": {
+            $sum: {
+              $cond: [
+                {
+                  $gt: ["$startTime", daysLastMonth[31]]
+                },
+                {
+                  $cond: [
+                    {
+                      $lt: ["$startTime", daysLastMonth[30]]
+                    },
+                    {
+                      $multiply: ["$length", "$completed"]
+                    },
+                    0
+                  ]
+                },
+                0
+              ]
+            },
+          },
         }
       },
     ]));
 
     if (studyTimeMonth[0]) {
-      return [...Object.entries(studyTimeMonth[0])].splice(0, 28).reverse();
+      return [...Object.entries(studyTimeMonth[0])].slice(0, 30).reverse();
     }
     return []
 

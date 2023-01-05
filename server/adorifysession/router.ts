@@ -101,7 +101,7 @@ router.get(
 
     // const finalMostPlayedMonth = await Promise.all(mostPlayedWeek.map((p: SpotifyApi.PlaylistObjectSimplified) => playlistUtil.constructShallowPlaylistResponse(req.session.username, p)))
 
-    const studyTimeArr = await AdorifySessionCollection.getStudyTimeByUsername(req.session.username);
+    const studyTimeArr = await AdorifySessionCollection.getStudyTimeByUsername(req.session.username, parseInt(req.query.tzoffset as string));
     let studyTimeModified = [];
 
     for (const tuple of studyTimeArr) {

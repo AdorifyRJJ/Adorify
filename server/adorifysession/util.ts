@@ -5,16 +5,17 @@ import { Playlist } from "../playlist/model";
 //     plays: number,
 // }
 
-export const generateLast30Days = (): Array<Date> => {
+export const generateLast30Days = (tzoffset: number): Array<Date> => {
     const today = new Date();
-    const dates = [today];
-    for (let i = 0; i < 29; i++) {
+    const dates = [today]; // this return is never used
+    for (let i = 0; i < 31; i++) {
         const date = new Date();
         date.setDate(date.getDate() - i);
         date.setHours(0);
         date.setMinutes(0);
         date.setSeconds(0);
         date.setMilliseconds(0);
+        date.setTime(date.getTime() + tzoffset*60*1000)
         dates.push(date)
     }
     return dates;
