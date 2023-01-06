@@ -36,7 +36,6 @@ export default {
     },
   },
   async beforeCreate() {
-    document.title = "Adorify";
     this.$store.commit("setConnected", false);
     const myData = this.$route.query.code
       ? await fetch(
