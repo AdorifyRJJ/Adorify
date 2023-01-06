@@ -52,16 +52,16 @@ router.get(
   '/stats',
   [
     userValidator.isUserLoggedIn,
-    userValidator.validAccessToken,
-    spotifyUtil.refreshIfNeeded,
+    // userValidator.validAccessToken,
+    // spotifyUtil.refreshIfNeeded,
   ],
   async (req: Request, res: Response) => {
-    const spotifyApi = new SpotifyWebApi({
-      clientId: process.env.ID,
-      clientSecret: process.env.SECRET,
-      redirectUri: process.env.REDIRECT,
-    });
-    spotifyApi.setAccessToken(req.session.accessToken);
+    // const spotifyApi = new SpotifyWebApi({
+    //   clientId: process.env.ID,
+    //   clientSecret: process.env.SECRET,
+    //   redirectUri: process.env.REDIRECT,
+    // });
+    // spotifyApi.setAccessToken(req.session.accessToken);
 
     const totalTime = await AdorifySessionCollection.getTotalTimeByUsername(req.session.username);
     const completed = await AdorifySessionCollection.getTotalCompletedByUsername(req.session.username);
@@ -109,7 +109,6 @@ router.get(
     }
     if (studyTimeModified.length === 0) studyTimeModified = Array.apply(0, Array(28)).map(() => 0);
 
-    // console.log(finalMostPlayedWeek);
     res.status(200).json({
       message: 'Here are the user stats.',
       totalTime: totalTime ?? 0,

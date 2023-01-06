@@ -15,12 +15,12 @@ Vue.use(VueRouter);
 
 const routes = [
   { path: '/', name: 'Home', component: HomePage },
-  { path: '/login', name: 'Login', component: LoginPage },
-  { path: '/profile', name: 'Profile', component: ProfilePage },
-  { path: '/leaderboard', name: 'Leaderboard', component: LeaderboardPage },
-  { path: '/playlists', name: 'Playlists', component: PlaylistsPage },
+  { path: '/login', name: 'Login', component: LoginPage, meta: { title: 'Login' } },
+  { path: '/profile', name: 'Profile', component: ProfilePage, meta: { title: 'Profile' } },
+  { path: '/leaderboard', name: 'Leaderboard', component: LeaderboardPage, meta: { title: 'Leaderboard' } },
+  { path: '/playlists', name: 'Playlists', component: PlaylistsPage, meta: { title: 'Playlists' } },
   { path: '/playlists/info/:spotifyId', name: 'PlaylistInfoPage', component: PlaylistInfoPage, props: true},
-  { path: '/privacy', name: 'Privacy Policy', component: PrivacyPolicyPage },
+  { path: '/privacy', name: 'Privacy Policy', component: PrivacyPolicyPage, meta: { title: 'Privacy Policy' } },
   { path: '/callback', name: 'Callback', component: CallbackPage },
   { path: '*', name: 'Not Found', component: NotFound }
 ];
@@ -67,5 +67,11 @@ router.beforeEach((to, from, next) => {
 
   next();
 });
+
+router.afterEach((to, from) => {
+  Vue.nextTick(() => {
+    document.title = to.meta.title ? (to.meta.title + ' - Adorify') : 'Adorify';
+});
+})
 
 export default router;

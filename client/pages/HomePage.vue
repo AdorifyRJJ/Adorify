@@ -312,11 +312,11 @@ export default {
             this.timestamp =
                 this.timestamp ??
                 (this.sessionState === SessionState.FOCUS ? this.focusTime * 60 : this.breakTime * 60);
-            document.title = this.getTime + " • Adorify";
+            document.title = this.getTime + " - Adorify";
             this.timerId = setInterval(async () => {
                 if (this.timerActive) {
                     this.timestamp--;
-                    document.title = this.getTime + " • Adorify";
+                    document.title = this.getTime + " - Adorify";
                     if (this.timestamp <= 0) {
                         this.clearTimer();
                         this.timestamp = null;

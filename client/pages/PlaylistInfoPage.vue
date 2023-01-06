@@ -157,6 +157,7 @@ export default {
         }
 
         await this.getTracks(this.spotifyId);
+        document.title = `${this.name} - Adorify`;
     },
     beforeCreate() {
         if (this.$store.state.connected) {

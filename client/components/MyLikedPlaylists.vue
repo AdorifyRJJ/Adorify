@@ -13,7 +13,7 @@
                         {{ playlist.name }}
                     </div>
                 </div>
-                <div v-else class="item wh20n">Like to add playlists!</div>
+                <div v-else class="item gr20">Like to add playlists!</div>
             </div>
         </div>
     </div>
