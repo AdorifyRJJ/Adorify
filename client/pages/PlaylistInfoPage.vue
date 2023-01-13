@@ -274,12 +274,12 @@ export default {
     border-radius: 10px;
     object-fit: cover;
     box-shadow: 0px 4px 10px 4px rgba(0, 0, 0, 0.25);
-    z-index: 1;
 }
 
 .imageBox {
     height: 186px;
     width: 186px;
+    z-index: 1;
 }
 
 .playlistName {
