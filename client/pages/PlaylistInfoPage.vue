@@ -3,13 +3,18 @@
         <MyLikedPlaylists />
         <div class="infoSection">
             <div class="playlistInfo">
-                <img :src="image" class="image" height="186" width="186" />
+                <div class="imageBox">
+                    <img :src="image" class="image" height="186" width="186" />
+                </div>
                 <div class="rightContainer">
                     <div class="topDiv">
                         <button class="button wh18b" @click="exit">Back</button>
                     </div>
                     <a class="logo" :href="url" target="_blank">
-                        <img src="../public/images/Spotify_Logo_RGB_White.png" height="24">
+                        <img
+                            src="../public/images/Spotify_Logo_RGB_White.png"
+                            height="24"
+                        />
                     </a>
                     <div class="bottomDiv">
                         <div class="pInfo">
@@ -83,9 +88,9 @@ export default {
         return {
             spotifyId: this.$route.params.spotifyId,
             tracks: [],
-            url: '',
+            url: "",
             loading: true,
-            errorText: '',
+            errorText: "",
         };
     },
     computed: {
@@ -139,13 +144,13 @@ export default {
         },
         displayLikedError() {
             if (this.errorText) return;
-            this.errorText = 'Sorry, you are limited to 15 liked playlists.';
+            this.errorText = "Sorry, you are limited to 15 liked playlists.";
             this.displayError();
         },
         displayError() {
             const x = document.getElementById("snackbar");
             x.className = "show";
-            setTimeout(() => { 
+            setTimeout(() => {
                 x.className = x.className.replace("show", "");
                 this.errorText = "";
             }, 3000);
@@ -168,7 +173,6 @@ export default {
 </script>
 
 <style scoped>
-
 .page {
     display: flex;
     flex-direction: row;
@@ -241,7 +245,7 @@ export default {
     margin-left: -15px;
     margin-top: -10px;
     padding: 8px 34px;
-    border-radius: 0 10px 10px 0 ;
+    border-radius: 0 10px 10px 0;
 }
 
 .logo:hover {
@@ -271,6 +275,11 @@ export default {
     object-fit: cover;
     box-shadow: 0px 4px 10px 4px rgba(0, 0, 0, 0.25);
     z-index: 1;
+}
+
+.imageBox {
+    height: 186px;
+    width: 186px;
 }
 
 .playlistName {
