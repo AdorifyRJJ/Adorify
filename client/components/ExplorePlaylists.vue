@@ -3,14 +3,24 @@
     <div class="wh40b">Find playlists</div>
 
     <div class="btn-div">
-      <ButtonGroup :titles="btnGroupTitles" :initIdx="selectIdx" @selectIdx="updateContent" class="btn-width-180" />
+      <ButtonGroup
+        :titles="btnGroupTitles"
+        :initIdx="selectIdx"
+        @selectIdx="updateContent"
+        class="btn-width-180"
+      />
       <div v-if="!viewingMine" class="dropdown">
         <button class="selected wh16n" @click="toggleChoosing">
           <div class="selectedText">{{ selected }}</div>
-          <img src="../public/images/dropdown.svg">
+          <img src="../public/images/dropdown.svg" />
         </button>
         <div v-if="choosing" class="expanded">
-          <div v-for="(option, i) in dropdownOptions" @click="toggleChoice(option)" :key="i" class="choice wh16n">
+          <div
+            v-for="(option, i) in dropdownOptions"
+            @click="toggleChoice(option)"
+            :key="i"
+            class="choice wh16n"
+          >
             {{ option }}
           </div>
         </div>
@@ -25,15 +35,27 @@
     <div v-else class="scrollable" id="playlistDiv">
       <div class="scrollable-content">
         <div class="playlists">
-          <PlaylistCard :key="i" v-for="(playlist, i) in currPlaylists.items" :playlist="playlist"
-            @tooManyLiked="tooManyLiked"></PlaylistCard>
+          <PlaylistCard
+            :key="i"
+            v-for="(playlist, i) in currPlaylists.items"
+            :playlist="playlist"
+            @tooManyLiked="tooManyLiked"
+          ></PlaylistCard>
         </div>
         <div class="botButtons">
-          <button class="botButton prev" :disabled="!currPlaylists.previous" @click="prevPage">
-            <img src="../public/images/pagePrev.svg">
+          <button
+            class="botButton prev"
+            :disabled="!currPlaylists.previous"
+            @click="prevPage"
+          >
+            <img src="../public/images/pagePrev.svg" />
           </button>
-          <button class="botButton next" :disabled="!currPlaylists.next" @click="nextPage">
-            <img src="../public/images/pageNext.svg">
+          <button
+            class="botButton next"
+            :disabled="!currPlaylists.next"
+            @click="nextPage"
+          >
+            <img src="../public/images/pageNext.svg" />
           </button>
         </div>
       </div>
@@ -51,13 +73,13 @@ export default {
   data() {
     return {
       btnGroupTitles: ["My Spotify Library", "Public Library"],
-      selectIdx: 0,
+      selectIdx: this.$store.state.pageIdx ?? 0,
       currPlaylists: [],
       currPlaylistsName: null,
       loading: true,
 
       choosing: false,
-      selected: "Most Liked",
+      selected: this.$store.state.sortBy ?? "Most Liked",
       dropdownOptions: ["Most Liked", "Most Used", "Most Productive"],
 
       controller: new AbortController(),
@@ -73,6 +95,9 @@ export default {
     viewingMine() {
       return this.currPlaylistsName === "mine";
     },
+    pageOffset() {
+      return this.$store.state.pageOffset ?? 0;
+    }
   },
   methods: {
     resetController() {
@@ -81,9 +106,12 @@ export default {
     },
     async updateContent(i) {
       this.selectedIdx = i;
+      this.$store.commit("setPageOffset", 0);
       if (i === 0) {
+        this.$store.commit("setPageIdx", 0);
         await this.getMyPlaylists();
       } else if (i === 1) {
+        this.$store.commit("setPageIdx", 1);
         await this.getPublicPlaylists();
       }
     },
@@ -96,6 +124,7 @@ export default {
     async toggleChoice(option) {
       this.selected = option;
       this.choosing = false;
+      this.$store.commit("setPageOffset", 0);
       if (option === "Most Liked") {
         await this.getMostLiked();
       } else if (option === "Most Used") {
@@ -115,6 +144,7 @@ export default {
         async (r) => r.json()
       );
       this.currPlaylists = res;
+      this.$store.commit("setPageOffset", res.offset);
       this.setLoading(false);
     },
     async nextPage() {
@@ -128,13 +158,14 @@ export default {
         async (r) => r.json()
       );
       this.currPlaylists = res;
+      this.$store.commit("setPageOffset", res.offset);
       this.setLoading(false);
     },
     async getMyPlaylists() {
       this.currPlaylistsName = "mine";
       this.resetController();
       this.setLoading(true);
-      const url = `/api/playlists/mine?offset=0`;
+      const url = `/api/playlists/mine?offset=${this.pageOffset}`;
       const resp = await fetch(url, { signal: this.controller.signal });
       const res = await resp.json();
       if (!resp.ok) {
@@ -155,45 +186,52 @@ export default {
       this.currPlaylistsName = "mostLiked";
       this.resetController();
       this.setLoading(true);
-      const url = `/api/playlists/mostLiked?offset=0`;
+      const url = `/api/playlists/mostLiked?offset=${this.pageOffset}`;
       const res = await fetch(url, { signal: this.controller.signal }).then(
         async (r) => r.json()
       );
       this.currPlaylists = res;
-
+      this.$store.commit("setSortBy", "Most Liked");
       this.setLoading(false);
     },
+    // change offset to state variable
     async getMostUsed() {
       this.currPlaylistsName = "mostUsed";
       this.resetController();
       this.setLoading(true);
-      const url = `/api/playlists/mostUsed?offset=0`;
+      const url = `/api/playlists/mostUsed?offset=${this.pageOffset}`;
       const res = await fetch(url, { signal: this.controller.signal }).then(
         async (r) => r.json()
       );
       this.currPlaylists = res;
-
+      this.$store.commit("setSortBy", "Most Used");
       this.setLoading(false);
     },
     async getMostProductive() {
       this.currPlaylistsName = "mostProductive";
       this.resetController();
       this.setLoading(true);
-      const url = `/api/playlists/mostProductive?offset=0`;
+      const url = `/api/playlists/mostProductive?offset=${this.pageOffset}`;
       const res = await fetch(url, { signal: this.controller.signal }).then(
         async (r) => r.json()
       );
       this.currPlaylists = res;
-
+      this.$store.commit("setSortBy", "Most Productive");
       this.setLoading(false);
     },
     tooManyLiked() {
       this.$emit("tooManyLiked");
-    }
+    },
   },
   async mounted() {
     // initial api call GET public playlists by likes
-    await this.getMyPlaylists();
+    if (this.selectIdx === 0) {
+      await this.getMyPlaylists();
+    } else if (this.selectIdx === 1) {
+      if (this.selected === "Most Liked") await this.getMostLiked();
+      else if (this.selected === "Most Productive") await this.getMostProductive();
+      else if (this.selected === "Most Used") await this.getMostUsed();
+    }
   },
 };
 </script>
@@ -333,7 +371,6 @@ export default {
     align-items: center;
   }
 }
-
 
 .btn-width-180::v-deep .btn-group-button {
   width: 180px;

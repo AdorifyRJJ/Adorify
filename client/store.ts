@@ -25,6 +25,9 @@ const store = new Vuex.Store({
     accessToken: null,
     expiryTime: null,
     spotifyApi: null,
+    sortBy: null,
+    pageOffset: null,
+    pageIdx: null,
   },
   // getters: {
   //   getPlaylistById: (state) => (spotifyId) => {
@@ -38,6 +41,15 @@ const store = new Vuex.Store({
        * @param username - new username to set
        */
       state.displayName = displayName;
+    },
+    setPageIdx(state, idx){
+      state.pageIdx = idx;
+    },
+    setPageOffset(state, offset){
+      state.pageOffset = offset;
+    },
+    setSortBy(state, by){
+      state.sortBy = by;
     },
     setImgURL(state, imgURL) {
       state.imgURL = imgURL;
