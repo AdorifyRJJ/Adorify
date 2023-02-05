@@ -166,8 +166,6 @@ export default {
       this.setLoading(false);
     },
     async getMyPlaylists() {
-      const playlistWindow = document.getElementById("playlistDiv");
-      playlistWindow.scrollTo(0, 0);
       this.currPlaylistsName = "mine";
       this.resetController();
       this.setLoading(true);
