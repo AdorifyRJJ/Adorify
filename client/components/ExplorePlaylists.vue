@@ -100,10 +100,6 @@ export default {
     }
   },
   methods: {
-    scrollToTop(){
-      const playlistWindow = document.getElementById("playlistDiv");
-      playlistWindow.scrollTo(0, 0);
-    },
     resetController() {
       this.controller.abort();
       this.controller = new AbortController();
@@ -111,6 +107,8 @@ export default {
     async updateContent(i) {
       this.selectedIdx = i;
       this.$store.commit("setPageOffset", 0);
+      const playlistWindow = document.getElementById("playlistDiv");
+      playlistWindow.scrollTo(0, 0);
       if (i === 0) {
         this.$store.commit("setPageIdx", 0);
         await this.getMyPlaylists();
@@ -129,6 +127,8 @@ export default {
       this.selected = option;
       this.choosing = false;
       this.$store.commit("setPageOffset", 0);
+      const playlistWindow = document.getElementById("playlistDiv");
+      playlistWindow.scrollTo(0, 0);
       if (option === "Most Liked") {
         await this.getMostLiked();
       } else if (option === "Most Used") {
@@ -138,7 +138,8 @@ export default {
       }
     },
     async prevPage() {
-      this.scrollToTop();
+      const playlistWindow = document.getElementById("playlistDiv");
+      playlistWindow.scrollTo(0, 0);
       this.setLoading(true);
       this.resetController();
       const newOffset = this.offset - this.limit;
@@ -151,7 +152,8 @@ export default {
       this.setLoading(false);
     },
     async nextPage() {
-      this.scrollToTop();
+      const playlistWindow = document.getElementById("playlistDiv");
+      playlistWindow.scrollTo(0, 0);
       this.setLoading(true);
       this.resetController();
       const newOffset = this.offset + this.limit;
@@ -164,7 +166,8 @@ export default {
       this.setLoading(false);
     },
     async getMyPlaylists() {
-      this.scrollToTop();
+      const playlistWindow = document.getElementById("playlistDiv");
+      playlistWindow.scrollTo(0, 0);
       this.currPlaylistsName = "mine";
       this.resetController();
       this.setLoading(true);
@@ -186,7 +189,6 @@ export default {
       }
     },
     async getMostLiked() {
-      this.scrollToTop();
       this.currPlaylistsName = "mostLiked";
       this.resetController();
       this.setLoading(true);
@@ -200,7 +202,6 @@ export default {
     },
     // change offset to state variable
     async getMostUsed() {
-      this.scrollToTop();
       this.currPlaylistsName = "mostUsed";
       this.resetController();
       this.setLoading(true);
@@ -213,7 +214,6 @@ export default {
       this.setLoading(false);
     },
     async getMostProductive() {
-      this.scrollToTop();
       this.currPlaylistsName = "mostProductive";
       this.resetController();
       this.setLoading(true);
