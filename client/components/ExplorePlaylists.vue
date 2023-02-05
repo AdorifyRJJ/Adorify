@@ -100,6 +100,10 @@ export default {
     }
   },
   methods: {
+    scrollToTop(){
+      const playlistWindow = document.getElementById("playlistDiv");
+      playlistWindow.scrollTo(0, 0);
+    },
     resetController() {
       this.controller.abort();
       this.controller = new AbortController();
@@ -134,8 +138,7 @@ export default {
       }
     },
     async prevPage() {
-      const playlistWindow = document.getElementById("playlistDiv");
-      playlistWindow.scrollTo(0, 0);
+      this.scrollToTop();
       this.setLoading(true);
       this.resetController();
       const newOffset = this.offset - this.limit;
@@ -148,8 +151,7 @@ export default {
       this.setLoading(false);
     },
     async nextPage() {
-      const playlistWindow = document.getElementById("playlistDiv");
-      playlistWindow.scrollTo(0, 0);
+      this.scrollToTop();
       this.setLoading(true);
       this.resetController();
       const newOffset = this.offset + this.limit;
@@ -162,6 +164,7 @@ export default {
       this.setLoading(false);
     },
     async getMyPlaylists() {
+      this.scrollToTop();
       this.currPlaylistsName = "mine";
       this.resetController();
       this.setLoading(true);
@@ -183,6 +186,7 @@ export default {
       }
     },
     async getMostLiked() {
+      this.scrollToTop();
       this.currPlaylistsName = "mostLiked";
       this.resetController();
       this.setLoading(true);
@@ -196,6 +200,7 @@ export default {
     },
     // change offset to state variable
     async getMostUsed() {
+      this.scrollToTop();
       this.currPlaylistsName = "mostUsed";
       this.resetController();
       this.setLoading(true);
@@ -208,6 +213,7 @@ export default {
       this.setLoading(false);
     },
     async getMostProductive() {
+      this.scrollToTop();
       this.currPlaylistsName = "mostProductive";
       this.resetController();
       this.setLoading(true);
